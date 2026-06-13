@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "one.pkg.libsl.mixin",
+  "compatibilityLevel": "JAVA_25",
+  "plugin": "one.pkg.libsl.mixin.MixinPlugin",
+  "client": [
+  ],
+  "mixins": ["access.ConnectionAccess", "access.MinecraftServerAccess", "access.ServerboundMovePlayerPacketAccess", "api.MinecraftServerMixin", "as.BlockEntityMixin", "as.ChunkMapMixin", "as.EntityMixin", "as.LevelMixin", "command.CommandsMixin", "event.AbstractContainerMenuMixin", "event.ItemStackMixin", "event.LivingEntityMixin", "event.PlayerChunkSenderMixin", "event.ServerGamePacketListenerImplMixin", "event.ServerLoginPacketListenerImplMixin", "event.ServerPlayerMixin", "event.block.spread.BambooSaplingBlockMixin", "event.block.spread.BambooStalkBlockMixin", "event.block.spread.BuddingAmethystBlockMixin", "event.block.spread.ChorusFlowerBlockMixin", "event.block.spread.FireBlockMixin", "event.block.spread.GrowingPlantHeadBlockMixin", "event.block.spread.MushroomBlockMixin", "event.block.spread.PointedDripstoneBlockMixin", "event.block.spread.RootedDirtBlockMixin", "event.block.spread.SculkBlockMixin", "event.block.spread.SculkVeinBlockMixin", "event.block.spread.SpreadingSnowyBlockMixin", "event.block.spread.VineBlockMixin"],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

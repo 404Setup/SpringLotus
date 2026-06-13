@@ -1,0 +1,24 @@
+[versions]
+shadow = "9.4.1"
+paperweight = "2.0.0-beta.19"
+moddev = "2.0.141"
+loom = "1.16-SNAPSHOT"
+
+adventure-mod = "6.9.0"
+
+snakeyaml = "2.5"
+sewlia-config = "1.1.1-SNAPSHOT"
+tiny-utils = "2.4.0"
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+paperweight = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight" }
+moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
+loom = { id = "net.fabricmc.fabric-loom", version.ref = "loom" }
+
+[libraries]
+snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyaml" }
+pkg-sewlia-config = { group = "one.pkg", name = "sewlia-config", version.ref = "sewlia-config" }
+pkg-tinyutils = { group = "one.pkg", name = "tiny-utils", version.ref = "tiny-utils" }
+
+adventure-mod = { group = "net.kyori", name = "adventure-platform-mod-shared", version.ref = "adventure-mod" }
