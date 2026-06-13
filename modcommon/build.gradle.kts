@@ -25,8 +25,8 @@ tasks {
 dependencies {
     compileOnly("net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
     compileOnly("org.ow2.asm:asm-tree:9.9")
-    compileOnly("io.github.llamalad7:mixinextras-common:0.5.3")
-    annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.3")
+    compileOnly("io.github.llamalad7:mixinextras-common:0.5.4")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4")
 
     compileOnly(libs.snakeyaml)
     compileOnly(libs.pkg.sewlia.config)

@@ -10,7 +10,10 @@
 
 package one.pkg.libsl.api.event.entity;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.LivingEntity;
 import one.pkg.libsl.api.event.Event;
 
@@ -78,13 +81,45 @@ public interface ServerLivingEntityEvents {
             });
 
     /**
-     * An event that is called when a living entity dies.
+     * An event triggered after a living entity has died. This event notifies all registered listeners
+     * that the death of an entity has occurred and cannot be canceled at this point.
+     * <p>
+     * The event provides details about the entity that died and the damage source responsible for its demise.
+     * Listeners registered to this event can perform additional actions or cleanup after an entity's death.
+     * <p>
+     * The invoker created for this event will iterate through all registered listeners and invoke their
+     * {@link AfterDeath#afterDeath(LivingEntity, DamageSource)} method, passing the relevant details.
      */
     Event<AfterDeath> AFTER_DEATH = Event.create(AfterDeath.class,
             callbacks -> (entity, damageSource) -> {
                 for (AfterDeath callback : callbacks) {
                     callback.afterDeath(entity, damageSource);
                 }
+            });
+
+    /**
+     * An event triggered before a living entity is spawned in the world.
+     * Subscribers can implement custom logic to control whether the spawning process should proceed.
+     * <p>
+     * This event uses {@link PreSpawn} as a functional interface, which allows subscribers to define
+     * conditions for allowing or denying entity spawn attempts. Multiple subscribers can be registered,
+     * and each subscriber's logic will be executed in sequence.
+     * <p>
+     * If any subscriber returns {@code false} during its execution, the spawning process will be
+     * halted, and the entity will not spawn. If all subscribers return {@code true}, the spawn
+     * attempt will be allowed to proceed.
+     *
+     * @see PreSpawn
+     */
+    Event<PreSpawn> PRE_SPAWN = Event.create(PreSpawn.class, callbacks ->
+            (entity, level, spawnPos, spawnReason) -> {
+                for (PreSpawn callback: callbacks) {
+                    if (!callback.onPreSpawn(entity, level, spawnPos, spawnReason)) {
+                        return false;
+                    }
+                }
+
+                return true;
             });
 
 
@@ -144,5 +179,27 @@ public interface ServerLivingEntityEvents {
          * @param damageSource the source of the fatal damage
          */
         void afterDeath(LivingEntity entity, DamageSource damageSource);
+    }
+
+    /**
+     * Functional interface representing a callback that is executed before a living entity is spawned
+     * in the world. It allows for custom logic to approve or deny the spawning process.
+     * <p>
+     * Implementations of this interface can define conditions under which a living entity's spawn
+     * attempt should be allowed or prevented.
+     */
+    @FunctionalInterface
+    interface PreSpawn {
+        /**
+         * Callback executed before a living entity is spawned in the world.
+         * Allows for custom logic to determine whether the spawn attempt should proceed.
+         *
+         * @param entity      The living entity that is attempting to spawn.
+         * @param level       The server level where the entity is attempting to spawn.
+         * @param spawnPos    The block position where the entity is attempting to spawn.
+         * @param spawnReason The reason or circumstances for the entity's spawn attempt.
+         * @return {@code true} if the spawn attempt should be allowed, or {@code false} to prevent the entity from spawning.
+         */
+        boolean onPreSpawn(LivingEntity entity, ServerLevel level, BlockPos spawnPos, EntitySpawnReason spawnReason);
     }
 }
