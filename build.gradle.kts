@@ -34,7 +34,7 @@ allprojects {
     }
 
     base {
-        archivesName.set(project.string("archives_base_name"))
+        archivesName.set("${project.string("archives_base_name")}-${project.name}")
     }
 
     tasks.named<Jar>("jar") {
