@@ -99,7 +99,18 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
                 }
             }
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+
+        double prevScroll = this.scrollAmount();
+        boolean handled = super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+
+        // Workaround for SmoothScrolling mod which reverts scrollAmount
+        // Since we override extractScrollbar without calling super, their animation never happens,
+        // resulting in the scrollbar getting stuck. We force the scroll update here.
+        if (handled && prevScroll == this.scrollAmount() && scrollY != 0) {
+            this.setScrollAmount(this.scrollAmount() - scrollY * ((double) this.itemHeight / 2.0));
+        }
+
+        return handled;
     }
 
     /**
