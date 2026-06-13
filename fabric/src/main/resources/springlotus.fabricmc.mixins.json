@@ -6,7 +6,8 @@
   "plugin": "one.pkg.libsl.fabric.mixin.MixinPlugin",
   "client": [
     "client.event.IntegratedServerMixin",
-    "client.event.MinecraftMixin"
+    "client.event.MinecraftMixin",
+    "client.command.ClientPacketListenerMixin"
   ],
   "mixins": [
     "event.DedicatedServerMixin",

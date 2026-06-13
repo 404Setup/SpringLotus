@@ -10,11 +10,9 @@
 
 package one.pkg.libsl.fabric;
 
-import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -22,7 +20,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -176,17 +173,10 @@ public class SpringLotusMod implements ModInitializer {
                                 CLIENT_STOPPING.invoker().onClientStopping(client)
         );
 
-        ClientCommandRegistrationCallback.EVENT.register(
-                (dispatcher, context) -> {
-                    @SuppressWarnings("unchecked")
-                    CommandDispatcher<CommandSourceStack> dispatcher1 = (CommandDispatcher<CommandSourceStack>) (Object) dispatcher;
-                    ClientCommandRegistrationEvent.EVENT.invoker()
-                            .register(dispatcher1, context);
-                });
 
         ClientCommandRegistrationEvent.EVENT.register(
                 (dispatcher, _) -> {
-                    SLCommand.register(dispatcher, null);
+                    SLCommand.register(dispatcher, Commands.CommandSelection.INTEGRATED);
                 }
         );
     }

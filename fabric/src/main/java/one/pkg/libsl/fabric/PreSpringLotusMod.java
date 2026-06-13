@@ -15,6 +15,5 @@ import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint;
 public class PreSpringLotusMod implements PreLaunchEntrypoint {
     @Override
     public void onPreLaunch() {
-
     }
 }

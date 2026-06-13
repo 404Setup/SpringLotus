@@ -103,7 +103,7 @@ public class SLCommand {
     }
 
     private static int testOreUI(CommandContext<CommandSourceStack> context) {
-        if (!context.getSource().isPlayer() || !JavaLoader.INSTANCE.isClient()) {
+        if (!JavaLoader.INSTANCE.isClient()) {
             context.getSource().sendFailure(
                     Component.literal("[SpringLotus] ")
                             .withStyle(ChatFormatting.AQUA)
