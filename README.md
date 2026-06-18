@@ -47,6 +47,11 @@ ordering = "AFTER"
 side = "BOTH"
 ```
 
+## Docs
+The documentation is still under development.
+
+[View Documentation](docs/README.md)
+
 ## Version Specification
 
 SpringLotus adopts the following version specification:
