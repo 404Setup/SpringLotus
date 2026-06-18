@@ -27,7 +27,7 @@ public class ServerLivingEntityListener {
                 event.getEntity(),
                 event.getSource(),
                 event.getOriginalDamage(),
-                event.getNewDamage(),
+                event.getHealthDamage(),
                 event.getBlockedDamage() != 0f
         );
     }
