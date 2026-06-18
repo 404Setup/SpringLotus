@@ -288,7 +288,7 @@ public class OreUIDialog extends Screen {
                 Math.min(1.0f, (System.currentTimeMillis() - openTime) / 150.0f);
 
         if (isClosing && animProgress <= 0) {
-            this.minecraft.setScreen(this.lastScreen);
+            this.minecraft.gui.setScreen(this.lastScreen);
             return;
         }
 

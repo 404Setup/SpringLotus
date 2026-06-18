@@ -69,7 +69,7 @@ public class SeeUIConfigScreen extends OptionsSubScreen {
     protected void addFooter() {
         this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, (_) -> {
             if (onSaved != null) onSaved.run();
-            this.minecraft.setScreen(this.lastScreen);
+            this.minecraft.gui.setScreen(this.lastScreen);
         }).width(200).build());
     }
 

@@ -110,13 +110,13 @@ public class DialogsPayload implements CustomPacketPayload {
                                 .cancelText(Component.literal(index == 0 ? "Close" : "Previous"))
                                 .onConfirm(() -> {
                                     if (index < payload.dialogPayloads.length - 1) {
-                                        Minecraft.getInstance().setScreen(actualLastScreen);
+                                        Minecraft.getInstance().gui.setScreen(actualLastScreen);
                                         showDialog(payload, index + 1, actualLastScreen);
                                     }
                                 })
                                 .onCancel(() -> {
                                     if (index > 0) {
-                                        Minecraft.getInstance().setScreen(actualLastScreen);
+                                        Minecraft.getInstance().gui.setScreen(actualLastScreen);
                                         showDialog(payload, index - 1, actualLastScreen);
                                     }
                                 });

@@ -120,17 +120,17 @@ public class OreUIExampleScreen extends Screen {
                             .content(Component.literal("This is an example dialog displaying the newly added features like auto-resizing, content text, and confirm/cancel buttons."))
                             .onConfirm(() -> System.out.println("Dialog Confirmed!"))
                             .onCancel(() -> System.out.println("Dialog Canceled!"));
-                    this.minecraft.setScreen(dialog);
+                    this.minecraft.gui.setScreen(dialog);
                 }).size(listWidth - 20, 24).style(OreUIButton.Style.FLAT).build()
         ));
 
         // Back Button
-        this.addRenderableWidget(OreUIButton.oreUIBuilder(CommonComponents.GUI_BACK, _ -> this.minecraft.setScreen(this.lastScreen)).pos(this.width / 2 - 100, this.height - 40).size(200, 24).style(OreUIButton.Style.GREEN).build());
+        this.addRenderableWidget(OreUIButton.oreUIBuilder(CommonComponents.GUI_BACK, _ -> this.minecraft.gui.setScreen(this.lastScreen)).pos(this.width / 2 - 100, this.height - 40).size(200, 24).style(OreUIButton.Style.GREEN).build());
     }
 
     @Override
     public void onClose() {
-        this.minecraft.setScreen(this.lastScreen);
+        this.minecraft.gui.setScreen(this.lastScreen);
     }
 
     @Override

@@ -2,7 +2,7 @@
 shadow = "9.4.1"
 paperweight = "2.0.0-beta.19"
 moddev = "2.0.141"
-loom = "1.16-SNAPSHOT"
+loom = "1.17-SNAPSHOT"
 
 adventure-mod = "6.9.0"
 

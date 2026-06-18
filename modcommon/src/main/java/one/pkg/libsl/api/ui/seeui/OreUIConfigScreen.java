@@ -23,6 +23,7 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -165,7 +166,7 @@ public class OreUIConfigScreen extends OptionsSubScreen {
         for (String catKey : categoriesMap.keySet()) {
             Component catName = Component.translatable(keyword + ".config.category." + catKey);
             String tooltipKey = keyword + ".config.category." + catKey + ".desc";
-            Component catTooltip = I18n.exists(tooltipKey) ?
+            Component catTooltip = Language.getInstance().has(tooltipKey) ?
                     Component.translatable(tooltipKey) : null;
 
             OreUIButton.Style btnStyle = catKey.equals(activeCategory) ?
@@ -204,7 +205,7 @@ public class OreUIConfigScreen extends OptionsSubScreen {
 
         OreUIButton doneBtn = OreUIButton.oreUIBuilder(CommonComponents.GUI_DONE, (_) -> {
                     if (onSaved != null) onSaved.run();
-                    this.minecraft.setScreen(this.lastScreen);
+                    this.minecraft.gui.setScreen(this.lastScreen);
                 }).pos(this.width / 2 - 100, this.height - 40).size(200, 24)
                 .style(OreUIButton.Style.GREEN).build();
         this.addRenderableWidget(doneBtn);
@@ -246,7 +247,7 @@ public class OreUIConfigScreen extends OptionsSubScreen {
 
         final Component headerText = Component.translatable(keyword + ".config.category." + categoryKey);
         String tooltipKey = keyword + ".config.category." + categoryKey + ".desc";
-        Component catTooltip = I18n.exists(tooltipKey) ?
+        Component catTooltip = Language.getInstance().has(tooltipKey) ?
                 Component.translatable(tooltipKey) : null;
 
         Font font = Minecraft.getInstance().font;

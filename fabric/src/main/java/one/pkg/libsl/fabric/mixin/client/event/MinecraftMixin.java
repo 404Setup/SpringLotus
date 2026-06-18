@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
-    @Inject(method = "destroy", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;close()V"
+    @Inject(method = "close", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;shutdownRenderer()V"
             , shift = At.Shift.AFTER))
     public void onClientStopped(CallbackInfo ci) {
         ClientLifecycleEvents.CLIENT_STOPPED.invoker().onClientStopped((Minecraft) ((Object) this));

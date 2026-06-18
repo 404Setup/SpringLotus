@@ -15,11 +15,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.PointedDripstoneBlock;
+import net.minecraft.world.level.block.SpeleothemBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DripstoneThickness;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.SpeleothemThickness;
 import net.minecraft.world.level.material.Fluids;
 import one.pkg.libsl.api.event.block.BlockSpreadEvent;
 import org.spongepowered.asm.mixin.Final;
@@ -28,33 +28,24 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(PointedDripstoneBlock.class)
-public class PointedDripstoneBlockMixin {
-    @Shadow
-    @Final
+@Mixin(SpeleothemBlock.class)
+public class SpeleothemBlockMixin {
+    @Shadow @Final
     public static EnumProperty<Direction> TIP_DIRECTION;
-
-    @Shadow
-    @Final
-    public static EnumProperty<DripstoneThickness> THICKNESS;
-
-    @Shadow
-    @Final
+    @Shadow @Final
+    public static EnumProperty<SpeleothemThickness> THICKNESS;
+    @Shadow @Final
     public static BooleanProperty WATERLOGGED;
 
     @Redirect(
             method = "grow",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/block/PointedDripstoneBlock;createDripstone(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/block/state/properties/DripstoneThickness;)V"
+                    target = "Lnet/minecraft/world/level/block/SpeleothemBlock;createSpeleothem(Lnet/minecraft/world/level/LevelAccessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/core/Direction;Lnet/minecraft/world/level/block/state/properties/SpeleothemThickness;)V"
             )
     )
-    private static void springLotus$grow(
-            LevelAccessor level,
-            BlockPos pos,
-            Direction direction,
-            DripstoneThickness thickness,
-            @Local(argsOnly = true) BlockPos growFromPos
+    private static void springLotus$grow(SpeleothemBlock instance, LevelAccessor level, BlockPos pos,
+            Direction direction, SpeleothemThickness thickness, @Local(argsOnly = true) BlockPos growFromPos
     ) {
         BlockState state = Blocks.POINTED_DRIPSTONE.
                 defaultBlockState().setValue(TIP_DIRECTION, direction)

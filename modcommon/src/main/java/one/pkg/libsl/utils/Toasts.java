@@ -74,7 +74,7 @@ public final class Toasts {
      */
     private static void sendToast(Component title, Component description, SystemToast.SystemToastId id) {
         Minecraft.getInstance().execute(() -> {
-            ToastManager manager = Minecraft.getInstance().getToastManager();
+            ToastManager manager = Minecraft.getInstance().gui.toastManager();
             manager.addToast(multiline(title, description, id));
         });
     }
