@@ -8,11 +8,12 @@
  * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package one.pkg.libsl.neoforge.mixin.event.block.fireBreak;
+package one.pkg.libsl.mixin.event.entity;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import one.pkg.libsl.api.event.block.BlockBreakEvents;
 import org.spongepowered.asm.mixin.Final;
@@ -20,23 +21,22 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(MultiPlayerGameMode.class)
-public class MultiPlayerGameModeMixin {
+@Mixin(EnderMan.EndermanTakeBlockGoal.class)
+public class EnderManTakeBlockGoalMixin {
     @Shadow
     @Final
-    private Minecraft minecraft;
+    private EnderMan enderman;
 
     @Inject(
-            method = "destroyBlock",
-            at = @At("HEAD"),
+            method = "tick",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z", shift = At.Shift.BEFORE),
             cancellable = true
     )
-    private void springlotus$destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        BlockState state = minecraft.level.getBlockState(pos);
-        if (!BlockBreakEvents.PLAYER_BREAK.invoker().onPlayerBreak(minecraft.player, minecraft.level, pos, state)) {
-            cir.setReturnValue(false);
+    private void springlotus$redirectTick(CallbackInfo ci, @Local Level level, @Local BlockPos pos, @Local BlockState blockState) {
+        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(this.enderman, level, pos, blockState.getFluidState().createLegacyBlock())) {
+            ci.cancel();
         }
     }
 }

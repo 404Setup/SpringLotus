@@ -41,17 +41,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
 public class ServerLoginPacketListenerImplMixin {
-    @Final @Shadow
+    @Final
+    @Shadow
     private static Logger LOGGER;
-    @Final @Shadow
+    @Final
+    @Shadow
     private static AtomicInteger UNIQUE_THREAD_ID;
-    @Final @Shadow
+    @Final
+    @Shadow
     private Connection connection;
-    @Final @Shadow
+    @Final
+    @Shadow
     private MinecraftServer server;
     @Shadow
     private String requestedUsername;
-    @Shadow @Final
+    @Shadow
+    @Final
     private ServerActivityMonitor serverActivityMonitor;
 
     @Shadow

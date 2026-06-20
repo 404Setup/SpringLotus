@@ -17,7 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.world.level.block.state.BlockState;
-import one.pkg.libsl.api.event.block.BlockBreakEvent;
+import one.pkg.libsl.api.event.block.BlockBreakEvents;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -49,7 +49,7 @@ public class ServerPlayerGameModeMixin {
             CallbackInfoReturnable<Boolean> cir,
             @Local(name = "state") BlockState state
     ) {
-        if (!BlockBreakEvent.EVENT.invoker().onBlockBreak(player, level, pos, state)) {
+        if (!BlockBreakEvents.PLAYER_BREAK.invoker().onPlayerBreak(player, level, pos, state)) {
             player.connection.send(new ClientboundBlockUpdatePacket(pos, state));
             cir.setReturnValue(false);
         }

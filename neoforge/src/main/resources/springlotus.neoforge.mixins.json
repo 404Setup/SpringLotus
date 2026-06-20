@@ -6,7 +6,10 @@
   "client": [
     "event.block.fireBreak.MultiPlayerGameModeMixin"
   ],
-  "mixins": ["event.ItemStackMixin", "event.LivingEntityMixin", "event.block.fireBreak.ServerPlayerGameModeMixin"],
+  "mixins": [
+    "event.ItemStackMixin", "event.LivingEntityMixin", "event.block.fireBreak.ServerPlayerGameModeMixin",
+    "event.entity.boss.WitherBossMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

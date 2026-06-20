@@ -71,7 +71,10 @@ break the block.
 
 ### Block
 
-- BlockBreakEvent — Triggered after a block is broken by a player. Can be cancelled by returning a boolean value.
+- BlockBreakEvent.PLAYER_BREAK — Triggered after a block is broken by a player. Can be cancelled by returning a boolean
+  value.
+- BlockBreakEvent.ENTITY_UPDATE - Triggered when an entity updates or breaks a block. Can be cancelled by returning a
+  boolean value.
 - BlockExplosionEvent — Triggered when an explosion event occurs. The passed-in list can be modified to determine
   whether the blocks in the list should be destroyed.
 - BlockPlaceEvent — Triggered when a block is placed by an entity. Can be cancelled by returning a boolean value.

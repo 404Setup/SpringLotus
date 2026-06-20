@@ -7,7 +7,22 @@
   "client": [
   ],
   "mixins": [
-    "access.ConnectionAccess", "access.MinecraftServerAccess", "access.ServerboundMovePlayerPacketAccess", "api.MinecraftServerMixin", "as.BlockEntityMixin", "as.ChunkMapMixin", "as.EntityMixin", "as.LevelMixin", "command.CommandsMixin", "event.AbstractContainerMenuMixin", "event.EntityTypeMixin", "event.ItemStackMixin", "event.LivingEntityMixin", "event.PlayerChunkSenderMixin", "event.ServerExplosionMixin", "event.ServerGamePacketListenerImplMixin", "event.ServerLoginPacketListenerImplMixin", "event.ServerPlayerMixin", "event.block.spread.BambooSaplingBlockMixin", "event.block.spread.BambooStalkBlockMixin", "event.block.spread.BuddingAmethystBlockMixin", "event.block.spread.ChorusFlowerBlockMixin", "event.block.spread.FireBlockMixin", "event.block.spread.GrowingPlantHeadBlockMixin", "event.block.spread.MushroomBlockMixin", "event.block.spread.RootedDirtBlockMixin", "event.block.spread.SculkBlockMixin", "event.block.spread.SculkVeinBlockMixin", "event.block.spread.SpeleothemBlockMixin", "event.block.spread.SpreadingSnowyBlockMixin", "event.block.spread.VineBlockMixin"
+    "access.ConnectionAccess", "access.MinecraftServerAccess", "access.ServerboundMovePlayerPacketAccess",
+    "api.MinecraftServerMixin", "as.BlockEntityMixin", "as.ChunkMapMixin", "as.EntityMixin", "as.LevelMixin",
+    "command.CommandsMixin", "event.AbstractContainerMenuMixin", "event.EntityTypeMixin", "event.ItemStackMixin",
+    "event.LivingEntityMixin", "event.PlayerChunkSenderMixin", "event.ServerExplosionMixin",
+    "event.ServerGamePacketListenerImplMixin", "event.ServerLoginPacketListenerImplMixin", "event.ServerPlayerMixin",
+    "event.ai.behavior.HarvestFarmlandMixin", "event.ai.behavior.TryLaySpawnOnFluidNearLandMixin",
+    "event.block.CropBlockMixin", "event.block.PowderSnowBlockMixin", "event.block.spread.BambooSaplingBlockMixin",
+    "event.block.spread.BambooStalkBlockMixin", "event.block.spread.BuddingAmethystBlockMixin",
+    "event.block.spread.ChorusFlowerBlockMixin", "event.block.spread.FireBlockMixin",
+    "event.block.spread.GrowingPlantHeadBlockMixin", "event.block.spread.MushroomBlockMixin",
+    "event.block.spread.RootedDirtBlockMixin", "event.block.spread.SculkBlockMixin",
+    "event.block.spread.SculkVeinBlockMixin", "event.block.spread.SpeleothemBlockMixin",
+    "event.block.spread.SpreadingSnowyBlockMixin", "event.block.spread.VineBlockMixin",
+    "event.effect.WeavingMobEffectMixin", "event.entity.CopperGolemMixin", "event.entity.EnderManLeaveBlockGoalMixin",
+    "event.entity.EnderManTakeBlockGoalMixin", "event.entity.item.FallingBlockEntityMixin",
+    "event.goal.EatBlockGoalMixin"
   ],
   "injectors": {
     "defaultRequire": 1

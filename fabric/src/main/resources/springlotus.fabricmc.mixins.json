@@ -11,7 +11,8 @@
   ],
   "mixins": [
     "event.DedicatedServerMixin",
-    "event.ItemStackMixin"
+    "event.ItemStackMixin",
+    "event.entity.boss.WitherBossMixin"
   ],
   "injectors": {
     "defaultRequire": 1

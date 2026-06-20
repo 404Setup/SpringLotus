@@ -113,7 +113,7 @@ public interface ServerLivingEntityEvents {
      */
     Event<PreSpawn> PRE_SPAWN = Event.create(PreSpawn.class, callbacks ->
             (entity, level, spawnPos, spawnReason) -> {
-                for (PreSpawn callback: callbacks) {
+                for (PreSpawn callback : callbacks) {
                     if (!callback.onPreSpawn(entity, level, spawnPos, spawnReason)) {
                         return false;
                     }

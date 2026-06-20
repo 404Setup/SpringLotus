@@ -8,35 +8,33 @@
  * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package one.pkg.libsl.neoforge.mixin.event.block.fireBreak;
+package one.pkg.libsl.mixin.event.block;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.PowderSnowBlock;
 import one.pkg.libsl.api.event.block.BlockBreakEvents;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(MultiPlayerGameMode.class)
-public class MultiPlayerGameModeMixin {
-    @Shadow
-    @Final
-    private Minecraft minecraft;
-
+@Mixin(PowderSnowBlock.class)
+public class PowderSnowBlockMixin {
     @Inject(
-            method = "destroyBlock",
-            at = @At("HEAD"),
+            method = "lambda$entityInside$0",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/level/Level;destroyBlock(Lnet/minecraft/core/BlockPos;Z)Z",
+                    shift = At.Shift.BEFORE
+            ),
             cancellable = true
     )
-    private void springlotus$destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        BlockState state = minecraft.level.getBlockState(pos);
-        if (!BlockBreakEvents.PLAYER_BREAK.invoker().onPlayerBreak(minecraft.player, minecraft.level, pos, state)) {
-            cir.setReturnValue(false);
+    private static void springlotus$invokeDestroyBlock(Level level, BlockPos position, Entity e, CallbackInfo ci) {
+        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(e, level, position, Blocks.AIR.defaultBlockState()))  {
+            ci.cancel();
         }
     }
 }

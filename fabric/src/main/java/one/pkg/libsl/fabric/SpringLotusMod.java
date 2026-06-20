@@ -28,7 +28,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import one.pkg.libsl.Static;
-import one.pkg.libsl.api.event.block.BlockBreakEvent;
+import one.pkg.libsl.api.event.block.BlockBreakEvents;
 import one.pkg.libsl.api.event.block.BlockPlaceEvent;
 import one.pkg.libsl.api.event.client.command.ClientCommandRegistrationEvent;
 import one.pkg.libsl.api.event.command.CommandRegistrationEvent;
@@ -82,7 +82,7 @@ public class SpringLotusMod implements ModInitializer {
         );
         PlayerBlockBreakEvents.BEFORE.register(
                 (level, player, pos, state, _) ->
-                        BlockBreakEvent.EVENT.invoker().onBlockBreak(player, level, pos, state)
+                        BlockBreakEvents.PLAYER_BREAK.invoker().onPlayerBreak(player, level, pos, state)
         );
 
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
