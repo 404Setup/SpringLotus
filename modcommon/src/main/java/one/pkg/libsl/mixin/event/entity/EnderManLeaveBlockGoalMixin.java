@@ -34,10 +34,10 @@ public abstract class EnderManLeaveBlockGoalMixin {
             method = "tick",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/monster/EnderMan$EndermanLeaveBlockGoal;canPlaceBlock(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;)Z")
     )
-    private boolean springlotus$redirectTick(EnderMan.EndermanLeaveBlockGoal instance, Level level, BlockPos pos,
-                                             BlockState carried, BlockState targetState, BlockState belowState,
-                                             BlockPos below) {
-        if (!canPlaceBlock(level, pos, carried,targetState, belowState, below)) return false;
-        return BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(this.enderman, level, pos, carried);
+    private boolean springlotus$redirectTick(EnderMan.EndermanLeaveBlockGoal instance, Level level, BlockPos destinationPos,
+                                             BlockState carriedState, BlockState destinationState, BlockState belowDestinationState,
+                                             BlockPos belowDestinationPos) {
+        if (!canPlaceBlock(level, destinationPos, carriedState, destinationState, belowDestinationState, belowDestinationPos)) return false;
+        return BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(this.enderman, level, destinationPos, carriedState);
     }
 }

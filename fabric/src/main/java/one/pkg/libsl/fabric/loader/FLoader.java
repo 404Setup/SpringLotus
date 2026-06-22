@@ -31,8 +31,8 @@ import java.util.Optional;
 
 public class FLoader extends one.pkg.libsl.api.loader.CLoader implements ILoader {
     private final Logger logger = LoggerFactory.getLogger(FLoader.class);
-    private final INet networking = new FNet();
-    private final CLoader clientLoader = isClient() ? new FCLoader(this) : null;
+    //private final INet networking = new FNet();
+    //private final CLoader clientLoader = isClient() ? new FCLoader(this) : null;
     private MinecraftServer server;
 
     /**
@@ -64,10 +64,11 @@ public class FLoader extends one.pkg.libsl.api.loader.CLoader implements ILoader
         return server;
     }
 
+    /*
     @Override
     public CLoader client() {
         return clientLoader;
-    }
+    }*/
 
     @Override
     public boolean isClient() {
@@ -88,10 +89,10 @@ public class FLoader extends one.pkg.libsl.api.loader.CLoader implements ILoader
         return null;
     }
 
-    @Override
+    /*@Override
     public @NotNull INet net() {
         return networking;
-    }
+    }*/
 
     @Override
     public @NotNull ClassLoader getClassLoader() {

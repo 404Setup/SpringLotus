@@ -10,12 +10,9 @@
 
 package one.pkg.libsl.mixin.as;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.RelativeMovement;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityAccess;
@@ -25,8 +22,6 @@ import one.pkg.libsl.api.Vec3d;
 import one.pkg.libsl.api.instance.AsEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-
-import java.util.Set;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements AsEntity,
@@ -47,7 +42,7 @@ public abstract class EntityMixin implements AsEntity,
     private Level level;
 
     @Shadow
-    public abstract void load(CompoundTag input);
+    public abstract void load(CompoundTag compound);
 
 
     @Shadow

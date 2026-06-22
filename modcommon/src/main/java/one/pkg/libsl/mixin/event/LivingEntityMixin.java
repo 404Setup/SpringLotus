@@ -23,7 +23,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
-    @Inject(
+    // TODO
+    /*@Inject(
             method = "drop",
             at = @At(
                     value = "INVOKE",
@@ -37,5 +38,5 @@ public class LivingEntityMixin {
         if ((entity instanceof ServerPlayer player) &&
                 !ServerPlayerEvents.DROP_ITEM.invoker().onDropItem(player, itemStack))
             cir.cancel();
-    }
+    }*/
 }

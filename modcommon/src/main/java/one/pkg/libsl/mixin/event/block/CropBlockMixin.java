@@ -34,7 +34,7 @@ public abstract class CropBlockMixin extends BushBlock implements BonemealableBl
             method = "entityInside",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;destroyBlock(Lnet/minecraft/core/BlockPos;ZLnet/minecraft/world/entity/Entity;)Z",
+                    target = "Lnet/minecraft/world/level/Level;destroyBlock(Lnet/minecraft/core/BlockPos;ZLnet/minecraft/world/entity/Entity;)Z",
                     shift = At.Shift.BEFORE
             ),
             cancellable = true

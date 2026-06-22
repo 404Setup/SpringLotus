@@ -44,13 +44,13 @@ public abstract class EatBlockGoalMixin extends Goal {
             ),
             cancellable = true
     )
-    private void springlotus$tickInvokeDestroyBlock(CallbackInfo ci, @Local BlockPos pos) {
+    private void springlotus$tickInvokeDestroyBlock(CallbackInfo ci, @Local BlockPos blockpos) {
         if (BlockBreakEvents.ENTITY_UPDATE.canSkip()) return;
 
         // TODO: Needs improvement
-        BlockState state = this.level.getBlockState(pos);
+        BlockState state = this.level.getBlockState(blockpos);
 
-        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(this.mob, this.level, pos, state)) {
+        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(this.mob, this.level, blockpos, state)) {
             ci.cancel();
             this.mob.ate();
         }
@@ -65,13 +65,13 @@ public abstract class EatBlockGoalMixin extends Goal {
             ),
             cancellable = true
     )
-    private void springlotus$invokeLevelEvent(CallbackInfo ci, @Local(name = "below") BlockPos below) {
+    private void springlotus$invokeLevelEvent(CallbackInfo ci, @Local(name = "blockpos1") BlockPos blockpos1) {
         if (BlockBreakEvents.ENTITY_UPDATE.canSkip()) return;
 
         // TODO: Needs improvement
-        BlockState state = this.level.getBlockState(below);
+        BlockState state = this.level.getBlockState(blockpos1);
 
-        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(this.mob, this.level, below, state)) {
+        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(this.mob, this.level, blockpos1, state)) {
             ci.cancel();
             this.mob.ate();
         }

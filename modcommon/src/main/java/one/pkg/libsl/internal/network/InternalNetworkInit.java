@@ -11,10 +11,6 @@
 package one.pkg.libsl.internal.network;
 
 import one.pkg.libsl.api.loader.JavaLoader;
-import one.pkg.libsl.api.network.INet;
-import one.pkg.libsl.api.network.NetSrc;
-import one.pkg.libsl.payloads.DialogPayload;
-import one.pkg.libsl.payloads.DialogsPayload;
 
 /**
  * Internal class for initializing networking.
@@ -27,9 +23,7 @@ public class InternalNetworkInit {
      * Initializes the networking.
      */
     public static void init() {
-        INet netImpl = JavaLoader.INSTANCE.net();
-
-
+        //INet netImpl = JavaLoader.INSTANCE.net();
 
         if (JavaLoader.INSTANCE.isClient()) ClientInit.init();
     }
@@ -45,7 +39,7 @@ public class InternalNetworkInit {
          * Initializes client-side networking handlers.
          */
         public static void init() {
-            INet netImpl = JavaLoader.INSTANCE.net();
+            /*INet netImpl = JavaLoader.INSTANCE.net();
 
             netImpl.optional().clientHandler(DialogPayload.TYPE,
                     (ctx, payload) -> () ->
@@ -54,7 +48,7 @@ public class InternalNetworkInit {
             netImpl.optional().clientHandler(DialogsPayload.TYPE,
                     (ctx, payload) -> () ->
                             DialogsPayload.ClientHandle.handle((DialogsPayload) payload)
-            );
+            );*/
         }
     }
 }

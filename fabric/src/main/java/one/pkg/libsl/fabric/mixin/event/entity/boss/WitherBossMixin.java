@@ -13,7 +13,12 @@ package one.pkg.libsl.fabric.mixin.event.entity.boss;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PowerableMob;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.RangedAttackMob;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import one.pkg.libsl.api.event.block.BlockBreakEvents;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +27,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(WitherBoss.class)
-public class WitherBossMixin {
+public abstract class WitherBossMixin extends Monster implements PowerableMob, RangedAttackMob {
+    protected WitherBossMixin(EntityType<? extends Monster> entityType, Level level) {
+        super(entityType, level);
+    }
+
     @Shadow
     @Deprecated
     public static boolean canDestroy(BlockState state) {
@@ -33,10 +42,9 @@ public class WitherBossMixin {
             method = "customServerAiStep",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/wither/WitherBoss;canDestroy(Lnet/minecraft/world/level/block/state/BlockState;)Z")
     )
-    private boolean springlotus$redirectCanDestroy(BlockState state, @Local(argsOnly = true) ServerLevel level,
-                                                   @Local BlockPos blockPos) {
+    private boolean springlotus$redirectCanDestroy(BlockState state, @Local BlockPos blockPos) {
         if (canDestroy(state))
-            return BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate((WitherBoss) (Object) this, level, blockPos, state);
+            return BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate((WitherBoss) (Object) this, this.level(), blockPos, state);
         return false;
     }
 }

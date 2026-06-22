@@ -21,8 +21,8 @@ public class NFCLoader implements CLoader {
         this.loader = loader;
     }
 
-    @Override
+    /*@Override
     public ICNet net() {
         return loader.net().client();
-    }
+    }*/
 }

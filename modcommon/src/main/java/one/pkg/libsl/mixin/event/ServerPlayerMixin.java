@@ -10,37 +10,16 @@
 
 package one.pkg.libsl.mixin.event;
 
-import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import one.pkg.libsl.api.Vec3d;
-import one.pkg.libsl.api.event.entity.ServerPlayerEvents;
-import one.pkg.libsl.api.instance.AsEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.w3c.dom.Entity;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerMixin implements Entity {
-    @Shadow
-    private String language;
+public abstract class ServerPlayerMixin extends Entity {
 
-
-
-    @Inject(method = "updateOptions", at = @At("HEAD"))
-    private void libsl$updateOptions(net.minecraft.network.protocol.game.ServerboundClientInformationPacket packet, CallbackInfo ci) {
-        ServerPlayerEvents.CLIENT_OPTIONS_CHANGED.invoker().onClientOptionsChanged(
-                (ServerPlayer) (Object) this,
-                packet
-        );
-        if ((this.language == null || !this.language.equals(packet.language())))
-            ServerPlayerEvents.LANG_CHANGED.invoker().onLangChanged((ServerPlayer) (Object) this,
-                    packet.language());
+    public ServerPlayerMixin(EntityType<?> entityType, Level level) {
+        super(entityType, level);
     }
-
-
 }

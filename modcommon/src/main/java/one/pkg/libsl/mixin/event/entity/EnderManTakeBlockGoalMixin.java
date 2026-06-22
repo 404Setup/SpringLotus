@@ -34,8 +34,8 @@ public class EnderManTakeBlockGoalMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z", shift = At.Shift.BEFORE),
             cancellable = true
     )
-    private void springlotus$redirectTick(CallbackInfo ci, @Local Level level, @Local BlockPos pos, @Local BlockState blockState) {
-        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(this.enderman, level, pos, blockState.getFluidState().createLegacyBlock())) {
+    private void springlotus$redirectTick(CallbackInfo ci, @Local Level level, @Local BlockPos blockpos, @Local BlockState blockstate) {
+        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(this.enderman, level, blockpos, blockstate.getFluidState().createLegacyBlock())) {
             ci.cancel();
         }
     }

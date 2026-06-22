@@ -14,22 +14,19 @@ import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import one.pkg.libsl.api.loader.JavaLoader;
 import one.pkg.libsl.api.ui.oreui.OreUIDialog;
-import one.pkg.libsl.internal.InternalShared;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class DialogsPayload  {
+public class DialogsPayload {
     /**
      * The type of the dialogs payload.
      */
-    public static final net.minecraft.resources.ResourceLocation TYPE = new net.minecraft.resources.ResourceLocation("springlotus", "dialogs");
+    public static final ResourceLocation TYPE = new ResourceLocation("springlotus", "dialogs");
 
 
     private static final Gson GSON = new Gson();
@@ -53,9 +50,9 @@ public class DialogsPayload  {
     }
 
     public void send(ServerPlayer player) {
-        if (JavaLoader.INSTANCE.net().canSend(player, this.type())) {
+        /*if (JavaLoader.INSTANCE.net().canSend(player, this.type())) {
             JavaLoader.INSTANCE.net().send(player, this);
-        }
+        }*/
     }
 
     public String dialogs() {
@@ -66,7 +63,7 @@ public class DialogsPayload  {
         return dialogPayloads;
     }
 
-    public net.minecraft.resources.ResourceLocation type() {
+    public ResourceLocation type() {
         return TYPE;
     }
 
@@ -75,7 +72,7 @@ public class DialogsPayload  {
         }
 
         public static void send(LocalPlayer player, DialogPayload payload) {
-            JavaLoader.INSTANCE.net().client().send(player, payload);
+            //JavaLoader.INSTANCE.net().client().send(player, payload);
         }
 
         /**
@@ -90,27 +87,28 @@ public class DialogsPayload  {
         }
 
         private static void showDialog(DialogsPayload payload, int index, Screen cachedScreen) {
-            JavaLoader.INSTANCE.client()
-                    .setScreen((currentScreen) -> {
-                        Screen actualLastScreen = cachedScreen != null ? cachedScreen : currentScreen;
-                        return new OreUIDialog(Component.literal(payload.dialogPayloads[index].title()), actualLastScreen)
-                                .content(Component.literal(payload.dialogPayloads[index].desc()))
-                                .confirmText(Component.literal(index == payload.dialogPayloads.length - 1 ?
-                                        "Close" : "Next"))
-                                .cancelText(Component.literal(index == 0 ? "Close" : "Previous"))
-                                .onConfirm(() -> {
-                                    if (index < payload.dialogPayloads.length - 1) {
-                                        Minecraft.getInstance().setScreen(actualLastScreen);
-                                        showDialog(payload, index + 1, actualLastScreen);
-                                    }
-                                })
-                                .onCancel(() -> {
-                                    if (index > 0) {
-                                        Minecraft.getInstance().setScreen(actualLastScreen);
-                                        showDialog(payload, index - 1, actualLastScreen);
-                                    }
-                                });
-                    });
+            Minecraft.getInstance().execute(() -> {
+                Screen currentScreen = Minecraft.getInstance().screen;
+                Screen actualLastScreen = cachedScreen != null ? cachedScreen : currentScreen;
+                OreUIDialog dialog = new OreUIDialog(Component.literal(payload.dialogPayloads[index].title()), actualLastScreen)
+                        .content(Component.literal(payload.dialogPayloads[index].desc()))
+                        .confirmText(Component.literal(index == payload.dialogPayloads.length - 1 ?
+                                "Close" : "Next"))
+                        .cancelText(Component.literal(index == 0 ? "Close" : "Previous"))
+                        .onConfirm(() -> {
+                            if (index < payload.dialogPayloads.length - 1) {
+                                Minecraft.getInstance().setScreen(actualLastScreen);
+                                showDialog(payload, index + 1, actualLastScreen);
+                            }
+                        })
+                        .onCancel(() -> {
+                            if (index > 0) {
+                                Minecraft.getInstance().setScreen(actualLastScreen);
+                                showDialog(payload, index - 1, actualLastScreen);
+                            }
+                        });
+                Minecraft.getInstance().setScreen(dialog);
+            });
         }
     }
 }

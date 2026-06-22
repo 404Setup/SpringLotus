@@ -192,23 +192,6 @@ public interface ServerPlayerEvents {
             });
 
     /**
-     * An event that triggers when a player's language setting changes.
-     * <p>
-     * This event is used to notify registered listeners when a player updates their preferred language,
-     * typically through client options. Each registered listener will be invoked with the player instance
-     * and the new language code chosen by the player.
-     * <p>
-     * The event listener must implement the {@link LangChanged} functional interface, which provides
-     * a single method, {@code onLangChanged}, to handle the language change logic.
-     */
-    Event<LangChanged> LANG_CHANGED = Event.create(LangChanged.class, callbacks ->
-            (player, lang) -> {
-                for (LangChanged callback : callbacks) {
-                    callback.onLangChanged(player, lang);
-                }
-            });
-
-    /**
      * An event triggered whenever a server-side player's client updates its configuration or settings.
      * This includes changes such as control preferences, graphical settings, language, or other client-side
      * options that the server needs to be aware of.
@@ -355,22 +338,6 @@ public interface ServerPlayerEvents {
          * @param packet the updated client packet containing the new settings or options
          */
         void onClientOptionsChanged(ServerPlayer player, net.minecraft.network.protocol.game.ServerboundClientInformationPacket packet);
-    }
-
-    /**
-     * Defines a functional interface for handling events related to changes in a player's language setting.
-     * <p>
-     * This event is triggered whenever a player updates their preferred language, often through the client settings.
-     */
-    @FunctionalInterface
-    interface LangChanged {
-        /**
-         * Called when a player's language setting changes.
-         *
-         * @param player the player whose language has changed
-         * @param lang   the new language code the player has selected
-         */
-        void onLangChanged(ServerPlayer player, String lang);
     }
 
     /**

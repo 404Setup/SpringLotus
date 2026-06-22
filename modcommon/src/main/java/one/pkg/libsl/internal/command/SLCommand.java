@@ -15,6 +15,8 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -76,6 +78,7 @@ public class SLCommand {
     }
 
     private static int sendDialog(CommandContext<CommandSourceStack> context) {
+        if (true) return 0;
         if (dialogs.isEmpty()) {
             context.getSource().sendFailure(Component.literal("[SpringLotus] No dialogs to send")
                     .withStyle(ChatFormatting.RED));
@@ -84,11 +87,11 @@ public class SLCommand {
         EntitySelector selector = context.getArgument("player", EntitySelector.class);
         try {
             for (var player : selector.findPlayers(context.getSource())) {
-                if (JavaLoader.INSTANCE.net().canSend(player, dialogs.get(0).type())) {
+                /*if (JavaLoader.INSTANCE.net().canSend(player, dialogs.get(0).type())) {
                     new DialogsPayload(dialogs).send(player);
                 } else {
                     logger.warn("Player {} cannot receive dialog", player.getDisplayName().getString());
-                }
+                }*/
             }
             dialogs.clear();
             context.getSource().sendSuccess(() ->
@@ -117,7 +120,9 @@ public class SLCommand {
                 Component.literal("[SpringLotus] ").withStyle(ChatFormatting.AQUA).append(
                         Component.literal("OreUI test command executed").withStyle(ChatFormatting.GREEN)
                 ), false);
-        JavaLoader.INSTANCE.client().setScreen(OreUIExampleScreen::new);
+        Screen screen = Minecraft.getInstance().screen;
+        Minecraft.getInstance().setScreen(new OreUIExampleScreen(screen));
+        //JavaLoader.INSTANCE.client().setScreen(OreUIExampleScreen::new);
         return 1;
     }
 }

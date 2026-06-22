@@ -86,7 +86,7 @@ public interface ILoader {
      *
      * @return the client loader instance
      */
-    CLoader client();
+    //CLoader client();
 
     /**
      * Checks if the current environment is a client.
@@ -112,13 +112,8 @@ public interface ILoader {
     @Nullable
     Mod mod(@NotNull String modid);
 
-    /**
-     * Gets the networking implementation.
-     *
-     * @return the networking implementation
-     */
-    @NotNull
-    INet net();
+    /*@NotNull
+    INet net();*/
 
     /**
      * Gets the class loader used by the loader.

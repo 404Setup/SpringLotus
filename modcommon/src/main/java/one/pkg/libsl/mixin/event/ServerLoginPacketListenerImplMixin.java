@@ -36,11 +36,12 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Mixin(ServerLoginPacketListenerImpl.class)
 public class ServerLoginPacketListenerImplMixin {
-    @Final
+    /*@Final
     @Shadow
     private static Logger LOGGER;
     @Final
@@ -51,13 +52,8 @@ public class ServerLoginPacketListenerImplMixin {
     private Connection connection;
     @Final
     @Shadow
-    private MinecraftServer server;
-    @Shadow
-    private String requestedUsername;
+    MinecraftServer server;
 
-    @Shadow
-    private void startClientVerification(GameProfile profile) {
-    }
 
     @Inject(
             method = "handleHello",
@@ -85,35 +81,32 @@ public class ServerLoginPacketListenerImplMixin {
             cancellable = true
     )
     private void springLotus$handleKey(ServerboundKeyPacket packet,
-                                       CallbackInfo ci, @Local(name = "digest") String digest) {
+                                       CallbackInfo ci, @Local(name = "s") String s) {
         Runnable runnable = () -> {
-            String name = Objects.requireNonNull(requestedUsername, "Player name not initialized");
+            GameProfile gameprofile = this.gameProfile;
 
             try {
-                GameProfile profile = server.getSessionService().hasJoinedServer(
-                        new GameProfile(null, name), digest, springLotus$getAddress());
-                if (profile != null) {
-                    if (!connection.isConnected()) {
-                        return;
-                    }
-                    springLotus$runEvent(profile);
+                this.gameProfile = this.server.getSessionService().hasJoinedServer(new GameProfile((UUID)null, gameprofile.getName()), s, this.getAddress());
+                if (this.gameProfile != null) {
+                    LOGGER.info("UUID of player {} is {}", this.gameProfile.getName(), this.gameProfile.getId());
+                    this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
 
-                    LOGGER.info("UUID of player {} is {}", profile.getName(), profile.getId());
-
-                    startClientVerification(profile);
-                } else if (server.isSingleplayer()) {
+                    springLotus$runEvent(gameprofile);
+                } else if (this.server.isSingleplayer()) {
                     LOGGER.warn("Failed to verify username but will let them in anyway!");
-                    startClientVerification(new GameProfile(UUIDUtil.createOfflinePlayerUUID(name), name));
+                    this.gameProfile = gameprofile;
+                    this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
                 } else {
-                    disconnect(Component.translatable("multiplayer.disconnect.unverified_username"));
-                    LOGGER.error("Username '{}' tried to join with an invalid session", name);
+                    this.disconnect(Component.translatable("multiplayer.disconnect.unverified_username"));
+                    LOGGER.error("Username '{}' tried to join with an invalid session", gameprofile.getName());
                 }
-            } catch (AuthenticationUnavailableException authenticationunavailableexception) {
-                if (server.isSingleplayer()) {
+            } catch (AuthenticationUnavailableException var3) {
+                if (this.server.isSingleplayer()) {
                     LOGGER.warn("Authentication servers are down but will let them in anyway!");
-                    startClientVerification(new GameProfile(UUIDUtil.createOfflinePlayerUUID(digest), digest));
+                    this.gameProfile = gameprofile;
+                    this.state = ServerLoginPacketListenerImpl.State.READY_TO_ACCEPT;
                 } else {
-                    disconnect(Component.translatable("multiplayer.disconnect.authservers_down"));
+                    this.disconnect(Component.translatable("multiplayer.disconnect.authservers_down"));
                     LOGGER.error("Couldn't verify username because servers are unavailable");
                 }
             }
@@ -137,6 +130,13 @@ public class ServerLoginPacketListenerImplMixin {
     public void disconnect(Component component) {
     }
 
+    @Shadow
+    @Nullable
+    private GameProfile gameProfile;
+
+    @Shadow
+    private ServerLoginPacketListenerImpl.State state;
+
     @Unique
     void springLotus$runEvent(GameProfile profile) {
         if (ServerPlayerEvents.PRE_JOIN.canSkip()) return;
@@ -154,5 +154,5 @@ public class ServerLoginPacketListenerImplMixin {
         if (result != null) {
             this.disconnect(result);
         }
-    }
+    }*/
 }

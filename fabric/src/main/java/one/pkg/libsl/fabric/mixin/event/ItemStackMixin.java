@@ -12,10 +12,10 @@ package one.pkg.libsl.fabric.mixin.event;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import one.pkg.libsl.api.event.item.ItemBrokeEvent;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,22 +30,17 @@ public class ItemStackMixin {
     private int count;
 
     @Inject(
-            method = "applyDamage",
+            method = "hurtAndBreak",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V",
+                    target = "Lnet/minecraft/world/entity/player/Player;awardStat(Lnet/minecraft/stats/Stat;)V",
                     shift = At.Shift.BEFORE
             )
     )
-    private void onItemBroke(
-            int newDamage,
-            @Nullable ServerPlayer player,
-            Consumer<Item> onBreak,
-            CallbackInfo ci,
-            @Local(name = "item") Item item
-    ) {
+    private <T extends LivingEntity> void onItemBroke(int i, T livingEntity, Consumer<T> consumer, CallbackInfo ci,
+                                                      @Local Item item) {
         if (this.count == 1 && !ItemBrokeEvent.EVENT.canSkip()) {
-            ItemBrokeEvent.EVENT.invoker().onItemBroken(player, item);
+            ItemBrokeEvent.EVENT.invoker().onItemBroken((ServerPlayer) livingEntity, item);
         }
     }
 }

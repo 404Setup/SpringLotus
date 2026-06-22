@@ -30,8 +30,8 @@ import java.nio.file.Path;
 
 public class NFLoader extends one.pkg.libsl.api.loader.CLoader implements ILoader {
     private final Logger logger = LoggerFactory.getLogger(NFLoader.class);
-    private final INet networking = new NFNet();
-    private final CLoader clientLoader = isClient() ? new NFCLoader(this) : null;
+    //private final INet networking = new NFNet();
+    //private final CLoader clientLoader = isClient() ? new NFCLoader(this) : null;
 
     @Override
     public Path getConfigPath() {
@@ -53,10 +53,10 @@ public class NFLoader extends one.pkg.libsl.api.loader.CLoader implements ILoade
         return ServerLifecycleHooks.getCurrentServer();
     }
 
-    @Override
+    /*@Override
     public CLoader client() {
         return clientLoader;
-    }
+    }*/
 
     @Override
     public boolean isClient() {
@@ -74,10 +74,10 @@ public class NFLoader extends one.pkg.libsl.api.loader.CLoader implements ILoade
         return m == null ? null : new NFMod(m.getModInfo());
     }
 
-    @Override
+    /*@Override
     public @NotNull INet net() {
         return networking;
-    }
+    }*/
 
     @Override
     public @NotNull ClassLoader getClassLoader() {

@@ -35,5 +35,5 @@ public interface CLoader {
      *
      * @return the client network implementation
      */
-    ICNet net();
+    //ICNet net();
 }

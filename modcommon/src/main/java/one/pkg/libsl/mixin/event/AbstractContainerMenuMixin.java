@@ -13,6 +13,7 @@ package one.pkg.libsl.mixin.event;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
+import net.minecraft.world.inventory.ClickType;
 import one.pkg.libsl.api.event.item.InventoryEvents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,13 +23,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AbstractContainerMenu.class)
 public class AbstractContainerMenuMixin {
     @Inject(method = "clicked", at = @At("HEAD"), cancellable = true)
-    private void onMenuClick(int slotIndex, int buttonNum, Object containerInput, Player player, CallbackInfo ci) {
+    private void onMenuClick(int slotId, int button, ClickType clickType, Player player, CallbackInfo ci) {
         if (player.level().isClientSide()) return;
 
         AbstractContainerMenu menu = (AbstractContainerMenu) (Object) this;
 
-        if (slotIndex < 0 || slotIndex >= menu.slots.size() || InventoryEvents.CLICKED.canSkip()) return;
-        if (!InventoryEvents.CLICKED.invoker().onClicked(menu, slotIndex, buttonNum, containerInput, player)) {
+        if (slotId < 0 || slotId >= menu.slots.size() || InventoryEvents.CLICKED.canSkip()) return;
+        if (!InventoryEvents.CLICKED.invoker().onClicked(menu, slotId, button, clickType, player)) {
             ci.cancel();
         }
     }

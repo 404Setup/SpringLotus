@@ -46,13 +46,5 @@ public class InternalShared {
      * @param player The player.
      */
     public static void sendDialog(ServerPlayer player) {
-        /*for (Map.Entry<ResourceLocation, ModConfig> entry : ConfigRegistry.getConfigEntries()) {
-            ResourceLocation location = entry.getKey();
-            ModConfig config = entry.getValue();
-
-            if (location.toString().contains("client")) continue;
-            ConfigConstants.LOG.info("Sending data for Config '{}'", location);
-            ConfigNetwork.INSTANCE.sendToClient(player, new ConfigSyncPayload(location.toString(), config.toJson().toString()));
-        }*/
     }
 }

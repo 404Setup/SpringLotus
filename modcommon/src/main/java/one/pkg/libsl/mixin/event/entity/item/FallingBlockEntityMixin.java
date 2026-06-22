@@ -35,18 +35,18 @@ public abstract class FallingBlockEntityMixin extends Entity {
     }
 
     @Inject(method = "fall", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z", shift = At.Shift.BEFORE), cancellable = true)
-    private static void springlotus$injectFallSetBlock(Level level, BlockPos pos, BlockState state,
+    private static void springlotus$injectFallSetBlock(Level level, BlockPos pos, BlockState blockState,
                                                        CallbackInfoReturnable<FallingBlockEntity> cir,
-                                                       @Local FallingBlockEntity entity) {
-        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(entity, level, pos, state.getFluidState().createLegacyBlock())) {
-            cir.setReturnValue(entity);
+                                                       @Local FallingBlockEntity fallingblockentity) {
+        if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(fallingblockentity, level, pos, blockState.getFluidState().createLegacyBlock())) {
+            cir.setReturnValue(fallingblockentity);
         }
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z", shift = At.Shift.BEFORE), cancellable = true)
-    private void springlotus$injectSetBlock(CallbackInfo ci, @Local BlockPos pos) {
+    private void springlotus$injectSetBlock(CallbackInfo ci, @Local BlockPos blockpos) {
         if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(
-                (FallingBlockEntity) (Object) this, this.level(), pos, this.blockState
+                (FallingBlockEntity) (Object) this, this.level(), blockpos, this.blockState
         )) {
             this.discard();
             ci.cancel();

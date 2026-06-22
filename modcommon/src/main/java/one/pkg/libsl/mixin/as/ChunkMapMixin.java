@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.Shadow;
 public class ChunkMapMixin implements AsChunkMap {
 
     @Shadow
-    protected ChunkHolder getVisibleChunkIfPresent(long key) {
+    protected ChunkHolder getVisibleChunkIfPresent(long chunkPos) {
         return null;
     }
 

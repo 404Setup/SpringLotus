@@ -10,12 +10,10 @@
 
 package one.pkg.libsl.payloads;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import one.pkg.libsl.api.loader.JavaLoader;
 import one.pkg.libsl.api.ui.oreui.OreUIDialog;
-import one.pkg.libsl.internal.InternalShared;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A packet payload for showing a dialog on the client.
@@ -28,12 +26,11 @@ public record DialogPayload(
         String title,
         String desc,
         boolean showCanceled
-)  {
+) {
     /**
      * The type of the dialog payload.
      */
     public static final net.minecraft.resources.ResourceLocation TYPE = new net.minecraft.resources.ResourceLocation("springlotus", "dialog");
-
 
 
     public net.minecraft.resources.ResourceLocation type() {
@@ -50,12 +47,12 @@ public record DialogPayload(
          * @param payload The dialog payload.
          */
         public static void handle(DialogPayload payload) {
-            JavaLoader.INSTANCE.client()
-                    .setScreen((lastScreen) ->
-                            new OreUIDialog(Component.literal(payload.title()), lastScreen)
-                                    .content(Component.literal(payload.desc()))
-                                    .showCancel(payload.showCanceled())
-                    );
+            Minecraft.getInstance().execute(() -> {
+                Screen lastScreen = Minecraft.getInstance().screen;
+                Minecraft.getInstance().setScreen(new OreUIDialog(Component.literal(payload.title()), lastScreen)
+                        .content(Component.literal(payload.desc()))
+                        .showCancel(payload.showCanceled()));
+            });
         }
     }
 }

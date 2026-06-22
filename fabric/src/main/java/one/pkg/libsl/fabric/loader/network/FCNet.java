@@ -23,7 +23,6 @@ public class FCNet implements ICNet {
 
     @Override
     public void send(@NotNull Object payload, Object... payloads) {
-        // Not fully supported in 1.20.1 backward compat stub
     }
 
     @SuppressWarnings("all")

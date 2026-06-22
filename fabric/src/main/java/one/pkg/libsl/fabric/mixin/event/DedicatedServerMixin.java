@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class DedicatedServerMixin {
     @Inject(
             method = "initServer",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/players/UserNameToIdResolver;resolveOfflineUsers(Z)V")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/DedicatedServer;setUsesAuthentication(Z)V")
     )
     private void springlotus$initServer(CallbackInfoReturnable<Boolean> cir) {
         ServerLifecycleEvents.ABOUT_STARTING.invoker().onServerAboutStarting((MinecraftServer) (Object) this);

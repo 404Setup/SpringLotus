@@ -60,7 +60,7 @@ public class ServerGamePacketListenerImplMixin implements AsServerGamePacketList
             method = "handleMovePlayer",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerPlayer;absSnapTo(DDDFF)V",
+                    target = "Lnet/minecraft/server/level/ServerPlayer;absMoveTo(DDDFF)V",
                     shift = At.Shift.BEFORE,
                     ordinal = 1
             ),
