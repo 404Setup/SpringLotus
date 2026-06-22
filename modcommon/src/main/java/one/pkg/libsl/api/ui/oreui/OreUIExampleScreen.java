@@ -10,6 +10,8 @@
 
 package one.pkg.libsl.api.ui.oreui;
 
+import net.minecraft.client.gui.GuiGraphics;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.screens.Screen;
@@ -145,11 +147,7 @@ public class OreUIExampleScreen extends Screen {
     public void extractRenderState(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
         extractor.fill(0, 0, this.width, this.height, 0xFF2A2B2D); // background
 
-        extractor.textRenderer().accept(
-                TextAlignment.CENTER,
-                this.width / 2, 20,
-                this.cachedTitle
-        );
+        one.pkg.libsl.api.ui.oreui.OreUIRenderUtils.drawText(extractor, one.pkg.libsl.api.ui.oreui.TextAlignment.CENTER, this.width / 2, 20, this.cachedTitle);
 
         super.extractRenderState(extractor, mouseX, mouseY, partialTick);
     }

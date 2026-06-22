@@ -25,7 +25,7 @@ tasks {
     withType<Javadoc> {
         val o = options as StandardJavadocDocletOptions
         o.encoding = "UTF-8"
-        o.source = "25"
+        o.source = "17"
 
         o.use()
     }
@@ -34,8 +34,8 @@ tasks {
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
+    mappings(loom.officialMojangMappings())
 
-    compileOnly(libs.adventure.mod)
     implementation("net.fabricmc:fabric-loader:${rootProject.property("fabric_loader_version")!!}")
     implementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion+$minecraftVersion")
 

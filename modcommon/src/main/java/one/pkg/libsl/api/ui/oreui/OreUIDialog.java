@@ -10,6 +10,8 @@
 
 package one.pkg.libsl.api.ui.oreui;
 
+import net.minecraft.client.gui.GuiGraphics;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -306,11 +308,7 @@ public class OreUIDialog extends Screen {
         int titleBgColor = 0xFF48494A;
         extractor.fill(startX, startY, startX + this.modalWidth, startY + titleHeight, titleBgColor);
 
-        extractor.textRenderer().accept(
-                TextAlignment.CENTER,
-                startX + this.modalWidth / 2,
-                startY + (titleHeight - 8) / 2, this.styledTitle
-        );
+        one.pkg.libsl.api.ui.oreui.OreUIRenderUtils.drawText(extractor, one.pkg.libsl.api.ui.oreui.TextAlignment.CENTER, startX + this.modalWidth / 2, startY + (titleHeight - 8) / 2, this.styledTitle);
 
 
         extractor.fill(startX, startY, startX + this.modalWidth,
@@ -353,7 +351,7 @@ public class OreUIDialog extends Screen {
             if (this.content != null) {
                 List<net.minecraft.util.FormattedCharSequence> lines = this.minecraft.font.split(this.content, this.modalWidth - 40);
                 for (var line : lines) {
-                    extractor.textRenderer().accept(TextAlignment.LEFT, startX + 20, textY, line);
+                    one.pkg.libsl.api.ui.oreui.OreUIRenderUtils.drawText(extractor, one.pkg.libsl.api.ui.oreui.TextAlignment.LEFT, startX + 20, textY, line);
                     textY += 12;
                 }
             }

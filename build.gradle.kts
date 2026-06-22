@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.paperweight).apply(false)
     alias(libs.plugins.shadow).apply(false)
     alias(libs.plugins.moddev).apply(false)
+    alias(libs.plugins.fg.main).apply(false)
 }
 
 fun Project.string(key: String): String? = property(key) as? String
@@ -84,6 +85,8 @@ allprojects {
             "neoforge_version" to project.string("neoforge_version")!!,
             "neoforge_version_range" to project.string("neoforge_version_range")!!,
             "neoforge_loader_version_range" to project.string("neoforge_loader_version_range")!!,
+            "forge_version" to project.string("forge_version")!!,
+            "forge_loader_version_range" to project.string("forge_loader_version_range")!!,
             "fabric_loader_version" to project.string("fabric_loader_version")!!,
             "fabric_api_version" to project.string("fabric_api_version")!!,
             "credits" to project.string("credits")!!,
@@ -129,7 +132,7 @@ allprojects {
         maven("https://mvnc.pkg.one/snapshots")
     }
 
-    val finalProjects = listOf("fabric", "neoforge")
+    val finalProjects = listOf("fabric", "forge")
 
     if (project.name in finalProjects) {
         tasks.named<ShadowJar>("shadowJar") {
@@ -185,7 +188,7 @@ subprojects {
     }
 }
 
-configure(listOf(project(":neoforge"), project(":fabric"))) {
+configure(listOf(project(":forge"), project(":fabric"))) {
     dependencies {
         "commonJava"(project(path = ":modcommon", configuration = "commonJava"))
         "commonResources"(project(path = ":modcommon", configuration = "commonResources"))

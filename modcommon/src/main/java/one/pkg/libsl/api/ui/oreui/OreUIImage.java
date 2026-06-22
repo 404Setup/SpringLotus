@@ -10,6 +10,8 @@
 
 package one.pkg.libsl.api.ui.oreui;
 
+import net.minecraft.client.gui.GuiGraphics;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;

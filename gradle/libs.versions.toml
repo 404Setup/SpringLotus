@@ -3,6 +3,9 @@ shadow = "9.4.1"
 paperweight = "2.0.0-beta.19"
 moddev = "2.0.141"
 loom = "1.17-SNAPSHOT"
+fg = "7.0.29"
+fg-rm = "1.0.14"
+fg-jar = "0.2.3"
 
 adventure-mod = "6.9.0"
 
@@ -13,8 +16,11 @@ tiny-utils = "2.4.0"
 [plugins]
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 paperweight = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight" }
-moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
-loom = { id = "net.fabricmc.fabric-loom", version.ref = "loom" }
+moddev = { id = "net.neoforged.moddev.legacyforge", version.ref = "moddev" }
+loom = { id = "net.fabricmc.fabric-loom-remap", version.ref = "loom" }
+fg-main = { id = "net.minecraftforge.gradle", version.ref = "fg" }
+fg-rm = { id = "net.minecraftforge.renamer", version.ref = "fg-rm" }
+fg-jar = { id = "net.minecraftforge.jarjar", version.ref = "fg-jar" }
 
 [libraries]
 snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeyaml" }
