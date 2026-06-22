@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(SculkVeinBlock.class)
-public abstract class SculkVeinBlockMixin extends MultifaceSpreadeableBlock implements SculkBehaviour {
+public abstract class SculkVeinBlockMixin extends MultifaceBlock implements SculkBehaviour {
     @Shadow
     @Final
     private MultifaceSpreader veinSpreader;
@@ -63,7 +63,7 @@ public abstract class SculkVeinBlockMixin extends MultifaceSpreadeableBlock impl
         TagKey<Block> replaceTag = spreader.replaceableBlocks();
 
         for (Direction support : Direction.allShuffled(random)) {
-            if (hasFace(state, support)) {
+            if (MultifaceBlock.hasFace(state, support)) {
                 BlockPos supportPos = newPos.relative(support);
                 BlockState supportState = level.getBlockState(supportPos);
                 if (supportState.is(replaceTag)) {
@@ -75,15 +75,15 @@ public abstract class SculkVeinBlockMixin extends MultifaceSpreadeableBlock impl
                     }
                     level.setBlock(supportPos, defaultSculk, 3);
                     Block.pushEntitiesUp(supportState, defaultSculk, level, supportPos);
-                    level.playSound((Entity) null, supportPos, SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    level.playSound((net.minecraft.world.entity.player.Player) null, supportPos, SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
                     this.veinSpreader.spreadAll(defaultSculk, level, supportPos, spreader.isWorldGeneration());
                     Direction skip = support.getOpposite();
 
-                    for (Direction veinBlocks : DIRECTIONS) {
+                    for (Direction veinBlocks : Direction.values()) {
                         if (veinBlocks != skip) {
                             BlockPos veinPos = supportPos.relative(veinBlocks);
                             BlockState possibleVeinBlock = level.getBlockState(veinPos);
-                            if (possibleVeinBlock.is(this)) {
+                            if (possibleVeinBlock.is((Block)(Object)this)) {
                                 this.onDischarged(level, possibleVeinBlock, veinPos, random);
                             }
                         }

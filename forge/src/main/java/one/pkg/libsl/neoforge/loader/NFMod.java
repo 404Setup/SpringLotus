@@ -10,18 +10,18 @@
 
 package one.pkg.libsl.neoforge.loader;
 
-import net.neoforged.fml.loading.moddiscovery.ModFileInfo;
+import net.minecraftforge.forgespi.language.IModInfo;
 import one.pkg.libsl.api.loader.Mod;
 
 public class NFMod implements Mod {
-    private final ModFileInfo info;
+    private final IModInfo info;
 
-    public NFMod(ModFileInfo info) {
+    public NFMod(IModInfo info) {
         this.info = info;
     }
 
     @Override
     public String version() {
-        return info.versionString();
+        return info.getVersion().toString();
     }
 }

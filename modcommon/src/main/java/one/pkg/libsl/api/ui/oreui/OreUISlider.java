@@ -108,9 +108,9 @@ public class OreUISlider extends AbstractSliderButton {
             this.displayedValue = this.value;
         }
 
-        guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE)
-                .accept(TextAlignment.RIGHT, x + width, y,
-                        disabled ? cachedMessageInactive : cachedMessageActive);
+        Component msg = disabled ? cachedMessageInactive : cachedMessageActive;
+        net.minecraft.client.gui.Font font = Minecraft.getInstance().font;
+        guiGraphics.drawString(font, msg, x + width - font.width(msg), y, 0xFFFFFFFF, false);
 
         int trackHeight = 8;
         int trackY = y + 20 + (height - 20 - trackHeight) / 2;

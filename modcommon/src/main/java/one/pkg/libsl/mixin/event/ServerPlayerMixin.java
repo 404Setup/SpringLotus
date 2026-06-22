@@ -13,11 +13,6 @@ package one.pkg.libsl.mixin.event;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.PositionMoveRotation;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EndGatewayBlock;
-import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
-import net.minecraft.world.level.portal.Object;
 import one.pkg.libsl.api.Vec3d;
 import one.pkg.libsl.api.event.entity.ServerPlayerEvents;
 import one.pkg.libsl.api.instance.AsEntity;
@@ -34,8 +29,7 @@ public abstract class ServerPlayerMixin implements Entity {
     @Shadow
     private String language;
 
-    @Shadow
-    public abstract ServerLevel level();
+
 
     @Inject(method = "updateOptions", at = @At("HEAD"))
     private void libsl$updateOptions(net.minecraft.network.protocol.game.ServerboundClientInformationPacket packet, CallbackInfo ci) {
@@ -48,36 +42,5 @@ public abstract class ServerPlayerMixin implements Entity {
                     packet.language());
     }
 
-    @Inject(
-            method = "teleport(Lnet/minecraft/world/level/portal/Object;)Lnet/minecraft/server/level/ServerPlayer;",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/portal/Object;asPassenger()Z",
-                    shift = At.Shift.BEFORE
-            ),
-            cancellable = true
-    )
-    private void libsl$teleport(
-            Object transition, CallbackInfoReturnable<ServerPlayer> cir,
-            @Local(name = "newLevel") ServerLevel newLevel
-    ) {
-        ServerPlayer player = (ServerPlayer) (Object) this;
-        AsEntity asPlayerEntity = (AsEntity) player;
-        Vec3d pos = asPlayerEntity.getPos();
 
-        PositionMoveRotation absolutePosition = PositionMoveRotation.calculateAbsolute(
-                PositionMoveRotation.of(player), PositionMoveRotation.of(transition), transition.relatives());
-        Vec3d newPos = new Vec3d(absolutePosition.position(), newLevel,
-                absolutePosition.yRot(), absolutePosition.xRot());
-
-        boolean result = (asPlayerEntity.getPortalProcessor() != null &&
-                asPlayerEntity.getPortalProcessor().isSamePortal(((EndGatewayBlock) Blocks.END_GATEWAY)) &&
-                level().getBlockEntity(asPlayerEntity.getPortalProcessor().getEntryPosition())
-                        instanceof TheEndGatewayBlockEntity blockEntity) ?
-                ServerPlayerEvents.END_GATEWAY.invoker().onEndGatewayTeleport(player, pos, newPos, blockEntity) :
-                ServerPlayerEvents.TELEPORT.invoker().onTeleport(player, pos, newPos);
-
-        if (!result)
-            cir.setReturnValue(null);
-    }
 }

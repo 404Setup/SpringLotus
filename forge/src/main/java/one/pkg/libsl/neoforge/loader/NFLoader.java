@@ -11,9 +11,10 @@
 package one.pkg.libsl.neoforge.loader;
 
 import net.minecraft.server.MinecraftServer;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import one.pkg.libsl.api.loader.ILoader;
 import one.pkg.libsl.api.loader.Mod;
 import one.pkg.libsl.api.loader.client.CLoader;
@@ -59,18 +60,18 @@ public class NFLoader extends one.pkg.libsl.api.loader.CLoader implements ILoade
 
     @Override
     public boolean isClient() {
-        return FMLLoader.getCurrent().getDist().isClient();
+        return FMLEnvironment.dist.isClient();
     }
 
     @Override
     public boolean loaded(@NotNull String modid) {
-        return FMLLoader.getCurrent().getLoadingModList().getModFileById(modid) != null;
+        return ModList.get().isLoaded(modid);
     }
 
     @Override
     public Mod mod(@NotNull String modid) {
-        var m = FMLLoader.getCurrent().getLoadingModList().getModFileById(modid);
-        return m == null ? null : new NFMod(m);
+        var m = ModList.get().getModContainerById(modid).orElse(null);
+        return m == null ? null : new NFMod(m.getModInfo());
     }
 
     @Override
@@ -80,6 +81,6 @@ public class NFLoader extends one.pkg.libsl.api.loader.CLoader implements ILoade
 
     @Override
     public @NotNull ClassLoader getClassLoader() {
-        return FMLLoader.getCurrent().getCurrentClassLoader();
+        return Thread.currentThread().getContextClassLoader();
     }
 }

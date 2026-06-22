@@ -28,14 +28,14 @@ public class LivingEntityMixin {
         return false;
     }
 
-    @Redirect(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isDeadOrDying()Z", ordinal = 1))
-    boolean beforeEntityKilled(LivingEntity livingEntity, ServerLevel level, DamageSource source, float damage) {
+    @Redirect(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isDeadOrDying()Z", ordinal = 1))
+    boolean beforeEntityKilled(LivingEntity livingEntity, DamageSource source, float damage) {
         if (isDeadOrDying()) return true;
         return !ServerLivingEntityEvents.ALLOW_DEATH.invoker().allowDeath(livingEntity, source, damage);
     }
 
-    @Inject(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSleeping()Z"), cancellable = true)
-    private void beforeDamage(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSleeping()Z"), cancellable = true)
+    private void beforeDamage(DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
         if (!ServerLivingEntityEvents.ALLOW_DAMAGE.invoker()
                 .allowDamage((LivingEntity) (Object) this, source, damage))
             cir.setReturnValue(false);

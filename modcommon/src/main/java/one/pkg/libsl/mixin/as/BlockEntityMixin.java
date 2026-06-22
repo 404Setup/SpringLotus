@@ -10,7 +10,6 @@
 
 package one.pkg.libsl.mixin.as;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import one.pkg.libsl.api.instance.AsBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;

@@ -10,10 +10,10 @@
 
 package one.pkg.libsl.neoforge;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.common.MinecraftForge;
 import one.pkg.libsl.Static;
 import one.pkg.libsl.api.event.command.CommandRegistrationEvent;
 import one.pkg.libsl.api.loader.JavaLoader;
@@ -35,19 +35,19 @@ public class SpringLotusMod {
 
     public SpringLotusMod(IEventBus bus, ModContainer container) {
         CommandRegistrationEvent.EVENT.register(
-                (dispatcher, _, selection) ->
+                (dispatcher, ignored, selection) ->
                         SLCommand.register(dispatcher, selection)
         );
 
-        NeoForge.EVENT_BUS.register(LifecycleListener.class);
+        MinecraftForge.EVENT_BUS.register(LifecycleListener.class);
         bus.register(ChannelRegisterListener.class);
-        NeoForge.EVENT_BUS.register(new BlockListener());
-        NeoForge.EVENT_BUS.register(new ServerLivingEntityListener());
+        MinecraftForge.EVENT_BUS.register(new BlockListener());
+        MinecraftForge.EVENT_BUS.register(new ServerLivingEntityListener());
 
         if (JavaLoader.INSTANCE.isClient()) {
-            NeoForge.EVENT_BUS.register(ClientLifecycleListener.class);
+            MinecraftForge.EVENT_BUS.register(ClientLifecycleListener.class);
             bus.register(ClientChannelRegisterListener.class);
-            NeoForge.EVENT_BUS.register(ClientCommandListener.class);
+            MinecraftForge.EVENT_BUS.register(ClientCommandListener.class);
         }
 
         InternalNetworkInit.init();

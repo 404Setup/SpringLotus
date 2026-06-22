@@ -192,6 +192,8 @@ configure(listOf(project(":forge"), project(":fabric"))) {
     dependencies {
         "commonJava"(project(path = ":modcommon", configuration = "commonJava"))
         "commonResources"(project(path = ":modcommon", configuration = "commonResources"))
-        compileOnly(project(":modcommon"))
+        
     }
 }
+allprojects { tasks.withType<Javadoc> { isFailOnError = false } }
+

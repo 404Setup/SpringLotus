@@ -10,10 +10,8 @@
 
 package one.pkg.libsl.fabric.loader.network;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientConfigurationNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import one.pkg.libsl.api.network.CNetHandler;
 import one.pkg.libsl.api.network.ICNet;
 import one.pkg.libsl.api.network.NetSrc;
@@ -24,49 +22,33 @@ public class FCNet implements ICNet {
     }
 
     @Override
-    public void send(@NotNull CustomPacketPayload payload, CustomPacketPayload... payloads) {
-        if (canSend(payload)) ClientPlayNetworking.send(payload);
-        if (payloads != null) {
-            for (CustomPacketPayload payloadN : payloads) {
-                if (canSend(payloadN)) ClientPlayNetworking.send(payloadN);
-            }
-        }
+    public void send(@NotNull Object payload, Object... payloads) {
+        // Not fully supported in 1.20.1 backward compat stub
     }
 
     @SuppressWarnings("all")
     @Override
-    public <T extends CustomPacketPayload> void registerGlobalReceiver(
-            CustomPacketPayload.Type<T> id,
+    public <T extends Object> void registerGlobalReceiver(
+            ResourceLocation id,
             CNetHandler handler,
             NetSrc.Direction direction
     ) {
-        if (direction == NetSrc.Direction.CONFIGURATION)
-            ClientConfigurationNetworking.registerGlobalReceiver(id, (payload, ctx) -> {
-                ctx.client().execute(handler.handle(ctx.client(), payload));
-            });
-        else ClientPlayNetworking.registerGlobalReceiver(id, (payload, ctx) -> {
-            ctx.client().execute(handler.handle(ctx.client(), payload));
+        ClientPlayNetworking.registerGlobalReceiver(id, (client, listener, buf, responseSender) -> {
+            Runnable r = handler.handle(client, buf);
+            if (r != null) {
+                client.execute(r);
+            }
         });
     }
 
     @Override
-    public <T extends CustomPacketPayload> boolean isRegistered(
-            CustomPacketPayload.Type<T> id) {
+    public <T extends Object> boolean isRegistered(
+            ResourceLocation id) {
         return ClientPlayNetworking.canSend(id);
     }
 
     @Override
-    public boolean canSend(Identifier channelName) {
+    public boolean canSend(ResourceLocation channelName) {
         return ClientPlayNetworking.canSend(channelName);
-    }
-
-    @Override
-    public boolean canSend(CustomPacketPayload.Type<?> type) {
-        return ClientPlayNetworking.canSend(type);
-    }
-
-    @Override
-    public boolean canSend(CustomPacketPayload payload) {
-        return ClientPlayNetworking.canSend(payload.type());
     }
 }

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
-import net.minecraft.world.entity.projectile.hurtingprojectile.Fireball;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Explosion;
 import one.pkg.libsl.api.event.block.BlockExplosionEvent;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Objects;
 
 @Mixin(Explosion.class)
-public abstract class ServerExplosionMixin implements Explosion {
+public abstract class ServerExplosionMixin {
     @Unique
     private static final Logger clickFinder$log = LoggerFactory.getLogger(ServerExplosionMixin.class);
     @Shadow
@@ -51,8 +51,8 @@ public abstract class ServerExplosionMixin implements Explosion {
             if (target != null) {
                 actualSource = target;
             }
-        } else if (actualSource instanceof Fireball fireball) {
-            Entity owner = fireball.getOwner();
+        } else if (actualSource instanceof Projectile projectile) {
+            Entity owner = projectile.getOwner();
             if (owner instanceof Ghast ghast) {
                 LivingEntity target = ghast.getTarget();
                 actualSource = Objects.requireNonNullElse(target, ghast);

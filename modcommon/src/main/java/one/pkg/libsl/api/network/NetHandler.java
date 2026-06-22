@@ -12,7 +12,6 @@ package one.pkg.libsl.api.network;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -24,9 +23,8 @@ public interface NetHandler {
      *
      * @param server   The Minecraft server.
      * @param player   The player who sent the packet.
-     * @param listener The packet listener.
      * @param payload  The packet payload.
      * @return A Runnable to be executed on the server thread, or null.
      */
-    Runnable handle(MinecraftServer server, @Nullable ServerPlayer player, @Nullable ServerConfigurationPacketListenerImpl listener, Object payload);
+    Runnable handle(MinecraftServer server, @Nullable ServerPlayer player, Object payload);
 }

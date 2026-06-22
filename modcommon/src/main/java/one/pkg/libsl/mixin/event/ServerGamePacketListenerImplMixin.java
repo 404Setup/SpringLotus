@@ -16,8 +16,7 @@ import net.minecraft.network.protocol.game.ServerboundMoveVehiclePacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.PositionMoveRotation;
-import net.minecraft.world.entity.Relative;
+import net.minecraft.world.entity.RelativeMovement;
 import one.pkg.libsl.api.Vec3d;
 import one.pkg.libsl.api.event.entity.ServerPlayerEvents;
 import one.pkg.libsl.api.instance.AsEntity;
@@ -95,7 +94,7 @@ public class ServerGamePacketListenerImplMixin implements AsServerGamePacketList
         float deltaAngle = Mth.abs(this.springLotus$lastYaw - toYaw) +
                 Mth.abs(this.springLotus$lastPitch - toPitch);
 
-        if ((delta > 1f / 256 || deltaAngle > 10f) && !this.player.isImmobile()) {
+        if ((delta > 1f / 256 || deltaAngle > 10f) && !this.player.isSleeping() && !this.player.isDeadOrDying()) {
             double fromX = this.springLotus$lastPosX;
             double fromY = this.springLotus$lastPosY;
             double fromZ = this.springLotus$lastPosZ;
@@ -131,18 +130,18 @@ public class ServerGamePacketListenerImplMixin implements AsServerGamePacketList
             CallbackInfo ci,
             @Local(argsOnly = true) ServerboundMoveVehiclePacket packet
     ) {
-        double toX = packet.position().x();
-        double toY = packet.position().y();
-        double toZ = packet.position().z();
-        float toYaw = packet.yRot();
-        float toPitch = packet.xRot();
+        double toX = packet.getX();
+        double toY = packet.getY();
+        double toZ = packet.getZ();
+        float toYaw = packet.getYRot();
+        float toPitch = packet.getXRot();
 
         double delta = Mth.square(this.springLotus$lastPosX - toX) +
                 Mth.square(this.springLotus$lastPosY - toY) + Mth.square(this.springLotus$lastPosZ - toZ);
         float deltaAngle = Mth.abs(this.springLotus$lastYaw - toYaw) +
                 Mth.abs(this.springLotus$lastPitch - toPitch);
 
-        if ((delta > 1f / 256 || deltaAngle > 10f) && !this.player.isImmobile()) {
+        if ((delta > 1f / 256 || deltaAngle > 10f) && !this.player.isSleeping() && !this.player.isDeadOrDying()) {
             double fromX = this.springLotus$lastPosX;
             double fromY = this.springLotus$lastPosY;
             double fromZ = this.springLotus$lastPosZ;
@@ -173,21 +172,18 @@ public class ServerGamePacketListenerImplMixin implements AsServerGamePacketList
     }
 
     @Inject(
-            method = "teleport(Lnet/minecraft/world/entity/PositionMoveRotation;Ljava/util/Set;)V",
+            method = "teleport(DDDFFLjava/util/Set;)V",
             at = @At("HEAD"),
             cancellable = true
     )
-    private void libsl$teleport(PositionMoveRotation destination, Set<Relative> relatives, CallbackInfo ci) {
+    private void libsl$teleport(double x, double y, double z, float yaw, float pitch, Set<RelativeMovement> relatives, CallbackInfo ci) {
         if (ServerPlayerEvents.TELEPORT.canSkip()) return;
 
         ServerPlayer player = this.player;
         AsEntity asPlayerEntity = (AsEntity) player;
         Vec3d current = asPlayerEntity.getPos();
-        PositionMoveRotation absolutePosition = PositionMoveRotation.calculateAbsolute(
-                PositionMoveRotation.of(this.player), destination, relatives);
 
-        Vec3d to = new Vec3d(absolutePosition.position(), this.player.level(),
-                absolutePosition.yRot(), absolutePosition.xRot());
+        Vec3d to = new Vec3d(x, y, z, yaw, pitch, this.player.level());
         if (current.equals(to)) return;
         if (!ServerPlayerEvents.TELEPORT.invoker().onTeleport(player, current, to)) ci.cancel();
     }

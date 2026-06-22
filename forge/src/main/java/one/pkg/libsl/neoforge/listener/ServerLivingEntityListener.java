@@ -10,9 +10,9 @@
 
 package one.pkg.libsl.neoforge.listener;
 
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import one.pkg.libsl.api.event.entity.ServerLivingEntityEvents;
 
 public class ServerLivingEntityListener {
@@ -22,13 +22,13 @@ public class ServerLivingEntityListener {
     }
 
     @SubscribeEvent
-    public void onLivingDamage(LivingDamageEvent.Post event) {
+    public void onLivingDamage(LivingDamageEvent event) {
         ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage(
                 event.getEntity(),
                 event.getSource(),
-                event.getOriginalDamage(),
-                event.getHealthDamage(),
-                event.getBlockedDamage() != 0f
+                event.getAmount(),
+                event.getAmount(),
+                false
         );
     }
 }

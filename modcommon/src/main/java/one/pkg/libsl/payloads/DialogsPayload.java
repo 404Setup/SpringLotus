@@ -30,13 +30,7 @@ public class DialogsPayload  {
      * The type of the dialogs payload.
      */
     public static final net.minecraft.resources.ResourceLocation TYPE = new net.minecraft.resources.ResourceLocation("springlotus", "dialogs");
-    /**
-     * The codec for the dialogs payload.
-     */
-    public static final StreamCodec<FriendlyByteBuf, DialogsPayload> CODEC =
-            StreamCodec.composite(ByteBufCodecs.STRING_UTF8,
-                    DialogsPayload::dialogs,
-                    DialogsPayload::new);
+
 
     private static final Gson GSON = new Gson();
 
@@ -59,7 +53,7 @@ public class DialogsPayload  {
     }
 
     public void send(ServerPlayer player) {
-        if (JavaLoader.INSTANCE.net().canSend(player, this)) {
+        if (JavaLoader.INSTANCE.net().canSend(player, this.type())) {
             JavaLoader.INSTANCE.net().send(player, this);
         }
     }
@@ -72,8 +66,7 @@ public class DialogsPayload  {
         return dialogPayloads;
     }
 
-    @Override
-    public @NotNull net.minecraft.resources.ResourceLocation type() {
+    public net.minecraft.resources.ResourceLocation type() {
         return TYPE;
     }
 

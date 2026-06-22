@@ -10,18 +10,12 @@
 
 package one.pkg.libsl.fabric.loader.network;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import one.pkg.libsl.api.network.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class FNet implements INet {
     private final ICNet net = new FCNet();
@@ -32,84 +26,35 @@ public class FNet implements INet {
     }
 
     @Override
-    public boolean canSend(ServerPlayer player, Identifier channelName) {
+    public boolean canSend(ServerPlayer player, ResourceLocation channelName) {
         return ServerPlayNetworking.canSend(player, channelName);
     }
 
     @Override
-    public boolean canSend(ServerPlayer player, CustomPacketPayload payload) {
-        return ServerPlayNetworking.canSend(player, payload.type());
-    }
-
-    @Override
-    public boolean canSend(@NotNull ServerPlayer player, CustomPacketPayload.Type<?> type) {
-        return ServerPlayNetworking.canSend(player, type);
-    }
-
-    @Override
-    public boolean canSend(ServerGamePacketListenerImpl listener, Identifier channelName) {
+    public boolean canSend(ServerGamePacketListenerImpl listener, ResourceLocation channelName) {
         return ServerPlayNetworking.canSend(listener, channelName);
     }
 
     @Override
-    public boolean canSend(ServerGamePacketListenerImpl listener, CustomPacketPayload.Type<?> type) {
-        return ServerPlayNetworking.canSend(listener, type);
-    }
-
-    @Override
-    public boolean canSend(ServerGamePacketListenerImpl listener, CustomPacketPayload payload) {
-        return ServerPlayNetworking.canSend(listener, payload.type());
-    }
-
-    @Override
-    public <T extends CustomPacketPayload> void registerPayload(
-            @NotNull CustomPacketPayload.Type<T> type,
-            @NotNull StreamCodec<FriendlyByteBuf, T> codec,
-            @Nullable NetSrc.Direction direction,
-            boolean clientBound,
-            boolean serverBound
-    ) {
-        if (serverBound) {
-            if (direction == NetSrc.Direction.CONFIGURATION)
-                PayloadTypeRegistry.serverboundConfiguration().register(type, codec);
-            else PayloadTypeRegistry.serverboundPlay().register(type, codec);
-        }
-        if (clientBound) {
-            if (direction == NetSrc.Direction.CONFIGURATION)
-                PayloadTypeRegistry.clientboundConfiguration().register(type, codec);
-            else PayloadTypeRegistry.clientboundPlay().register(type, codec);
-        }
-    }
-
-    @Override
-    public <T extends CustomPacketPayload> void serverHandler(
-            @NotNull CustomPacketPayload.Type<T> type,
+    public <T extends Object> void serverHandler(
+            @NotNull ResourceLocation type,
             @NotNull NetHandler handler
     ) {
         try {
-            ServerPlayNetworking.registerGlobalReceiver(type, (payload, ctx) -> {
-                var run = handler.handle(ctx.server(), ctx.player(), null, payload);
-                if (run != null) ctx.server().execute(run);
-            });
-        } catch (Exception ignored) {}
-        try {
-            ServerConfigurationNetworking.registerGlobalReceiver(type, (payload, ctx) -> {
-                var run = handler.handle(ctx.server(), null, ctx.packetListener(), payload);
-                if (run != null) ctx.server().execute(run);
+            ServerPlayNetworking.registerGlobalReceiver(type, (server, player, listener, buf, responseSender) -> {
+                Runnable run = handler.handle(server, player, buf);
+                if (run != null) server.execute(run);
             });
         } catch (Exception ignored) {}
     }
 
     @Override
-    public <T extends CustomPacketPayload> void clientHandler(
-            @NotNull CustomPacketPayload.Type<T> type,
+    public <T extends Object> void clientHandler(
+            @NotNull ResourceLocation type,
             @NotNull CNetHandler handler
     ) {
         try {
             net.registerGlobalReceiver(type, handler, NetSrc.Direction.PLAY);
-        } catch (Exception ignored) {}
-        try {
-            net.registerGlobalReceiver(type, handler, NetSrc.Direction.CONFIGURATION);
         } catch (Exception ignored) {}
     }
 }

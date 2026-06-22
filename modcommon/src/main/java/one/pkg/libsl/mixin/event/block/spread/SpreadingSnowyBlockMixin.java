@@ -13,15 +13,15 @@ package one.pkg.libsl.mixin.event.block.spread;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.SpreadingSnowyBlock;
+import net.minecraft.world.level.block.SpreadingSnowyDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import one.pkg.libsl.api.event.block.BlockSpreadEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-@Mixin(SpreadingSnowyBlock.class)
-public class SpreadingSnowyBlockMixin {
+@Mixin(SpreadingSnowyDirtBlock.class)
+public abstract class SpreadingSnowyBlockMixin {
     @Redirect(
             method = "randomTick",
             at = @At(

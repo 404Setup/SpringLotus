@@ -16,7 +16,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -44,12 +45,12 @@ public class SpringLotusMod implements ModInitializer {
     private final Logger logger = LoggerFactory.getLogger(Static.MOD_NAME);
 
     private void initEvents() {
-        ServerLevelEvents.LOAD.register(
+        ServerWorldEvents.LOAD.register(
                 (server, level) ->
                         one.pkg.libsl.api.event.lifecycle.ServerLevelEvents.LOAD.invoker().onLevelLoad(server, level)
         );
 
-        ServerLevelEvents.UNLOAD.register(
+        ServerWorldEvents.UNLOAD.register(
                 (server, level) ->
                         one.pkg.libsl.api.event.lifecycle.ServerLevelEvents.UNLOAD.invoker().onLevelUnload(server, level)
         );
@@ -69,19 +70,19 @@ public class SpringLotusMod implements ModInitializer {
             one.pkg.libsl.api.event.lifecycle.ServerLifecycleEvents.STOPPED.invoker().onServerStopped(server);
         });
 
-        ServerPlayerEvents.AFTER_RESPAWN.register((_, newPlayer, _) ->
+        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) ->
                 one.pkg.libsl.api.event.entity.ServerPlayerEvents.AFTER_RESPAWN.invoker().afterRespawn(newPlayer)
         );
-        ServerPlayerEvents.JOIN.register(
-                player ->
-                        one.pkg.libsl.api.event.entity.ServerPlayerEvents.JOIN.invoker().onJoin(player)
+        ServerPlayConnectionEvents.JOIN.register(
+                (handler, sender, server) ->
+                        one.pkg.libsl.api.event.entity.ServerPlayerEvents.JOIN.invoker().onJoin(handler.getPlayer())
         );
-        ServerPlayerEvents.LEAVE.register(
-                player ->
-                        one.pkg.libsl.api.event.entity.ServerPlayerEvents.LEAVE.invoker().onLeave(player)
+        ServerPlayConnectionEvents.DISCONNECT.register(
+                (handler, server) ->
+                        one.pkg.libsl.api.event.entity.ServerPlayerEvents.LEAVE.invoker().onLeave(handler.getPlayer())
         );
         PlayerBlockBreakEvents.BEFORE.register(
-                (level, player, pos, state, _) ->
+                (level, player, pos, state, blockEntity) ->
                         BlockBreakEvents.PLAYER_BREAK.invoker().onPlayerBreak(player, level, pos, state)
         );
 
@@ -107,7 +108,7 @@ public class SpringLotusMod implements ModInitializer {
                     player, targetPos, world, logState,
                     ((BlockItem) heldItem.getItem()).getBlock().defaultBlockState()
             )) {
-                return InteractionResult.TRY_WITH_EMPTY_HAND;
+                return InteractionResult.PASS;
             }
             return InteractionResult.PASS;
         });
@@ -119,14 +120,7 @@ public class SpringLotusMod implements ModInitializer {
         ) -> one.pkg.libsl.api.event.entity.ServerLivingEntityEvents.ALLOW_DAMAGE
                 .invoker().allowDamage(entity, source, amount));
 
-        ServerLivingEntityEvents.AFTER_DAMAGE.register((
-                entity,
-                source,
-                baseDamageTaken,
-                damageTaken,
-                blocked
-        ) -> one.pkg.libsl.api.event.entity.ServerLivingEntityEvents.AFTER_DAMAGE
-                .invoker().afterDamage(entity, source, baseDamageTaken, damageTaken, blocked));
+
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((
                         entity,
@@ -141,7 +135,7 @@ public class SpringLotusMod implements ModInitializer {
                         .invoker().afterDeath(entity, damageSource));
 
         CommandRegistrationEvent.EVENT.register(
-                (dispatcher, _, _) ->
+                (dispatcher, ignored1, ignored2) ->
                         SLCommand.register(dispatcher, Commands.CommandSelection.INTEGRATED)
         );
 
@@ -175,7 +169,7 @@ public class SpringLotusMod implements ModInitializer {
 
 
         ClientCommandRegistrationEvent.EVENT.register(
-                (dispatcher, _) -> {
+                (dispatcher, ignored) -> {
                     SLCommand.register(dispatcher, Commands.CommandSelection.INTEGRATED);
                 }
         );

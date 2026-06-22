@@ -15,7 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import one.pkg.libsl.api.event.entity.ServerLivingEntityEvents;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,11 +24,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(EntityType.class)
 public abstract class EntityTypeMixin<T extends Entity> {
     @Inject(
-            method = "spawn(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/PostSpawnProcessor;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;ZZ)Lnet/minecraft/world/entity/Entity;",
+            method = "spawn(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/nbt/CompoundTag;Ljava/util/function/Consumer;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/entity/MobSpawnType;ZZ)Lnet/minecraft/world/entity/Entity;",
             at = @At("RETURN"),
             cancellable = true
     )
-    private void onSpawn(ServerLevel level, @Nullable PostSpawnProcessor<T> postSpawnConfig, BlockPos spawnPos, MobSpawnType spawnReason, boolean tryMoveDown, boolean movedUp, CallbackInfoReturnable<T> cir) {
+    private void onSpawn(ServerLevel level, @Nullable net.minecraft.nbt.CompoundTag tag, @Nullable java.util.function.Consumer<T> consumer, BlockPos spawnPos, MobSpawnType spawnReason, boolean setPosition, boolean centerPosition, CallbackInfoReturnable<T> cir) {
         var r = cir.getReturnValue();
         if (r instanceof Player || !(r instanceof LivingEntity entity) ||
                 ServerLivingEntityEvents.PRE_SPAWN.canSkip()) return;

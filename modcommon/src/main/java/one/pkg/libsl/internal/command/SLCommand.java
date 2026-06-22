@@ -84,7 +84,7 @@ public class SLCommand {
         EntitySelector selector = context.getArgument("player", EntitySelector.class);
         try {
             for (var player : selector.findPlayers(context.getSource())) {
-                if (JavaLoader.INSTANCE.net().canSend(player, dialogs.getFirst())) {
+                if (JavaLoader.INSTANCE.net().canSend(player, dialogs.get(0).type())) {
                     new DialogsPayload(dialogs).send(player);
                 } else {
                     logger.warn("Player {} cannot receive dialog", player.getDisplayName().getString());

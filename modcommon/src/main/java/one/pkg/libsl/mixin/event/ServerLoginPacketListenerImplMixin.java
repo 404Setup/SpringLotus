@@ -13,7 +13,6 @@ package one.pkg.libsl.mixin.event;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
-import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.minecraft.DefaultUncaughtExceptionHandler;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.Connection;
@@ -21,7 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.login.ServerboundKeyPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginPacketListenerImpl;
-import net.minecraft.server.notifications.ServerActivityMonitor;
+
 import one.pkg.libsl.api.event.entity.ServerPlayerEvents;
 import one.pkg.libsl.mixin.access.ConnectionAccess;
 import org.slf4j.Logger;
@@ -55,9 +54,6 @@ public class ServerLoginPacketListenerImplMixin {
     private MinecraftServer server;
     @Shadow
     private String requestedUsername;
-    @Shadow
-    @Final
-    private ServerActivityMonitor serverActivityMonitor;
 
     @Shadow
     private void startClientVerification(GameProfile profile) {
@@ -94,21 +90,20 @@ public class ServerLoginPacketListenerImplMixin {
             String name = Objects.requireNonNull(requestedUsername, "Player name not initialized");
 
             try {
-                ProfileResult result = server.services().sessionService().hasJoinedServer(
-                        name, digest, springLotus$getAddress());
-                if (result != null) {
-                    GameProfile profile = result.profile();
+                GameProfile profile = server.getSessionService().hasJoinedServer(
+                        new GameProfile(null, name), digest, springLotus$getAddress());
+                if (profile != null) {
                     if (!connection.isConnected()) {
                         return;
                     }
                     springLotus$runEvent(profile);
 
-                    LOGGER.info("UUID of player {} is {}", profile.name(), profile.id());
-                    serverActivityMonitor.reportLoginActivity();
+                    LOGGER.info("UUID of player {} is {}", profile.getName(), profile.getId());
+
                     startClientVerification(profile);
                 } else if (server.isSingleplayer()) {
                     LOGGER.warn("Failed to verify username but will let them in anyway!");
-                    startClientVerification(UUIDUtil.createOfflineProfile(name));
+                    startClientVerification(new GameProfile(UUIDUtil.createOfflinePlayerUUID(name), name));
                 } else {
                     disconnect(Component.translatable("multiplayer.disconnect.unverified_username"));
                     LOGGER.error("Username '{}' tried to join with an invalid session", name);
@@ -116,7 +111,7 @@ public class ServerLoginPacketListenerImplMixin {
             } catch (AuthenticationUnavailableException authenticationunavailableexception) {
                 if (server.isSingleplayer()) {
                     LOGGER.warn("Authentication servers are down but will let them in anyway!");
-                    startClientVerification(UUIDUtil.createOfflineProfile(digest));
+                    startClientVerification(new GameProfile(UUIDUtil.createOfflinePlayerUUID(digest), digest));
                 } else {
                     disconnect(Component.translatable("multiplayer.disconnect.authservers_down"));
                     LOGGER.error("Couldn't verify username because servers are unavailable");
@@ -124,8 +119,9 @@ public class ServerLoginPacketListenerImplMixin {
             }
         };
 
-        Thread.ofVirtual().name("User Authenticator #" + UNIQUE_THREAD_ID.incrementAndGet())
-                .uncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER)).start(runnable);
+        Thread thread = new Thread(runnable, "User Authenticator #" + UNIQUE_THREAD_ID.incrementAndGet());
+        thread.setUncaughtExceptionHandler(new DefaultUncaughtExceptionHandler(LOGGER));
+        thread.start();
         ci.cancel();
     }
 

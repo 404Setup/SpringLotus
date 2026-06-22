@@ -144,7 +144,7 @@ public class OreUIExampleScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         guiGraphics.fill(0, 0, this.width, this.height, 0xFF2A2B2D); // background
 
         guiGraphics.drawCenteredString(net.minecraft.client.Minecraft.getInstance().font, this.cachedTitle, this.width / 2, 20, 0xFFFFFFFF);

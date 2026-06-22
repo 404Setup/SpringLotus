@@ -69,18 +69,16 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
     }
 
     @Override
-    public boolean mouseClicked(MouseButtonEvent event, boolean isDouble) {
-        double mouseX = mouseX;
-        double mouseY = mouseY;
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
 
         if ((this.getMaxScroll() > 0) && mouseX >= this.getScrollbarPosition() && mouseX <= this.getScrollbarPosition() + 4 &&
-                mouseY >= this.top && mouseY <= this.top + this.height) {
+                mouseY >= this.y0 && mouseY <= this.y0 + this.height) {
             return super.mouseClicked(mouseX, mouseY, button);
         }
 
         for (OreUIScrollListEntry entry : this.children()) {
             if (entry.isMouseOver(mouseX, mouseY)) {
-                if (entry.mouseClicked(event, isDouble)) {
+                if (entry.mouseClicked(mouseX, mouseY, button)) {
                     this.setSelected(entry);
                     this.setFocused(entry);
                     this.setDragging(true);
@@ -133,7 +131,7 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics,
+    public void render(@NotNull GuiGraphics guiGraphics,
                                          int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
@@ -149,8 +147,8 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
 
     protected void extractListBackground(@NotNull GuiGraphics guiGraphics) {
         int bgColor = 0x80000000;
-        guiGraphics.fill(this.left, this.top, this.left + this.width,
-                this.top + this.height, bgColor);
+        guiGraphics.fill(this.x0, this.y0, this.x0 + this.width,
+                this.y0 + this.height, bgColor);
     }
 
     @Override
@@ -159,8 +157,8 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
     }
 
     @Override
-    protected int scrollBarX() {
-        return this.left + this.width - 6;
+    protected int getScrollbarPosition() {
+        return this.x0 + this.width - 6;
     }
 
     protected void extractListSeparators(@NotNull GuiGraphics guiGraphics) {
@@ -178,11 +176,11 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
         int scrollerY = 0 /* scrollBarY */;
 
         boolean hovered = mouseX >= scrollbarX && mouseX <= scrollbarX + scrollbarWidth &&
-                mouseY >= this.top && mouseY <= this.bottom;
+                mouseY >= this.y0 && mouseY <= this.y1;
 
         int trackColor = 0xFF1E1E1F;
-        guiGraphics.fill(scrollbarX, this.top, scrollbarX + scrollbarWidth, this.bottom, trackColor);
-        guiGraphics.fill(scrollbarX + 1, this.top, scrollbarX + scrollbarWidth - 1, this.bottom, 0xFF48494A);
+        guiGraphics.fill(scrollbarX, this.y0, scrollbarX + scrollbarWidth, this.y1, trackColor);
+        guiGraphics.fill(scrollbarX + 1, this.y0, scrollbarX + scrollbarWidth - 1, this.y1, 0xFF48494A);
 
         int thumbColor = hovered ? 0xFFFFFFFF : 0xFFD0D1D4;
 
@@ -195,7 +193,6 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
         // Do not render focus box
     }
 
-    @Override
     protected void updateWidgetNarration(@NotNull NarrationElementOutput output) {
     }
 
@@ -224,47 +221,43 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
         }
 
         @Override
-        public void extractContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY,
-                                   boolean hovered, float partialTick) {
-            int width = this.getContentWidth();
-            int x = this.getContentX();
-            int y = this.getContentY();
-
-            this.childWidget.setX(x);
-            this.childWidget.setY(y);
+        public void render(@NotNull GuiGraphics guiGraphics, int index, int top, int left, int width, int height,
+                                   int mouseX, int mouseY, boolean hovered, float partialTick) {
+            this.childWidget.setX(left);
+            this.childWidget.setY(top);
             this.childWidget.setWidth(width);
 
-            this.childWidget.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+            this.childWidget.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            return this.childWidget.mouseClicked(event, isDouble);
+            return this.childWidget.mouseClicked(mouseX, mouseY, button);
         }
 
         @Override
-        public boolean mouseReleased(@NotNull MouseButtonEvent event) {
-            return this.childWidget.mouseReleased(event);
+        public boolean mouseReleased(double mouseX, double mouseY, int button) {
+            return this.childWidget.mouseReleased(mouseX, mouseY, button);
         }
 
         @Override
-        public boolean mouseDragged(@NotNull MouseButtonEvent event, double dragX, double dragY) {
-            return this.childWidget.mouseDragged(event, dragX, dragY);
+        public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+            return this.childWidget.mouseDragged(mouseX, mouseY, button, dragX, dragY);
         }
 
         @Override
         public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            return this.childWidget.keyPressed(event);
+            return this.childWidget.keyPressed(keyCode, scanCode, modifiers);
         }
 
         @Override
-        public boolean keyReleased(@NotNull KeyEvent event) {
-            return this.childWidget.keyReleased(event);
+        public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+            return this.childWidget.keyReleased(keyCode, scanCode, modifiers);
         }
 
         @Override
         public boolean charTyped(char codePoint, int modifiers) {
-            return this.childWidget.charTyped(event);
+            return this.childWidget.charTyped(codePoint, modifiers);
         }
 
         @Override

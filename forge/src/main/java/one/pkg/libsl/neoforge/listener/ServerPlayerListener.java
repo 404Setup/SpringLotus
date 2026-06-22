@@ -11,13 +11,13 @@
 package one.pkg.libsl.neoforge.listener;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import one.pkg.libsl.Static;
 import one.pkg.libsl.api.event.entity.ServerPlayerEvents;
 
-@EventBusSubscriber(modid = Static.MOD_ID)
+@Mod.EventBusSubscriber(modid = Static.MOD_ID)
 public class ServerPlayerListener {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {

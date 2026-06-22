@@ -13,14 +13,14 @@ package one.pkg.libsl.mixin.as;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.debug.DebugValueSource;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.RelativeMovement;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityAccess;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.ScoreHolder;
+
 import one.pkg.libsl.api.Vec3d;
 import one.pkg.libsl.api.instance.AsEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,8 +30,7 @@ import java.util.Set;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements AsEntity,
-        EntityAccess,
-        ScoreHolder {
+        EntityAccess {
     @Shadow
     public double xo;
 
@@ -40,8 +39,6 @@ public abstract class EntityMixin implements AsEntity,
 
     @Shadow
     public double zo;
-    @Shadow
-    public PortalProcessor portalProcess;
     @Shadow
     private float yRot;
     @Shadow
@@ -52,37 +49,19 @@ public abstract class EntityMixin implements AsEntity,
     @Shadow
     public abstract void load(CompoundTag input);
 
-    @Shadow
-    public abstract boolean teleportTo(ServerLevel level, double x, double y, double z, Set<RelativeMovement> relatives, float newYRot, float newXRot, boolean resetCamera);
 
     @Shadow
     public abstract void teleportTo(double x, double y, double z);
-
-    @Override
-    public PortalProcessor getPortalProcessor() {
-        return portalProcess;
-    }
 
     @Override
     public Vec3d getPos() {
         return new Vec3d(this.xo, this.yo, this.zo, this.yRot, this.xRot, this.level);
     }
 
-    @Override
-    public void load(CompoundTag tag) {
-        load(TagCompoundTag.create(problemReporter, registryAccess, tag));
-    }
 
     @Override
     public void teleportTo(Vec3d pos) {
-        if (pos.getLevel() instanceof ServerLevel)
-            teleportTo((ServerLevel) pos.getLevel(),
-                    pos.getX(),
-                    pos.getY(),
-                    pos.getZ(),
-                    Set.of(), pos.getYaw(), pos.getPitch(),
-                    false);
-        else teleportTo(pos.getX(), pos.getY(), pos.getZ());
+        teleportTo(pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override

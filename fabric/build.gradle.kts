@@ -36,8 +36,13 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings(loom.officialMojangMappings())
 
-    implementation("net.fabricmc:fabric-loader:${rootProject.property("fabric_loader_version")!!}")
-    implementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion+$minecraftVersion")
+    modImplementation("net.fabricmc:fabric-loader:${rootProject.property("fabric_loader_version")!!}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion+$minecraftVersion")
+
+    compileOnly("net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7")
+    compileOnly("io.github.llamalad7:mixinextras-common:0.5.4")
+    annotationProcessor("io.github.llamalad7:mixinextras-common:0.5.4")
+    compileOnly("org.ow2.asm:asm-tree:9.9")
 
     include(rootProject.libs.snakeyaml)
     implementation(rootProject.libs.snakeyaml)

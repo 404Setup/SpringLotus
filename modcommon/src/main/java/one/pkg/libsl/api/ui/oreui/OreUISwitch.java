@@ -112,7 +112,7 @@ public class OreUISwitch extends AbstractWidget {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDouble) {
+    public void onClick(double mouseX, double mouseY) {
         if (this.active) {
             this.setState(!this.state);
             this.playDownSound(Minecraft.getInstance().getSoundManager());

@@ -24,9 +24,14 @@ public class NetSrc<T extends Object> {
     public net.minecraft.resources.ResourceLocation TYPE;
 
     /**
-     * The codec for the custom packet payload.
+     * The encoder for the custom packet payload.
      */
-    public StreamCodec<FriendlyByteBuf, T> CODEC;
+    public java.util.function.BiConsumer<T, FriendlyByteBuf> encoder;
+
+    /**
+     * The decoder for the custom packet payload.
+     */
+    public java.util.function.Function<FriendlyByteBuf, T> decoder;
 
     /**
      * The handler for the packet on the server.
@@ -57,14 +62,17 @@ public class NetSrc<T extends Object> {
      * Constructs a NetSrc with a server-side handler.
      *
      * @param type    The packet type.
-     * @param codec   The packet codec.
+     * @param encoder The packet encoder.
+     * @param decoder The packet decoder.
      * @param handler The server-side handler.
      */
     public NetSrc(net.minecraft.resources.ResourceLocation type,
-                  StreamCodec<FriendlyByteBuf, T> codec,
+                  java.util.function.BiConsumer<T, FriendlyByteBuf> encoder,
+                  java.util.function.Function<FriendlyByteBuf, T> decoder,
                   NetHandler handler) {
         TYPE = type;
-        CODEC = codec;
+        this.encoder = encoder;
+        this.decoder = decoder;
         Handler = handler;
         ClientHandler = null;
     }
@@ -72,13 +80,16 @@ public class NetSrc<T extends Object> {
     /**
      * Constructs a NetSrc without any handlers.
      *
-     * @param type  The packet type.
-     * @param codec The packet codec.
+     * @param type    The packet type.
+     * @param encoder The packet encoder.
+     * @param decoder The packet decoder.
      */
     public NetSrc(net.minecraft.resources.ResourceLocation type,
-                  StreamCodec<FriendlyByteBuf, T> codec) {
+                  java.util.function.BiConsumer<T, FriendlyByteBuf> encoder,
+                  java.util.function.Function<FriendlyByteBuf, T> decoder) {
         TYPE = type;
-        CODEC = codec;
+        this.encoder = encoder;
+        this.decoder = decoder;
         Handler = null;
         ClientHandler = null;
     }
@@ -87,14 +98,17 @@ public class NetSrc<T extends Object> {
      * Constructs a NetSrc with a client-side handler.
      *
      * @param type    The packet type.
-     * @param codec   The packet codec.
+     * @param encoder The packet encoder.
+     * @param decoder The packet decoder.
      * @param handler The client-side handler.
      */
     public NetSrc(net.minecraft.resources.ResourceLocation type,
-                  StreamCodec<FriendlyByteBuf, T> codec,
+                  java.util.function.BiConsumer<T, FriendlyByteBuf> encoder,
+                  java.util.function.Function<FriendlyByteBuf, T> decoder,
                   CNetHandler handler) {
         TYPE = type;
-        CODEC = codec;
+        this.encoder = encoder;
+        this.decoder = decoder;
         Handler = null;
         ClientHandler = handler;
     }

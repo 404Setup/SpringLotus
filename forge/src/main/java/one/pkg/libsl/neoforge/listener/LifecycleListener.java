@@ -10,9 +10,9 @@
 
 package one.pkg.libsl.neoforge.listener;
 
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
-import net.neoforged.neoforge.event.server.*;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.event.server.*;
 import one.pkg.libsl.api.event.lifecycle.ServerLevelEvents;
 import one.pkg.libsl.api.event.lifecycle.ServerLifecycleEvents;
 

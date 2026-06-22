@@ -122,7 +122,7 @@ public class OreUITextField extends EditBox {
         super.setX(this.fullX + 4);
         super.setY(this.fullY + shiftY + (this.fullHeight - shiftY - 8) / 2);
         super.setWidth(this.fullWidth - 8);
-        super.setHeight(this.fullHeight - shiftY);
+        this.height = this.fullHeight - shiftY;
     }
 
     @Override
@@ -132,7 +132,6 @@ public class OreUITextField extends EditBox {
                 mouseY >= this.fullY && mouseY < (this.fullY + this.fullHeight);
     }
 
-    @Override
     public boolean shouldTakeFocusAfterInteraction() {
         return false;
     }

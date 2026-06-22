@@ -12,8 +12,8 @@ package one.pkg.libsl.api.network;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.common.ServerCommonPacketListener;
-import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
+import net.minecraft.network.protocol.game.ServerGamePacketListener;
+import net.minecraft.network.protocol.game.ServerboundCustomPayloadPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
@@ -62,14 +62,7 @@ public interface INet {
      */
     
 
-    /**
-     * Checks if the connected client declared the ability to receive a specific type of packet.
-     *
-     * @param player the player
-     * @param type   the packet type
-     * @return {@code true} if the connected client has declared the ability to receive a specific type of packet
-     */
-    boolean canSend(@NotNull ServerPlayer player, Object.Type<?> type);
+
 
     /**
      * Checks if the connected client declared the ability to receive a packet on a specified channel name.
@@ -99,23 +92,7 @@ public interface INet {
     
 
 
-    /**
-     * Registers a payload type and codec.
-     *
-     * @param type        the packet type
-     * @param codec       the codec
-     * @param direction   the direction
-     * @param clientBound whether it can be sent to the client
-     * @param serverBound whether it can be sent to the server
-     * @param <T>         the packet type
-     */
-    <T extends Object> void registerPayload(
-            @NotNull net.minecraft.resources.ResourceLocation type,
-            @NotNull StreamCodec<FriendlyByteBuf, T> codec,
-            @Nullable NetSrc.Direction direction,
-            boolean clientBound,
-            boolean serverBound
-    );
+
 
     /**
      * Registers a server handler for a packet.
@@ -180,7 +157,7 @@ public interface INet {
      * @param payload The payload.
      * @return The packet.
      */
-    default Packet<ServerCommonPacketListener> createServerboundPacket(Object payload) {
+    default Packet<ServerGamePacketListener> createServerboundPacket(Object payload) {
         return null /* TODO 1.20.1 packet */;
     }
 }

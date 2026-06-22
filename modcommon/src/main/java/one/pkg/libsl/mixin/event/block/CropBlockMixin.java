@@ -12,11 +12,11 @@ package one.pkg.libsl.mixin.event.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.InsideBlockEffectApplier;
+
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.VegetationBlock;
+import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import one.pkg.libsl.api.event.block.BlockBreakEvents;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(CropBlock.class)
-public abstract class CropBlockMixin extends VegetationBlock implements BonemealableBlock {
+public abstract class CropBlockMixin extends BushBlock implements BonemealableBlock {
     protected CropBlockMixin(Properties properties) {
         super(properties);
     }
@@ -40,12 +40,10 @@ public abstract class CropBlockMixin extends VegetationBlock implements Bonemeal
             cancellable = true
     )
     private void springlotus$invokeDestroyBlock(
-            BlockState state, Level level, BlockPos pos, Entity entity,
-            InsideBlockEffectApplier effectApplier, boolean isPrecise, CallbackInfo ci
+            BlockState state, Level level, BlockPos pos, Entity entity, CallbackInfo ci
     ) {
         if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate(entity, level, pos, state)) {
             ci.cancel();
-            super.entityInside(state, level, pos, entity, effectApplier, isPrecise);
         }
     }
 }

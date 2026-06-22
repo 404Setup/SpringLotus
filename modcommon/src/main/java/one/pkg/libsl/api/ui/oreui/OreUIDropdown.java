@@ -208,11 +208,8 @@ public class OreUIDropdown extends AbstractWidget {
     }
 
     @Override
-    public void onClick(@NotNull MouseButtonEvent event, boolean isDouble) {
+    public void onClick(double mouseX, double mouseY) {
         if (!this.active) return;
-
-        int mouseX = (int) mouseX;
-        int mouseY = (int) mouseY;
 
         this.playDownSound(Minecraft.getInstance().getSoundManager());
 
@@ -224,7 +221,7 @@ public class OreUIDropdown extends AbstractWidget {
             int listHeight = maxVisibleOptions * collapsedHeight;
             if (mouseX >= getX() && mouseX <= getX() + getWidth() &&
                     mouseY >= listY && mouseY < listY + listHeight) {
-                int clickedIndex = scrollOffset + (mouseY - listY) / collapsedHeight;
+                int clickedIndex = scrollOffset + ((int)mouseY - listY) / collapsedHeight;
                 if (clickedIndex >= 0 && clickedIndex < options.size()) {
                     setSelectedIndex(clickedIndex);
                 }
@@ -276,15 +273,13 @@ public class OreUIDropdown extends AbstractWidget {
             arrow = disabled ? ARROW_DOWN_INACTIVE : ARROW_DOWN_ACTIVE;
         }
 
-        guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE)
-                .accept(TextAlignment.RIGHT, x + width - 8, y + (collapsedHeight - 8) / 2,
-                        arrow);
+        guiGraphics.drawString(Minecraft.getInstance().font, arrow, x + width - 8, y + (collapsedHeight - 8) / 2, 0xFFFFFFFF);
     }
 
     /**
      * Renders the expanded list of options.
      *
-     * @param extractor   The graphics guiGraphics.
+     * @param guiGraphics   The graphics guiGraphics.
      * @param mouseX      The mouse x-position.
      * @param mouseY      The mouse y-position.
      * @param partialTick The partial tick time.

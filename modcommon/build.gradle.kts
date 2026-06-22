@@ -37,9 +37,15 @@ dependencies {
     compileOnly(libs.snakeyaml)
     compileOnly(libs.pkg.sewlia.config)
     compileOnly(libs.pkg.tinyutils)
+    compileOnly("net.minecraftforge:forge:${rootProject.property("minecraft_version")}-${rootProject.property("forge_version")}")
 }
 
 artifacts {
+    val commonClasses = configurations.create("commonClasses") {
+        isCanBeResolved = true
+        isCanBeConsumed = true
+    }
+    add("commonClasses", sourceSets.main.get().java.classesDirectory)
     add("commonJava", sourceSets.main.get().java.sourceDirectories.singleFile)
     add("commonResources", sourceSets.main.get().resources.sourceDirectories.singleFile)
 }

@@ -13,7 +13,7 @@ package one.pkg.libsl.api.ui.oreui;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ActiveTextCollector;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -106,7 +106,7 @@ public class OreUIButton extends Button {
     }
 
     @Override
-    protected void extractContents(@NotNull GuiGraphics guiGraphics,
+    public void renderWidget(@NotNull GuiGraphics guiGraphics,
                                    int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();

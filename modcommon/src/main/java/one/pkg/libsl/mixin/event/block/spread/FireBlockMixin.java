@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(FireBlock.class)
 public abstract class FireBlockMixin {
     @Shadow
-    protected abstract BlockState getStateWithAge(LevelReader level, BlockPos pos, int age);
+    protected abstract BlockState getStateWithAge(net.minecraft.world.level.LevelAccessor level, BlockPos pos, int age);
 
     @Inject(
             method = "tick",

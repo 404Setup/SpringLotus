@@ -24,14 +24,13 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
+
 import net.minecraft.world.phys.AABB;
 import one.pkg.libsl.api.Vec3d;
 import one.pkg.libsl.api.instance.AsChunkMap;
 import one.pkg.libsl.api.instance.AsLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -51,8 +50,8 @@ public abstract class LevelMixin implements AsLevel, LevelAccessor {
     }
 
     @Shadow
-    public abstract @NotNull List<Entity> getEntities(@Nullable Entity except, @NotNull AABB bb,
-                                                      @NotNull Predicate<? super Entity> selector);
+    public abstract @NotNull List<Entity> getEntities(@Nullable Entity entity, @NotNull AABB boundingBox,
+                                                      @NotNull Predicate<? super Entity> predicate);
 
     @Shadow
     public abstract LevelChunk getChunkAt(BlockPos pos);
@@ -63,7 +62,7 @@ public abstract class LevelMixin implements AsLevel, LevelAccessor {
     @Override
     public String getName() {
         ResourceKey<Level> key = dimension();
-        return WORLD_NAME_CACHE.computeIfAbsent(key, k -> k.identifier().toString());
+        return WORLD_NAME_CACHE.computeIfAbsent(key, k -> k.location().toString());
     }
 
     @Override
@@ -80,21 +79,28 @@ public abstract class LevelMixin implements AsLevel, LevelAccessor {
 
     @Override
     public boolean updateChunkForced(ChunkPos pos, boolean forced) {
-        return this.getChunkSource().updateChunkForced(pos, forced);
+        if ((Object) this instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            return serverLevel.setChunkForced(pos.x, pos.z, forced);
+        }
+        return false;
     }
 
     @Override
     public boolean updateChunkForced(long pos, boolean forced) {
-        return this.getChunkSource().updateChunkForced(ChunkPos.unpack(pos), forced);
+        if ((Object) this instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            ChunkPos chunkPos = new ChunkPos(pos);
+            return serverLevel.setChunkForced(chunkPos.x, chunkPos.z, forced);
+        }
+        return false;
     }
 
     @Override
     public CompletableFuture<Boolean> isChunkLoaded(long pos) {
-        ChunkPos chunkPos = ChunkPos.unpack(pos);
+        ChunkPos chunkPos = new ChunkPos(pos);
         ServerChunkCache serverChunkCache = (ServerChunkCache) this.getChunkSource();
         AsChunkMap map = (AsChunkMap) serverChunkCache.chunkMap;
         ChunkHolder holder = map.getVisibleChunk(chunkPos);
-        if (holder != null && holder.getLatestStatus() == ChunkStatus.FULL) {
+        if (holder != null && holder.getFullChunkFuture().isDone()) {
             return CompletableFuture.completedFuture(true);
         }
         FieldSelector selector = new FieldSelector(StringTag.TYPE, "Status");
@@ -102,7 +108,7 @@ public abstract class LevelMixin implements AsLevel, LevelAccessor {
         return serverChunkCache.chunkScanner().scanChunk(chunkPos, collector)
                 .thenApply(ignored -> {
                     if (collector.getResult() instanceof CompoundTag nbt) {
-                        String status = nbt.getStringOr("Status", "");
+                        String status = nbt.contains("Status", 8) ? nbt.getString("Status") : "";
                         return "minecraft:full".equals(status) || "full".equals(status);
                     }
                     return false;
@@ -111,7 +117,7 @@ public abstract class LevelMixin implements AsLevel, LevelAccessor {
 
     @Override
     public CompletableFuture<Boolean> isChunkLoaded(ChunkPos pos) {
-        return isChunkLoaded(pos.pack());
+        return isChunkLoaded(pos.toLong());
     }
 
     @Override

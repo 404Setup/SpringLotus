@@ -25,7 +25,7 @@ import one.pkg.libsl.api.event.Event;
 public interface ServerLivingEntityEvents {
     /**
      * An event that is called when a living entity is going to take damage.
-     * This is fired from {@link LivingEntity#hurtServer}, before armor or any other mitigation are applied.
+     * This is fired from {@link LivingEntity#hurt}, before armor or any other mitigation are applied.
      * Mods can cancel this to prevent the damage entirely.
      */
     Event<AllowDamage> ALLOW_DAMAGE = Event.create(AllowDamage.class,
@@ -37,7 +37,7 @@ public interface ServerLivingEntityEvents {
             });
 
     /**
-     * An event that is called after an entity is damaged. This is fired from {@link LivingEntity#hurtServer} after damage
+     * An event that is called after an entity is damaged. This is fired from {@link LivingEntity#hurt} after damage
      * is applied, or after that damage was blocked by a shield.
      *
      * <p>The base damage taken is the damage initially applied to the entity. Damage taken is the amount of damage the

@@ -194,8 +194,7 @@ public abstract class ConfigEntry {
 
                     int padding = 4;
 
-                    guiGraphics.textRendererForWidget(this, net.minecraft.client.gui.GuiGraphics.HoveredTextEffects.NONE)
-                            .accept(net.minecraft.client.gui.TextAlignment.LEFT, x, y + (height - 8) / 2, active ? activeLabel : inactiveLabel);
+                    guiGraphics.drawString(Minecraft.getInstance().font, active ? activeLabel : inactiveLabel, x, y + (height - 8) / 2, 0xFFFFFFFF);
 
                     int boxX = x + labelWidth + padding;
                     int boxWidth = Math.max(10, width - labelWidth - padding);
@@ -281,8 +280,7 @@ public abstract class ConfigEntry {
 
                     int padding = 4;
 
-                    guiGraphics.textRendererForWidget(this, net.minecraft.client.gui.GuiGraphics.HoveredTextEffects.NONE)
-                            .accept(net.minecraft.client.gui.TextAlignment.LEFT, x, y + (height - 8) / 2, active ? activeLabel : inactiveLabel);
+                    guiGraphics.drawString(Minecraft.getInstance().font, active ? activeLabel : inactiveLabel, x, y + (height - 8) / 2, 0xFFFFFFFF);
 
                     int boxX = x + labelWidth + padding;
                     int boxWidth = Math.max(10, width - labelWidth - padding);
@@ -368,8 +366,7 @@ public abstract class ConfigEntry {
 
                     int padding = 4;
 
-                    guiGraphics.textRendererForWidget(this, net.minecraft.client.gui.GuiGraphics.HoveredTextEffects.NONE)
-                            .accept(net.minecraft.client.gui.TextAlignment.LEFT, x, y + (height - 8) / 2, active ? activeLabel : inactiveLabel);
+                    guiGraphics.drawString(Minecraft.getInstance().font, active ? activeLabel : inactiveLabel, x, y + (height - 8) / 2, 0xFFFFFFFF);
 
                     int boxX = x + labelWidth + padding;
                     int boxWidth = Math.max(10, width - labelWidth - padding);
@@ -453,7 +450,8 @@ public abstract class ConfigEntry {
             return CycleButton.<String>builder(val -> {
                         int idx = optionKeys.indexOf(val);
                         return idx >= 0 ? optionComponents.get(idx) : Component.literal(val);
-                    }, () -> value)
+                    })
+                    .withInitialValue(value)
                     .withValues(optionKeys)
                     .create(x, y, width, height, getLabel(), (btn, newValue) -> {
                         this.value = newValue;

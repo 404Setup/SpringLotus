@@ -10,8 +10,8 @@
 
 package one.pkg.libsl.neoforge.listener.client;
 
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import one.pkg.libsl.api.event.client.command.ClientCommandRegistrationEvent;
 
 public class ClientCommandListener {

@@ -13,7 +13,8 @@ package one.pkg.libsl.utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.toasts.SystemToast;
-import net.minecraft.client.gui.components.toasts.ToastManager;
+
+import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -28,7 +29,7 @@ public final class Toasts {
 
     static {
         try {
-            Constructor<SystemToast> constructor = SystemToast.class.getDeclaredConstructor(SystemToast.SystemToastId.class, Component.class, List.class, int.class);
+            Constructor<SystemToast> constructor = SystemToast.class.getDeclaredConstructor(SystemToast.SystemToastIds.class, Component.class, List.class, int.class);
             constructor.setAccessible(true);
 
             call = MethodHandles.lookup().unreflectConstructor(constructor);
@@ -49,7 +50,7 @@ public final class Toasts {
      * @return The created toast.
      *
      */
-    public static SystemToast multiline(Component title, Component description, SystemToast.SystemToastId id) {
+    public static SystemToast multiline(Component title, Component description, SystemToast.SystemToastIds id) {
         Font font = Minecraft.getInstance().font;
         List<FormattedCharSequence> list = font.split(description, 230);
         int max = 230;
@@ -72,9 +73,9 @@ public final class Toasts {
      * @param description The description of the toast.
      * @param id          The id of the toast.
      */
-    private static void sendToast(Component title, Component description, SystemToast.SystemToastId id) {
+    private static void sendToast(Component title, Component description, SystemToast.SystemToastIds id) {
         Minecraft.getInstance().execute(() -> {
-            ToastManager manager = Minecraft.getInstance().gui.toastManager();
+            ToastComponent manager = Minecraft.getInstance().getToasts();
             manager.addToast(multiline(title, description, id));
         });
     }

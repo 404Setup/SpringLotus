@@ -1,43 +1,19 @@
 /*
  * Copyright (C) 2026  404Setup.
- *
- * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-
 package one.pkg.libsl.neoforge.loader.network;
 
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
+import one.pkg.libsl.api.network.*;
 
-/**
- * Optional networking implementation for NeoForge.
- */
-@SuppressWarnings("unchecked")
-public class NFONet extends NFNet {
+public class NFONet implements INet {
     private final NFNet parent;
-
-    /**
-     * Constructs an {@code Optional} networking instance.
-     *
-     * @param parent the parent {@code NeoForgeNetworking} instance
-     */
-    public NFONet(NFNet parent) {
-        super((Void) null);
-        this.parent = parent;
-    }
-
-    @Override
-    public NFONet optional() {
-        return this;
-    }
-
-    @Override
-    public void handle(@NotNull CustomPacketPayload payload, @NotNull IPayloadContext context) {
-        super.handle(payload, context);
-    }
+    public NFONet(NFNet parent) { this.parent = parent; }
+    public ICNet client() { return parent.client(); }
+    public boolean canSend(ServerPlayer p, ResourceLocation c) { return parent.canSend(p, c); }
+    public boolean canSend(ServerGamePacketListenerImpl p, ResourceLocation c) { return parent.canSend(p, c); }
+    public <T> void serverHandler(ResourceLocation t, NetHandler h) { parent.serverHandler(t, h); }
+    public <T> void clientHandler(ResourceLocation t, CNetHandler h) { parent.clientHandler(t, h); }
 }

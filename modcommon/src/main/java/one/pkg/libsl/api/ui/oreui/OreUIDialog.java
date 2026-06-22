@@ -321,10 +321,10 @@ public class OreUIDialog extends Screen {
     }
 
     @Override
-    public void extractRenderState(@NotNull GuiGraphics guiGraphics,
+    public void render(@NotNull GuiGraphics guiGraphics,
                                    int mouseX, int mouseY, float partialTick) {
         if (this.lastScreen != null) {
-            this.lastScreen.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+            this.lastScreen.renderBackground(guiGraphics);
             this.lastScreen.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 

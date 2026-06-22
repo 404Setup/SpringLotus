@@ -34,7 +34,7 @@ public class OreUIRenderUtils {
     /**
      * Draws a filled rectangle with a 1-pixel inset border.
      *
-     * @param extractor   the GuiGraphics instance
+     * @param guiGraphics   the GuiGraphics instance
      * @param x           the top-left x coordinate
      * @param y           the top-left y coordinate
      * @param width       the width of the rectangle
@@ -51,7 +51,7 @@ public class OreUIRenderUtils {
     /**
      * Draws an inner shadow inside a rectangle.
      *
-     * @param extractor   the GuiGraphics instance
+     * @param guiGraphics   the GuiGraphics instance
      * @param x           the top-left x coordinate
      * @param y           the top-left y coordinate
      * @param width       the width of the rectangle

@@ -34,19 +34,9 @@ public record DialogPayload(
      */
     public static final net.minecraft.resources.ResourceLocation TYPE = new net.minecraft.resources.ResourceLocation("springlotus", "dialog");
 
-    /**
-     * The codec for the dialog payload.
-     */
-    public static final StreamCodec<FriendlyByteBuf, DialogPayload> CODEC =
-            StreamCodec.composite(ByteBufCodecs.STRING_UTF8, DialogPayload::title,
-                    ByteBufCodecs.STRING_UTF8,
-                    DialogPayload::desc,
-                    ByteBufCodecs.BOOL,
-                    DialogPayload::showCanceled,
-                    DialogPayload::new);
 
-    @Override
-    public @NotNull net.minecraft.resources.ResourceLocation type() {
+
+    public net.minecraft.resources.ResourceLocation type() {
         return TYPE;
     }
 

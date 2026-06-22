@@ -34,6 +34,9 @@ public class SeeUIConfigScreen extends Screen {
     private final Runnable onSaved;
     private final String keyword;
 
+    private final Screen lastScreen;
+    private int currentY = 20;
+
     /**
      * Creates a new configuration screen.
      *
@@ -42,7 +45,8 @@ public class SeeUIConfigScreen extends Screen {
      * @param onSaved     Callback to run when settings are saved.
      */
     public SeeUIConfigScreen(Class<?> configClass, Screen lastScreen, Runnable onSaved) {
-        super(lastScreen, Minecraft.getInstance().options, Component.translatable(getKeyword(configClass) + ".config.title"));
+        super(Component.translatable(getKeyword(configClass) + ".config.title"));
+        this.lastScreen = lastScreen;
         this.configClass = configClass;
         this.onSaved = onSaved;
         this.keyword = getKeyword(configClass);
@@ -60,17 +64,13 @@ public class SeeUIConfigScreen extends Screen {
     }
 
     @Override
-    protected void addOptions() {
-        if (this.list == null) return;
+    protected void init() {
+        this.currentY = 20;
         parseConfig();
-    }
-
-    @Override
-    protected void addFooter() {
-        this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, btn -> {
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, btn -> {
             if (onSaved != null) onSaved.run();
             this.minecraft.setScreen(this.lastScreen);
-        }).width(200).build());
+        }).bounds(this.width / 2 - 100, this.height - 27, 200, 20).build());
     }
 
     /**
@@ -85,18 +85,22 @@ public class SeeUIConfigScreen extends Screen {
         }
 
         for (Map.Entry<String, List<ConfigEntry>> category : categories.entrySet()) {
-            this.list.addHeader(Component.translatable(keyword + ".config.category." + category.getKey()));
+            currentY += 24;
             List<ConfigEntry> entries = category.getValue();
             for (int i = 0; i < entries.size(); i += 2) {
                 ConfigEntry entry1 = entries.get(i);
                 AbstractWidget widget1 = createWidgetWithAutoSave(entry1);
+                widget1.setX(this.width / 2 - 155);
+                widget1.setY(currentY);
+                this.addRenderableWidget(widget1);
                 if (i + 1 < entries.size()) {
                     ConfigEntry entry2 = entries.get(i + 1);
                     AbstractWidget widget2 = createWidgetWithAutoSave(entry2);
-                    this.list.addSmall(widget1, widget2);
-                } else {
-                    this.list.addSmall(widget1, null);
+                    widget2.setX(this.width / 2 + 5);
+                    widget2.setY(currentY);
+                    this.addRenderableWidget(widget2);
                 }
+                currentY += 24;
             }
         }
     }

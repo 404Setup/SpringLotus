@@ -29,7 +29,7 @@ public class CommandsMixin {
     private CommandDispatcher<CommandSourceStack> dispatcher;
 
     @Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V"), method = "<init>")
-    private void libsl_addCommands(Commands.CommandSelection commandSelection, CommandBuildContext context, CallbackInfo ci) {
-        CommandRegistrationEvent.EVENT.invoker().register(this.dispatcher, context, commandSelection);
+    private void libsl_addCommands(Commands.CommandSelection selection, CommandBuildContext context, CallbackInfo ci) {
+        CommandRegistrationEvent.EVENT.invoker().register(this.dispatcher, context, selection);
     }
 }

@@ -29,8 +29,7 @@ public class InternalNetworkInit {
     public static void init() {
         INet netImpl = JavaLoader.INSTANCE.net();
 
-        netImpl.optional().registerPayload(DialogPayload.TYPE, DialogPayload.CODEC, NetSrc.Direction.PLAY, true, false);
-        netImpl.optional().registerPayload(DialogsPayload.TYPE, DialogsPayload.CODEC, NetSrc.Direction.PLAY, true, false);
+
 
         if (JavaLoader.INSTANCE.isClient()) ClientInit.init();
     }

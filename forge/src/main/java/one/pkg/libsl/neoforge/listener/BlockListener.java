@@ -10,8 +10,8 @@
 
 package one.pkg.libsl.neoforge.listener;
 
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import one.pkg.libsl.api.event.block.BlockPlaceEvent;
 
 public class BlockListener {
@@ -21,7 +21,7 @@ public class BlockListener {
                 event.getEntity(),
                 event.getPos(),
                 event.getLevel(),
-                event.getBlockSnapshot().getState(),
+                event.getBlockSnapshot().getReplacedBlock(),
                 event.getPlacedBlock()
         )) {
             event.setCanceled(true);

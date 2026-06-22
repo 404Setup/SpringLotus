@@ -26,14 +26,14 @@ public class InternalShared {
      * @return The identifier.
      */
     public static ResourceLocation of(String id) {
-        return ResourceLocation.fromNamespaceAndPath(Static.MOD_ID, id);
+        return new ResourceLocation(Static.MOD_ID, id);
     }
 
     /**
      * Creates a custom packet payload type.
      *
      * @param id  The identifier for the type.
-     * @param <T> The payload type.
+
      * @return The payload type instance.
      */
     public static net.minecraft.resources.ResourceLocation type(String id) {
