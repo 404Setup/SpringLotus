@@ -11,14 +11,13 @@
 package one.pkg.libsl.mixin.event;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.PositionMoveRotation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EndGatewayBlock;
 import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
-import net.minecraft.world.level.portal.TeleportTransition;
+import net.minecraft.world.level.portal.Object;
 import one.pkg.libsl.api.Vec3d;
 import one.pkg.libsl.api.event.entity.ServerPlayerEvents;
 import one.pkg.libsl.api.instance.AsEntity;
@@ -39,27 +38,27 @@ public abstract class ServerPlayerMixin implements Entity {
     public abstract ServerLevel level();
 
     @Inject(method = "updateOptions", at = @At("HEAD"))
-    private void libsl$updateOptions(ClientInformation information, CallbackInfo ci) {
+    private void libsl$updateOptions(net.minecraft.network.protocol.game.ServerboundClientInformationPacket packet, CallbackInfo ci) {
         ServerPlayerEvents.CLIENT_OPTIONS_CHANGED.invoker().onClientOptionsChanged(
                 (ServerPlayer) (Object) this,
-                information
+                packet
         );
-        if ((this.language == null || !this.language.equals(information.language())))
+        if ((this.language == null || !this.language.equals(packet.language())))
             ServerPlayerEvents.LANG_CHANGED.invoker().onLangChanged((ServerPlayer) (Object) this,
-                    information.language());
+                    packet.language());
     }
 
     @Inject(
-            method = "teleport(Lnet/minecraft/world/level/portal/TeleportTransition;)Lnet/minecraft/server/level/ServerPlayer;",
+            method = "teleport(Lnet/minecraft/world/level/portal/Object;)Lnet/minecraft/server/level/ServerPlayer;",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/portal/TeleportTransition;asPassenger()Z",
+                    target = "Lnet/minecraft/world/level/portal/Object;asPassenger()Z",
                     shift = At.Shift.BEFORE
             ),
             cancellable = true
     )
     private void libsl$teleport(
-            TeleportTransition transition, CallbackInfoReturnable<ServerPlayer> cir,
+            Object transition, CallbackInfoReturnable<ServerPlayer> cir,
             @Local(name = "newLevel") ServerLevel newLevel
     ) {
         ServerPlayer player = (ServerPlayer) (Object) this;

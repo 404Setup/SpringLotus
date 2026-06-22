@@ -11,7 +11,6 @@
 package one.pkg.libsl.api.network;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 /**
  * Handler for network packets on the client side.
@@ -25,5 +24,5 @@ public interface CNetHandler {
      * @param payload The packet payload.
      * @return A Runnable to be executed on the client thread, or null.
      */
-    Runnable handle(Minecraft client, CustomPacketPayload payload);
+    Runnable handle(Minecraft client, Object payload);
 }

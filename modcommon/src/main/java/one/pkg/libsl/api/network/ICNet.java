@@ -12,8 +12,7 @@ package one.pkg.libsl.api.network;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.player.RemotePlayer;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -30,7 +29,7 @@ public interface ICNet {
      * @throws UnsupportedOperationException If the operation is attempted, as
      *                                       remote players are not supported.
      */
-    default void send(RemotePlayer player, CustomPacketPayload... payloads) {
+    default void send(RemotePlayer player, Object... payloads) {
         throw new UnsupportedOperationException("Remote players are not supported");
     }
 
@@ -40,7 +39,7 @@ public interface ICNet {
      * @param player   The local player to whom the packets will be sent.
      * @param payloads One or more custom packet payloads to send.
      */
-    default void send(LocalPlayer player, CustomPacketPayload... payloads) {
+    default void send(LocalPlayer player, Object... payloads) {
         player.connection.send(NetUtils.makeClientbound(payloads));
     }
 
@@ -50,7 +49,7 @@ public interface ICNet {
      * @param payload  The payload to send.
      * @param payloads Additional payloads to send.
      */
-    void send(@NotNull CustomPacketPayload payload, CustomPacketPayload... payloads);
+    void send(@NotNull Object payload, Object... payloads);
 
     /**
      * Registers a global receiver for a specific packet type.
@@ -60,8 +59,8 @@ public interface ICNet {
      * @param direction The direction of the network operation.
      * @param <T>       The type of the custom packet payload.
      */
-    <T extends CustomPacketPayload> void registerGlobalReceiver(
-            CustomPacketPayload.Type<T> id,
+    <T extends Object> void registerGlobalReceiver(
+            net.minecraft.resources.ResourceLocation id,
             CNetHandler handler,
             NetSrc.Direction direction
     );
@@ -73,7 +72,7 @@ public interface ICNet {
      * @param <T> The type of the custom packet payload.
      * @return True if the connected server has declared the ability to receive a payload on the specified channel.
      */
-    <T extends CustomPacketPayload> boolean isRegistered(CustomPacketPayload.Type<T> id);
+    <T extends Object> boolean isRegistered(net.minecraft.resources.ResourceLocation id);
 
     /**
      * Checks if a packet can be sent on the specified channel.
@@ -81,7 +80,7 @@ public interface ICNet {
      * @param channelName The channel identifier.
      * @return True if the packet can be sent, false otherwise.
      */
-    boolean canSend(Identifier channelName);
+    boolean canSend(ResourceLocation channelName);
 
     /**
      * Checks if a packet of the specified type can be sent.
@@ -89,7 +88,7 @@ public interface ICNet {
      * @param type The packet type.
      * @return True if the packet can be sent, false otherwise.
      */
-    boolean canSend(CustomPacketPayload.Type<?> type);
+    
 
     /**
      * Checks if the specified payload can be sent.
@@ -97,5 +96,5 @@ public interface ICNet {
      * @param payload The packet payload.
      * @return True if the payload can be sent, false otherwise.
      */
-    boolean canSend(CustomPacketPayload payload);
+    
 }

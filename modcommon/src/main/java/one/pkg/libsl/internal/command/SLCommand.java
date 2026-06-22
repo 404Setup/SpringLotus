@@ -20,7 +20,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.permissions.Permissions;
 import one.pkg.libsl.api.loader.JavaLoader;
 import one.pkg.libsl.api.ui.oreui.OreUIExampleScreen;
 import one.pkg.libsl.payloads.DialogPayload;
@@ -40,7 +39,7 @@ public class SLCommand {
                 "springlotusc" : "springlotus";
 
         var cmd = Commands.literal(baseCmd)
-                .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_ADMIN))
+                .requires(source -> source.hasPermission(2))
                 .then(Commands.literal("dialog")
                         .then(Commands.literal("send").then(Commands.argument("player", EntityArgument.players())
                                 .executes(SLCommand::sendDialog)))

@@ -13,14 +13,13 @@ package one.pkg.libsl.api.ui.oreui;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +67,7 @@ public class OreUIButtonGroup extends AbstractWidget {
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY,
+    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY,
                                          float partialTick) {
         int btnWidth = width / Math.max(1, options.size());
         for (int i = 0; i < options.size(); i++) {
@@ -80,35 +79,29 @@ public class OreUIButtonGroup extends AbstractWidget {
             int bgColor = isSelected ? 0xFF3C8527 : (isHovered ? 0xFFB1B2B5 : 0xFFD0D1D4);
             int borderColor = 0xFF1E1E1F;
 
-            extractor.fill(btnX, getY(), btnX + btnWidth, getY() + height, borderColor);
-            extractor.fill(btnX + 1, getY() + 1, btnX + btnWidth - 1, getY() + height - 1, bgColor);
+            guiGraphics.fill(btnX, getY(), btnX + btnWidth, getY() + height, borderColor);
+            guiGraphics.fill(btnX + 1, getY() + 1, btnX + btnWidth - 1, getY() + height - 1, bgColor);
 
-            extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                    .accept(
-                            TextAlignment.CENTER,
-                            btnX + btnWidth / 2,
-                            getY() + (height - 8) / 2,
-                            cachedOptions.get(i)
-                    );
+            guiGraphics.drawCenteredString(net.minecraft.client.Minecraft.getInstance().font, cachedOptions.get(i), btnX + btnWidth / 2, getY() + (height - 8) / 2, 0xFFFFFFFF);
         }
     }
 
     @Override
-    public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDouble) {
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (!this.active) return false;
         int btnWidth = width / Math.max(1, options.size());
-        int clickedIndex = ((int) event.x() - getX()) / btnWidth;
+        int clickedIndex = ((int) mouseX - getX()) / btnWidth;
         if (clickedIndex >= 0 && clickedIndex < options.size() && clickedIndex != selectedIndex) {
             selectedIndex = clickedIndex;
             if (onSelect != null) onSelect.accept(selectedIndex);
             this.playDownSound(Minecraft.getInstance().getSoundManager());
             return true;
         }
-        return super.mouseClicked(event, isDouble);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput output) {
     }
 
     /**

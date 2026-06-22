@@ -14,14 +14,14 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A native Minecraft button component styled to look like an OreUI button.
@@ -106,7 +106,7 @@ public class OreUIButton extends Button {
     }
 
     @Override
-    protected void extractContents(@NonNull GuiGraphicsExtractor extractor,
+    protected void extractContents(@NotNull GuiGraphics guiGraphics,
                                    int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
@@ -141,16 +141,16 @@ public class OreUIButton extends Button {
         }
 
         if (style == Style.CATEGORY_SELECTED || style == Style.CATEGORY_UNSELECTED) {
-            extractor.fill(x, y, x + width, y + height, hoveredOrActive ? 0x1AFFFFFF : 0x00000000);
+            guiGraphics.fill(x, y, x + width, y + height, hoveredOrActive ? 0x1AFFFFFF : 0x00000000);
             if (style == Style.CATEGORY_SELECTED) {
-                extractor.fill(x, y + 4, x + 4, y + height - 4, 0xFF4A9E32);
+                guiGraphics.fill(x, y + 4, x + 4, y + height - 4, 0xFF4A9E32);
             }
         } else {
-            extractor.fill(rX, rY, rX + rW, rY + rH, borderColor);
-            extractor.fill(rX + 2, rY + 2, rX + rW - 2, rY + rH - 2, bgColor);
+            guiGraphics.fill(rX, rY, rX + rW, rY + rH, borderColor);
+            guiGraphics.fill(rX + 2, rY + 2, rX + rW - 2, rY + rH - 2, bgColor);
 
             if (!disabled && style != Style.GREEN && style != Style.FLAT) {
-                extractor.fill(rX + 2, rY + rH - 6, rX + rW - 2, rY + rH - 2, 0xFF58585A);
+                guiGraphics.fill(rX + 2, rY + rH - 6, rX + rW - 2, rY + rH - 2, 0xFF58585A);
             }
         }
 
@@ -183,13 +183,10 @@ public class OreUIButton extends Button {
             }
         }
 
-        ActiveTextCollector textCollector = extractor.textRendererForWidget(this,
-                GuiGraphicsExtractor.HoveredTextEffects.NONE);
         if (style == Style.CATEGORY_SELECTED || style == Style.CATEGORY_UNSELECTED) {
-            textCollector.accept(TextAlignment.LEFT, x + 10, y + (height - 8) / 2, renderedMessage);
+            guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font, renderedMessage, x + 10, y + (height - 8) / 2, 0xFFFFFFFF, false);
         } else {
-            textCollector.accept(TextAlignment.CENTER, x + width / 2,
-                    y + (height - 8) / 2, renderedMessage);
+            guiGraphics.drawCenteredString(net.minecraft.client.Minecraft.getInstance().font, renderedMessage, x + width / 2, y + (height - 8) / 2, 0xFFFFFFFF);
         }
     }
 

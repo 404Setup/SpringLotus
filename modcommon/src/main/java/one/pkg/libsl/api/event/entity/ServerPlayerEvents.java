@@ -12,7 +12,6 @@ package one.pkg.libsl.api.event.entity;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -97,7 +96,7 @@ public interface ServerPlayerEvents {
      * <p>
      * This event allows registering callbacks that are executed when a {@link ServerPlayer}
      * triggers a leave action. All registered {@code Leave} callbacks are invoked with the
-     * player information as input.
+     * player packet as input.
      * <p>
      * The event is an implementation of {@link Event}, constructed with a functional interface
      * {@link Leave} that defines the {@code onLeave} method. When a player leaves, the event
@@ -215,15 +214,15 @@ public interface ServerPlayerEvents {
      * options that the server needs to be aware of.
      * <p>
      * Registered listeners for this event are invoked in order, each handling the changes for the specific player
-     * and their updated client settings encapsulated in the provided information.
+     * and their updated client settings encapsulated in the provided packet.
      * <p>
      * The event uses the {@link Event} mechanism to manage and invoke the {@link ClientOptionsChanged} callbacks.
      */
     Event<ClientOptionsChanged> CLIENT_OPTIONS_CHANGED = Event.create(ClientOptionsChanged.class,
             callbacks ->
-                    (player, information) -> {
+                    (player, packet) -> {
                         for (ClientOptionsChanged callback : callbacks) {
-                            callback.onClientOptionsChanged(player, information);
+                            callback.onClientOptionsChanged(player, packet);
                         }
                     });
 
@@ -353,9 +352,9 @@ public interface ServerPlayerEvents {
          * its configuration or settings.
          *
          * @param player      the server-side player whose client options have changed
-         * @param information the updated client information containing the new settings or options
+         * @param packet the updated client packet containing the new settings or options
          */
-        void onClientOptionsChanged(ServerPlayer player, ClientInformation information);
+        void onClientOptionsChanged(ServerPlayer player, net.minecraft.network.protocol.game.ServerboundClientInformationPacket packet);
     }
 
     /**

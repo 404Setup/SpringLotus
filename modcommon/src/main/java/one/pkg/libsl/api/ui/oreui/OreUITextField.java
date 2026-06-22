@@ -13,13 +13,13 @@ package one.pkg.libsl.api.ui.oreui;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A native Minecraft text field (EditBox) component styled to look like an OreUI TextField.
@@ -138,7 +138,7 @@ public class OreUITextField extends EditBox {
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NotNull GuiGraphics guiGraphics,
                                          int mouseX, int mouseY, float partialTick) {
         int x = this.fullX;
         int y = this.fullY;
@@ -152,8 +152,7 @@ public class OreUITextField extends EditBox {
         if (this.hasTitle) {
             Component renderedMessage = active ? this.renderedMessageActive : this.renderedMessageInactive;
 
-            extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                    .accept(TextAlignment.LEFT, x, y, renderedMessage);
+            guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font, renderedMessage, x, y, 0xFFFFFFFF, false);
         }
 
         int boxX = this.fullX;
@@ -161,14 +160,14 @@ public class OreUITextField extends EditBox {
         int boxWidth = this.fullWidth;
         int boxHeight = this.fullHeight - (this.hasTitle ? 20 : 0);
 
-        extractor.fill(boxX, boxY, boxX + boxWidth, boxY + boxHeight, borderColor);
-        extractor.fill(boxX + 2, boxY + 2, boxX + boxWidth - 2, boxY + boxHeight - 2, bgColor);
+        guiGraphics.fill(boxX, boxY, boxX + boxWidth, boxY + boxHeight, borderColor);
+        guiGraphics.fill(boxX + 2, boxY + 2, boxX + boxWidth - 2, boxY + boxHeight - 2, bgColor);
         if (active) {
-            extractor.fill(boxX + 2, boxY + 2, boxX + boxWidth - 2, boxY + 6, innerShadowColor);
+            guiGraphics.fill(boxX + 2, boxY + 2, boxX + boxWidth - 2, boxY + 6, innerShadowColor);
         }
 
         this.setTextColor(active ? 0xFFFFFFFF : 0xFF48494A);
-        super.extractWidgetRenderState(extractor, mouseX, mouseY, partialTick);
+        super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     /**

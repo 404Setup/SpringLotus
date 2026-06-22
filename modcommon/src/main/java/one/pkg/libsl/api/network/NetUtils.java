@@ -12,7 +12,6 @@ package one.pkg.libsl.api.network;
 
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import org.jetbrains.annotations.NotNull;
@@ -31,17 +30,17 @@ public class NetUtils {
      * @param payloads The payloads.
      * @return The packet.
      */
-    public static Packet<? super ClientGamePacketListener> makeClientbound(@NotNull CustomPacketPayload... payloads) {
+    public static Packet<? super ClientGamePacketListener> makeClientbound(@NotNull Object... payloads) {
         if (payloads.length == 1) {
             return makeClientbound(payloads[0]);
         }
         List<Packet<? super ClientGamePacketListener>> packets = new ArrayList<>(payloads.length);
 
-        for (CustomPacketPayload payload : payloads) {
+        for (Object payload : payloads) {
             packets.add(makeClientbound(payload));
         }
 
-        return new ClientboundBundlePacket(packets);
+        return new ClientboundBundlePacket((Iterable<net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener>>)(Object)packets);
     }
 
     /**
@@ -51,18 +50,18 @@ public class NetUtils {
      * @return The packet.
      */
     public static Packet<? super ClientGamePacketListener> makeClientbound(
-            @NotNull Collection<? extends CustomPacketPayload> payloads
+            @NotNull Collection<? extends Object> payloads
     ) {
         if (payloads.size() == 1) {
             return makeClientbound(payloads.iterator().next());
         }
         List<Packet<? super ClientGamePacketListener>> packets = new ArrayList<>(payloads.size());
 
-        for (CustomPacketPayload payload : payloads) {
+        for (Object payload : payloads) {
             packets.add(makeClientbound(payload));
         }
 
-        return new ClientboundBundlePacket(packets);
+        return new ClientboundBundlePacket((Iterable<net.minecraft.network.protocol.Packet<net.minecraft.network.protocol.game.ClientGamePacketListener>>)(Object)packets);
     }
 
     /**
@@ -71,7 +70,7 @@ public class NetUtils {
      * @param payload The payload.
      * @return The packet.
      */
-    public static Packet<? super ClientGamePacketListener> makeClientbound(@NotNull CustomPacketPayload payload) {
-        return new ClientboundCustomPayloadPacket(payload);
+    public static Packet<? super ClientGamePacketListener> makeClientbound(@NotNull Object payload) {
+        return null /* TODO 1.20.1 packet */;
     }
 }

@@ -14,16 +14,13 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.options.OptionsSubScreen;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.CommonComponents;
@@ -33,7 +30,7 @@ import one.pkg.libsl.api.ui.oreui.OreUIButton;
 import one.pkg.libsl.api.ui.oreui.OreUIScrollList;
 import one.pkg.libsl.api.ui.oreui.OreUITextField;
 import one.pkg.libsl.api.ui.seeui.annotations.DisplayMode;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -44,7 +41,7 @@ import java.util.Map;
 /**
  * A configuration screen using OreUI components.
  */
-public class OreUIConfigScreen extends OptionsSubScreen {
+public class OreUIConfigScreen extends Screen {
     private final Class<?> configClass;
     private final Runnable onSaved;
     private final String keyword;
@@ -123,10 +120,10 @@ public class OreUIConfigScreen extends OptionsSubScreen {
     }
 
     @Override
-    public void extractRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void extractRenderState(@NotNull GuiGraphics guiGraphics,
                                    int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(extractor, mouseX, mouseY, partialTick);
-        extractor.textRenderer().accept(
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.textRenderer().accept(
                 net.minecraft.client.gui.TextAlignment.CENTER,
                 this.width / 2, 20,
                 this.cachedTitle
@@ -205,9 +202,9 @@ public class OreUIConfigScreen extends OptionsSubScreen {
                     rightWidth - 20);
         }
 
-        OreUIButton doneBtn = OreUIButton.oreUIBuilder(CommonComponents.GUI_DONE, (_) -> {
+        OreUIButton doneBtn = OreUIButton.oreUIBuilder(CommonComponents.GUI_DONE, btn -> {
                     if (onSaved != null) onSaved.run();
-                    this.minecraft.gui.setScreen(this.lastScreen);
+                    this.minecraft.setScreen(this.lastScreen);
                 }).pos(this.width / 2 - 100, this.height - 40).size(200, 24)
                 .style(OreUIButton.Style.GREEN).build();
         this.addRenderableWidget(doneBtn);
@@ -230,7 +227,7 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             OreUIConfigEntry entry = createEntry(pf.field(), pf.group(), pf.key(), pf.comment(),
                     pf.min(), pf.max(), pf.mode(), pf.displayMode());
             if (entry != null) categoriesMap.computeIfAbsent(pf.group(),
-                    (_) -> new ArrayList<>()).add(entry);
+                    k -> new ArrayList<>()).add(entry);
         }
     }
 
@@ -288,25 +285,23 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             }
 
             @Override
-            protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+            protected void updateWidgetNarration(@NotNull NarrationElementOutput output) {
             }
 
             @Override
-            protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+            protected void renderWidget(@NotNull GuiGraphics guiGraphics,
                                                     int mouseX, int mouseY, float partialTick) {
-                int textY = this.getY() + (this.getHeight() - totalTextHeight) / 2;
+                int textY = this.y0 + (this.height - totalTextHeight) / 2;
 
                 for (Component tLine : precalculatedTitleLines) {
-                    extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                            .accept(TextAlignment.LEFT, this.getX() + 10, textY, tLine);
+                    guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font, tLine, this.getX() + 10, textY, 0xFFFFFFFF, false);
                     textY += 12;
                 }
 
                 if (!precalculatedTooltipLines.isEmpty()) {
                     textY += 2;
                     for (Component line : precalculatedTooltipLines) {
-                        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                                .accept(TextAlignment.LEFT, this.getX() + 10, textY, line);
+                        guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font, line, this.getX() + 10, textY, 0xFFFFFFFF, false);
                         textY += 12;
                     }
                 }
@@ -384,44 +379,42 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             @Override
             public void setY(int y) {
                 super.setY(y);
-                component.setY(y + (this.getHeight() - compHeight) / 2);
+                component.setY(y + (this.height - compHeight) / 2);
             }
 
             @Override
-            protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+            protected void renderWidget(@NotNull GuiGraphics guiGraphics,
                                                     int mouseX, int mouseY, float partialTick) {
-                extractor.fill(this.getX(), this.getY() + this.getHeight() - 1,
+                guiGraphics.fill(this.getX(), this.y0 + this.height - 1,
                         this.getX() + this.getWidth(),
-                        this.getY() + this.getHeight(), 0x33FFFFFF);
+                        this.y0 + this.height, 0x33FFFFFF);
 
-                int textY = this.getY() + (this.getHeight() - totalTextHeight) / 2;
+                int textY = this.y0 + (this.height - totalTextHeight) / 2;
 
                 for (Component tLine : precalculatedTitleLines) {
-                    extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                            .accept(TextAlignment.LEFT, this.getX() + 10, textY, tLine);
+                    guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font, tLine, this.getX() + 10, textY, 0xFFFFFFFF, false);
                     textY += 12;
                 }
 
                 if (!precalculatedTooltipLines.isEmpty()) {
                     textY += 2; // Extra space between title and tooltip
                     for (Component line : precalculatedTooltipLines) {
-                        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                                .accept(TextAlignment.LEFT, this.getX() + 10, textY, line);
+                        guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font, line, this.getX() + 10, textY, 0xFFFFFFFF, false);
                         textY += 12;
                     }
                 }
 
                 component.setX(this.getX() + this.getWidth() - compWidth - 10);
-                component.setY(this.getY() + (this.getHeight() - compHeight) / 2);
+                component.setY(this.y0 + (this.height - compHeight) / 2);
                 component.setWidth(compWidth);
                 component.setHeight(compHeight);
 
-                component.extractRenderState(extractor, mouseX, mouseY, partialTick);
+                component.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
             }
 
             @Override
-            public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDouble) {
-                if (component.isMouseOver(event.x(), event.y())) {
+            public boolean mouseClicked(double mouseX, double mouseY, int button) {
+                if (component.isMouseOver(mouseX, mouseY)) {
                     boolean result = component.mouseClicked(event, isDouble);
                     if (result && !(component instanceof OreUITextField)) {
                         component.setFocused(false);
@@ -435,16 +428,16 @@ public class OreUIConfigScreen extends OptionsSubScreen {
                 if (component instanceof OreUITextField) {
                     component.setFocused(false);
                 }
-                return super.mouseClicked(event, isDouble);
+                return super.mouseClicked(mouseX, mouseY, button);
             }
 
             @Override
-            public boolean mouseReleased(@NonNull MouseButtonEvent event) {
+            public boolean mouseReleased(@NotNull MouseButtonEvent event) {
                 return component.mouseReleased(event);
             }
 
             @Override
-            public boolean mouseDragged(@NonNull MouseButtonEvent event, double dragX, double dragY) {
+            public boolean mouseDragged(@NotNull MouseButtonEvent event, double dragX, double dragY) {
                 return component.mouseDragged(event, dragX, dragY);
             }
 
@@ -454,22 +447,22 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             }
 
             @Override
-            protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+            protected void updateWidgetNarration(@NotNull NarrationElementOutput output) {
                 component.updateNarration(output);
             }
 
             @Override
-            public boolean charTyped(@NonNull CharacterEvent event) {
+            public boolean charTyped(char codePoint, int modifiers) {
                 return component.charTyped(event);
             }
 
             @Override
-            public boolean keyPressed(@NonNull KeyEvent event) {
+            public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
                 return component.keyPressed(event);
             }
 
             @Override
-            public boolean keyReleased(@NonNull KeyEvent event) {
+            public boolean keyReleased(@NotNull KeyEvent event) {
                 return component.keyReleased(event);
             }
 

@@ -12,15 +12,15 @@ package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.gui.GuiGraphics;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.NonNull;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class OreUIDialog extends Screen {
     private boolean showCancel = true;
     private Component confirmText = CommonComponents.GUI_DONE;
     private Component cancelText = CommonComponents.GUI_CANCEL;
-    private net.minecraft.resources.Identifier image;
+    private net.minecraft.resources.ResourceLocation image;
     private int imageWidth;
     private int imageHeight;
     private int scrollOffset = 0;
@@ -105,7 +105,7 @@ public class OreUIDialog extends Screen {
      * @param height The image height.
      * @return This dialog instance.
      */
-    public OreUIDialog show(Identifier image, int width, int height) {
+    public OreUIDialog show(ResourceLocation image, int width, int height) {
         this.image = image;
         this.imageWidth = width;
         this.imageHeight = height;
@@ -257,13 +257,13 @@ public class OreUIDialog extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         if (this.maxScroll > 0) {
             this.scrollOffset -= (int) (scrollY * 20);
-            this.scrollOffset = Math.clamp(this.scrollOffset, 0, this.maxScroll);
+            this.scrollOffset = net.minecraft.util.Mth.clamp(this.scrollOffset, 0, this.maxScroll);
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     private void close() {
@@ -278,58 +278,57 @@ public class OreUIDialog extends Screen {
         this.close();
     }
 
-    @Override
-    public void extractBackground(@NonNull GuiGraphicsExtractor extractor,
+    public void renderBackground(@NotNull GuiGraphics guiGraphics,
                                   int mouseX, int mouseY, float partialTick) {
         // Do nothing here to prevent double rendering.
     }
 
-    private void drawModalBackground(@NonNull GuiGraphicsExtractor extractor, float partialTick) {
+    private void drawModalBackground(@NotNull GuiGraphics guiGraphics, float partialTick) {
         float animProgress = isClosing ?
                 1.0f - Math.min(1.0f, (System.currentTimeMillis() - closeTime) / 150.0f) :
                 Math.min(1.0f, (System.currentTimeMillis() - openTime) / 150.0f);
 
         if (isClosing && animProgress <= 0) {
-            this.minecraft.gui.setScreen(this.lastScreen);
+            this.minecraft.setScreen(this.lastScreen);
             return;
         }
 
         int alpha = (int) (0xAA * animProgress);
-        extractor.fill(0, 0, this.width, this.height, (alpha << 24));
+        guiGraphics.fill(0, 0, this.width, this.height, (alpha << 24));
 
         int startX = (this.width - this.modalWidth) / 2;
         int startY = (this.height - this.modalHeight) / 2;
 
 
         int bgColor = 0xFF313233;
-        extractor.fill(startX, startY, startX + this.modalWidth, startY + this.modalHeight, bgColor);
+        guiGraphics.fill(startX, startY, startX + this.modalWidth, startY + this.modalHeight, bgColor);
 
         int titleHeight = 40;
         int titleBgColor = 0xFF48494A;
-        extractor.fill(startX, startY, startX + this.modalWidth, startY + titleHeight, titleBgColor);
+        guiGraphics.fill(startX, startY, startX + this.modalWidth, startY + titleHeight, titleBgColor);
 
-        one.pkg.libsl.api.ui.oreui.OreUIRenderUtils.drawText(extractor, one.pkg.libsl.api.ui.oreui.TextAlignment.CENTER, startX + this.modalWidth / 2, startY + (titleHeight - 8) / 2, this.styledTitle);
+        guiGraphics.drawCenteredString(net.minecraft.client.Minecraft.getInstance().font, this.styledTitle, startX + this.modalWidth / 2, startY + (titleHeight - 8) / 2, 0xFFFFFFFF);
 
 
-        extractor.fill(startX, startY, startX + this.modalWidth,
+        guiGraphics.fill(startX, startY, startX + this.modalWidth,
                 startY + 2, 0x33FFFFFF);
-        extractor.fill(startX, startY, startX + 2,
+        guiGraphics.fill(startX, startY, startX + 2,
                 startY + titleHeight, 0x33FFFFFF);
-        extractor.fill(startX + this.modalWidth - 2,
+        guiGraphics.fill(startX + this.modalWidth - 2,
                 startY, startX + this.modalWidth, startY + titleHeight, 0x1AFFFFFF);
-        extractor.fill(startX, startY + titleHeight - 2,
+        guiGraphics.fill(startX, startY + titleHeight - 2,
                 startX + this.modalWidth, startY + titleHeight, 0x1AFFFFFF);
     }
 
     @Override
-    public void extractRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void extractRenderState(@NotNull GuiGraphics guiGraphics,
                                    int mouseX, int mouseY, float partialTick) {
         if (this.lastScreen != null) {
-            this.lastScreen.extractBackground(extractor, mouseX, mouseY, partialTick);
-            this.lastScreen.extractRenderState(extractor, mouseX, mouseY, partialTick);
+            this.lastScreen.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+            this.lastScreen.render(guiGraphics, mouseX, mouseY, partialTick);
         }
 
-        drawModalBackground(extractor, partialTick);
+        drawModalBackground(guiGraphics, partialTick);
 
         float animProgress = isClosing ?
                 1.0f - Math.min(1.0f, (System.currentTimeMillis() - closeTime) / 150.0f) :
@@ -340,18 +339,18 @@ public class OreUIDialog extends Screen {
             int startY = (this.height - this.modalHeight) / 2;
             int textY = startY + 40 + 15 - this.scrollOffset;
 
-            extractor.enableScissor(startX, startY + 40, startX + this.modalWidth, startY + this.modalHeight - 40);
+            guiGraphics.enableScissor(startX, startY + 40, startX + this.modalWidth, startY + this.modalHeight - 40);
 
             if (this.image != null) {
                 int imgX = startX + (this.modalWidth - this.imageWidth) / 2;
-                extractor.blit(this.image, imgX, textY, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+                guiGraphics.blit(this.image, imgX, textY, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
                 textY += this.imageHeight + 10;
             }
 
             if (this.content != null) {
                 List<net.minecraft.util.FormattedCharSequence> lines = this.minecraft.font.split(this.content, this.modalWidth - 40);
                 for (var line : lines) {
-                    one.pkg.libsl.api.ui.oreui.OreUIRenderUtils.drawText(extractor, one.pkg.libsl.api.ui.oreui.TextAlignment.LEFT, startX + 20, textY, line);
+                    guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font, line, startX + 20, textY, 0xFFFFFFFF, false);
                     textY += 12;
                 }
             }
@@ -361,9 +360,9 @@ public class OreUIDialog extends Screen {
             // If they are to be scrolled, we would need to manually draw them or adjust their Y.
             // For now, only text and image scroll.
 
-            extractor.disableScissor();
+            guiGraphics.disableScissor();
 
-            super.extractRenderState(extractor, mouseX, mouseY, partialTick);
+            super.render(guiGraphics, mouseX, mouseY, partialTick);
 
             if (this.maxScroll > 0) {
                 int scrollbarWidth = 4;
@@ -377,8 +376,8 @@ public class OreUIDialog extends Screen {
                 int scrollYEnd = startY + this.modalHeight - 40;
 
                 // Draw track
-                extractor.fill(scrollbarX, scrollYStart, scrollbarX + scrollbarWidth, scrollYEnd, trackColor);
-                extractor.fill(scrollbarX + 1, scrollYStart, scrollbarX + scrollbarWidth - 1, scrollYEnd, trackInnerColor);
+                guiGraphics.fill(scrollbarX, scrollYStart, scrollbarX + scrollbarWidth, scrollYEnd, trackColor);
+                guiGraphics.fill(scrollbarX + 1, scrollYStart, scrollbarX + scrollbarWidth - 1, scrollYEnd, trackInnerColor);
 
                 // Draw thumb
                 int totalHeight = listHeight + this.maxScroll;
@@ -390,7 +389,7 @@ public class OreUIDialog extends Screen {
                         mouseY >= scrollYStart && mouseY <= scrollYEnd;
                 int thumbColor = hovered ? 0xFFFFFFFF : 0xFFD0D1D4;
 
-                extractor.fill(scrollbarX + 1, thumbY + 1, scrollbarX + scrollbarWidth - 1,
+                guiGraphics.fill(scrollbarX + 1, thumbY + 1, scrollbarX + scrollbarWidth - 1,
                         thumbY + thumbHeight - 1, thumbColor);
             }
         }

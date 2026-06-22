@@ -10,21 +10,9 @@
 
 package one.pkg.libsl.api.instance;
 
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ProblemReporter;
-
 /**
  * An interface representing a block entity that can be loaded with components.
  */
 @SuppressWarnings("unused")
 public interface AsBlockEntity {
-    /**
-     * Loads the block entity with components from a NBT tag.
-     *
-     * @param problemReporter the problem reporter
-     * @param registryAccess the registry access
-     * @param tag the NBT tag
-     */
-    void loadWithComponents(ProblemReporter problemReporter, RegistryAccess registryAccess, CompoundTag tag);
 }

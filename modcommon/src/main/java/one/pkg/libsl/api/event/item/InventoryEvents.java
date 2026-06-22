@@ -12,7 +12,7 @@ package one.pkg.libsl.api.event.item;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerInput;
+
 import one.pkg.libsl.api.event.Event;
 
 /**
@@ -89,6 +89,6 @@ public interface InventoryEvents {
          * further listeners from being invoked.
          */
         boolean onClicked(AbstractContainerMenu menu, int slotIndex,
-                          int buttonNum, ContainerInput containerInput, Player player);
+                          int buttonNum, Object containerInput, Player player);
     }
 }

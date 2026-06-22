@@ -15,7 +15,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import one.pkg.libsl.api.ui.seeui.annotations.DisplayMode;
@@ -29,7 +29,7 @@ import java.util.Map;
 /**
  * A configuration screen using standard Minecraft UI components.
  */
-public class SeeUIConfigScreen extends OptionsSubScreen {
+public class SeeUIConfigScreen extends Screen {
     private final Class<?> configClass;
     private final Runnable onSaved;
     private final String keyword;
@@ -67,9 +67,9 @@ public class SeeUIConfigScreen extends OptionsSubScreen {
 
     @Override
     protected void addFooter() {
-        this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, (_) -> {
+        this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, btn -> {
             if (onSaved != null) onSaved.run();
-            this.minecraft.gui.setScreen(this.lastScreen);
+            this.minecraft.setScreen(this.lastScreen);
         }).width(200).build());
     }
 
@@ -81,7 +81,7 @@ public class SeeUIConfigScreen extends OptionsSubScreen {
         List<ConfigParserCache.ParsedField> parsedFields = ConfigParserCache.getParsedFields(configClass);
         for (ConfigParserCache.ParsedField pf : parsedFields) {
             ConfigEntry entry = createEntry(pf.field(), pf.group(), pf.key(), pf.comment(), pf.min(), pf.max(), pf.mode(), pf.displayMode());
-            if (entry != null) categories.computeIfAbsent(pf.group(), _ -> new ArrayList<>()).add(entry);
+            if (entry != null) categories.computeIfAbsent(pf.group(), k -> new ArrayList<>()).add(entry);
         }
 
         for (Map.Entry<String, List<ConfigEntry>> category : categories.entrySet()) {

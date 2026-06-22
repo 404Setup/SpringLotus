@@ -12,14 +12,14 @@ package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.gui.GuiGraphics;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A native Minecraft slider component styled to look like an OreUI slider.
@@ -85,12 +85,12 @@ public class OreUISlider extends AbstractSliderButton {
     }
 
     @Override
-    public void updateWidgetNarration(@NonNull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {
         this.defaultButtonNarrationText(narrationElementOutput);
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NotNull GuiGraphics guiGraphics,
                                          int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
@@ -108,7 +108,7 @@ public class OreUISlider extends AbstractSliderButton {
             this.displayedValue = this.value;
         }
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
+        guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE)
                 .accept(TextAlignment.RIGHT, x + width, y,
                         disabled ? cachedMessageInactive : cachedMessageActive);
 
@@ -121,12 +121,12 @@ public class OreUISlider extends AbstractSliderButton {
         int trackBgColor = disabled ? 0xFFCFD0D4 : 0xFF8C8D90;
         int trackProcessColor = disabled ? 0xFFCFD0D4 : 0xFF3C8527;
 
-        extractor.fill(x, trackY, x + width, trackY + trackHeight, trackBorderColor);
-        extractor.fill(x + 2, trackY + 2, x + width - 2, trackY + trackHeight - 2, trackBgColor);
+        guiGraphics.fill(x, trackY, x + width, trackY + trackHeight, trackBorderColor);
+        guiGraphics.fill(x + 2, trackY + 2, x + width - 2, trackY + trackHeight - 2, trackBgColor);
 
         int fillWidth = (int) (this.displayedValue * (width - 4));
         if (fillWidth > 0) {
-            extractor.fill(x + 2, trackY + 2, x + 2 + fillWidth,
+            guiGraphics.fill(x + 2, trackY + 2, x + 2 + fillWidth,
                     trackY + trackHeight - 2, trackProcessColor);
         }
 
@@ -136,13 +136,13 @@ public class OreUISlider extends AbstractSliderButton {
         int thumbBorderColor = disabled ? 0xFF8C8D90 : 0xFF1E1E1F;
         int thumbBgColor = disabled ? 0xFFCFD0D4 : (hovered ? 0xFFB1B2B5 : 0xFFD0D1D4);
 
-        extractor.fill(thumbX, thumbY, thumbX + thumbWidth, thumbY + thumbHeight, thumbBorderColor);
+        guiGraphics.fill(thumbX, thumbY, thumbX + thumbWidth, thumbY + thumbHeight, thumbBorderColor);
 
-        extractor.fill(thumbX + 2, thumbY + 2, thumbX + thumbWidth - 2,
+        guiGraphics.fill(thumbX + 2, thumbY + 2, thumbX + thumbWidth - 2,
                 thumbY + thumbHeight - 2, thumbBgColor);
 
         int shadowColor = disabled ? 0xFFB0B1B5 : 0xFF58585A;
-        extractor.fill(thumbX + 2, thumbY + thumbHeight - 4,
+        guiGraphics.fill(thumbX + 2, thumbY + thumbHeight - 4,
                 thumbX + thumbWidth - 2, thumbY + thumbHeight - 2, shadowColor);
     }
 

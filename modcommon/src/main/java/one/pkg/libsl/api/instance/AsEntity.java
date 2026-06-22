@@ -10,13 +10,9 @@
 
 package one.pkg.libsl.api.instance;
 
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.entity.PortalProcessor;
 import net.minecraft.world.phys.Vec3;
 import one.pkg.libsl.api.Vec3d;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * An interface representing an entity.
@@ -24,40 +20,22 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("unused")
 public interface AsEntity {
     /**
-     * Gets the position of the entity.
-     *
-     * @return the position
+     * Gets the position of the entity.      *      * @return the position
      */
     Vec3d getPos();
 
     /**
-     * Gets the portal processor of the entity.
-     *
-     * @return the portal processor, or null if not applicable
+     * Loads the entity from a NBT tag.      *      * @param problemReporter the problem reporter      * @param registryAccess  the registry access      * @param tag             the NBT tag
      */
-    @Nullable
-    PortalProcessor getPortalProcessor();
+    void load(CompoundTag tag);
 
     /**
-     * Loads the entity from a NBT tag.
-     *
-     * @param problemReporter the problem reporter
-     * @param registryAccess  the registry access
-     * @param tag             the NBT tag
-     */
-    void load(ProblemReporter problemReporter, RegistryAccess registryAccess, CompoundTag tag);
-
-    /**
-     * Teleports the entity to the specified position.
-     *
-     * @param pos The target position to teleport to.
+     * Teleports the entity to the specified position.      *      * @param pos The target position to teleport to.
      */
     void teleportTo(Vec3d pos);
 
     /**
-     * Teleports the entity to the specified position.
-     *
-     * @param pos the target position to which the entity should be teleported
+     * Teleports the entity to the specified position.      *      * @param pos the target position to which the entity should be teleported
      */
     void teleportTo(Vec3 pos);
 }

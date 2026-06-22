@@ -66,6 +66,6 @@ public class SharedConfigGUI extends Screen {
 
     @Override
     protected void init() {
-        minecraft.gui.setScreen(builder.build());
+        minecraft.setScreen(builder.build());
     }
 }

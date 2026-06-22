@@ -27,7 +27,7 @@ public interface CLoader {
      */
     default void setScreen(Function<Screen, Screen> function) {
         Minecraft.getInstance().execute(() ->
-                Minecraft.getInstance().gui.setScreen(function.apply(Minecraft.getInstance().gui.screen())));
+                Minecraft.getInstance().setScreen(function.apply(Minecraft.getInstance().screen)));
     }
 
     /**

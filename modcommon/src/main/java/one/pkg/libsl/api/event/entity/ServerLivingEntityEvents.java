@@ -13,7 +13,7 @@ package one.pkg.libsl.api.event.entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.LivingEntity;
 import one.pkg.libsl.api.event.Event;
 
@@ -200,6 +200,6 @@ public interface ServerLivingEntityEvents {
          * @param spawnReason The reason or circumstances for the entity's spawn attempt.
          * @return {@code true} if the spawn attempt should be allowed, or {@code false} to prevent the entity from spawning.
          */
-        boolean onPreSpawn(LivingEntity entity, ServerLevel level, BlockPos spawnPos, EntitySpawnReason spawnReason);
+        boolean onPreSpawn(LivingEntity entity, ServerLevel level, BlockPos spawnPos, MobSpawnType spawnReason);
     }
 }

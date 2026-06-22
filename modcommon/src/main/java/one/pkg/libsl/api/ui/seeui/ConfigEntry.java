@@ -13,7 +13,6 @@ package one.pkg.libsl.api.ui.seeui;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.CycleButton;
@@ -21,7 +20,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.util.regex.Pattern;
@@ -131,7 +130,7 @@ public abstract class ConfigEntry {
         @Override
         public AbstractWidget createWidget(int x, int y, int width, int height) {
             return CycleButton.onOffBuilder(value)
-                    .create(x, y, width, height, getLabel(), (_, newValue) -> {
+                    .create(x, y, width, height, getLabel(), (btn, newValue) -> {
                         this.value = newValue;
                         this.save();
                     });
@@ -186,7 +185,7 @@ public abstract class ConfigEntry {
                 private final Component inactiveLabel = getMessage().copy().withStyle(net.minecraft.network.chat.Style.EMPTY.withColor(0xFF48494A));
 
                 @Override
-                public void extractWidgetRenderState(net.minecraft.client.gui.GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
+                public void renderWidget(net.minecraft.client.gui.GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                     int x = getX();
                     int y = getY();
                     int width = getWidth();
@@ -195,7 +194,7 @@ public abstract class ConfigEntry {
 
                     int padding = 4;
 
-                    extractor.textRendererForWidget(this, net.minecraft.client.gui.GuiGraphicsExtractor.HoveredTextEffects.NONE)
+                    guiGraphics.textRendererForWidget(this, net.minecraft.client.gui.GuiGraphics.HoveredTextEffects.NONE)
                             .accept(net.minecraft.client.gui.TextAlignment.LEFT, x, y + (height - 8) / 2, active ? activeLabel : inactiveLabel);
 
                     int boxX = x + labelWidth + padding;
@@ -203,8 +202,8 @@ public abstract class ConfigEntry {
 
                     this.setX(boxX);
                     this.setWidth(boxWidth);
-                    super.extractWidgetRenderState(extractor, mouseX, mouseY, partialTick);
-                    this.setX(x);
+                    super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+                    
                     this.setWidth(width);
                 }
             };
@@ -273,7 +272,7 @@ public abstract class ConfigEntry {
                 private final Component inactiveLabel = getMessage().copy().withStyle(net.minecraft.network.chat.Style.EMPTY.withColor(0xFF48494A));
 
                 @Override
-                public void extractWidgetRenderState(net.minecraft.client.gui.GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
+                public void renderWidget(net.minecraft.client.gui.GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                     int x = getX();
                     int y = getY();
                     int width = getWidth();
@@ -282,7 +281,7 @@ public abstract class ConfigEntry {
 
                     int padding = 4;
 
-                    extractor.textRendererForWidget(this, net.minecraft.client.gui.GuiGraphicsExtractor.HoveredTextEffects.NONE)
+                    guiGraphics.textRendererForWidget(this, net.minecraft.client.gui.GuiGraphics.HoveredTextEffects.NONE)
                             .accept(net.minecraft.client.gui.TextAlignment.LEFT, x, y + (height - 8) / 2, active ? activeLabel : inactiveLabel);
 
                     int boxX = x + labelWidth + padding;
@@ -290,8 +289,8 @@ public abstract class ConfigEntry {
 
                     this.setX(boxX);
                     this.setWidth(boxWidth);
-                    super.extractWidgetRenderState(extractor, mouseX, mouseY, partialTick);
-                    this.setX(x);
+                    super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+                    
                     this.setWidth(width);
                 }
             };
@@ -360,7 +359,7 @@ public abstract class ConfigEntry {
                 private final Component inactiveLabel = getMessage().copy().withStyle(net.minecraft.network.chat.Style.EMPTY.withColor(0xFF48494A));
 
                 @Override
-                public void extractWidgetRenderState(net.minecraft.client.gui.GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
+                public void renderWidget(net.minecraft.client.gui.GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
                     int x = getX();
                     int y = getY();
                     int width = getWidth();
@@ -369,7 +368,7 @@ public abstract class ConfigEntry {
 
                     int padding = 4;
 
-                    extractor.textRendererForWidget(this, net.minecraft.client.gui.GuiGraphicsExtractor.HoveredTextEffects.NONE)
+                    guiGraphics.textRendererForWidget(this, net.minecraft.client.gui.GuiGraphics.HoveredTextEffects.NONE)
                             .accept(net.minecraft.client.gui.TextAlignment.LEFT, x, y + (height - 8) / 2, active ? activeLabel : inactiveLabel);
 
                     int boxX = x + labelWidth + padding;
@@ -377,8 +376,8 @@ public abstract class ConfigEntry {
 
                     this.setX(boxX);
                     this.setWidth(boxWidth);
-                    super.extractWidgetRenderState(extractor, mouseX, mouseY, partialTick);
-                    this.setX(x);
+                    super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+                    
                     this.setWidth(width);
                 }
             };
@@ -456,7 +455,7 @@ public abstract class ConfigEntry {
                         return idx >= 0 ? optionComponents.get(idx) : Component.literal(val);
                     }, () -> value)
                     .withValues(optionKeys)
-                    .create(x, y, width, height, getLabel(), (_, newValue) -> {
+                    .create(x, y, width, height, getLabel(), (btn, newValue) -> {
                         this.value = newValue;
                         this.save();
                     });
@@ -559,12 +558,12 @@ public abstract class ConfigEntry {
                 }
 
                 @Override
-                public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
-                    super.extractWidgetRenderState(extractor, mouseX, mouseY, partialTick);
+                public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+                    super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
                 }
 
                 @Override
-                public void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+                public void updateWidgetNarration(@NotNull NarrationElementOutput output) {
                 }
             };
         }

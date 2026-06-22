@@ -11,12 +11,10 @@
 package one.pkg.libsl.api.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.ServerCommonPacketListener;
 import net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import one.pkg.libsl.api.loader.JavaLoader;
@@ -53,7 +51,7 @@ public interface INet {
      * @param channelName the channel name
      * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
      */
-    boolean canSend(ServerPlayer player, Identifier channelName);
+    boolean canSend(ServerPlayer player, ResourceLocation channelName);
 
     /**
      * Checks if the connected client declared the ability to receive the specified payload.
@@ -62,7 +60,7 @@ public interface INet {
      * @param payload The payload.
      * @return True if the payload can be sent, false otherwise.
      */
-    boolean canSend(ServerPlayer player, CustomPacketPayload payload);
+    
 
     /**
      * Checks if the connected client declared the ability to receive a specific type of packet.
@@ -71,7 +69,7 @@ public interface INet {
      * @param type   the packet type
      * @return {@code true} if the connected client has declared the ability to receive a specific type of packet
      */
-    boolean canSend(@NotNull ServerPlayer player, CustomPacketPayload.Type<?> type);
+    boolean canSend(@NotNull ServerPlayer player, Object.Type<?> type);
 
     /**
      * Checks if the connected client declared the ability to receive a packet on a specified channel name.
@@ -80,7 +78,7 @@ public interface INet {
      * @param channelName the channel name
      * @return {@code true} if the connected client has declared the ability to receive a packet on the specified channel
      */
-    boolean canSend(ServerGamePacketListenerImpl listener, Identifier channelName);
+    boolean canSend(ServerGamePacketListenerImpl listener, ResourceLocation channelName);
 
     /**
      * Checks if the connected client declared the ability to receive a specific type of packet.
@@ -89,7 +87,7 @@ public interface INet {
      * @param type     the packet type
      * @return {@code true} if the connected client has declared the ability to receive a specific type of packet
      */
-    boolean canSend(ServerGamePacketListenerImpl listener, CustomPacketPayload.Type<?> type);
+    
 
     /**
      * Checks if the connected client declared the ability to receive the specified payload.
@@ -98,7 +96,7 @@ public interface INet {
      * @param payload  The payload.
      * @return True if the payload can be sent, false otherwise.
      */
-    boolean canSend(ServerGamePacketListenerImpl listener, CustomPacketPayload payload);
+    
 
 
     /**
@@ -111,8 +109,8 @@ public interface INet {
      * @param serverBound whether it can be sent to the server
      * @param <T>         the packet type
      */
-    <T extends CustomPacketPayload> void registerPayload(
-            @NotNull CustomPacketPayload.Type<T> type,
+    <T extends Object> void registerPayload(
+            @NotNull net.minecraft.resources.ResourceLocation type,
             @NotNull StreamCodec<FriendlyByteBuf, T> codec,
             @Nullable NetSrc.Direction direction,
             boolean clientBound,
@@ -126,8 +124,8 @@ public interface INet {
      * @param handler the handler
      * @param <T>     the packet type
      */
-    <T extends CustomPacketPayload> void serverHandler(
-            @NotNull CustomPacketPayload.Type<T> type,
+    <T extends Object> void serverHandler(
+            @NotNull net.minecraft.resources.ResourceLocation type,
             @NotNull NetHandler handler
     );
 
@@ -138,8 +136,8 @@ public interface INet {
      * @param handler the handler
      * @param <T>     the packet type
      */
-    <T extends CustomPacketPayload> void clientHandler(
-            @NotNull CustomPacketPayload.Type<T> type,
+    <T extends Object> void clientHandler(
+            @NotNull net.minecraft.resources.ResourceLocation type,
             @NotNull CNetHandler handler
     );
 
@@ -150,7 +148,7 @@ public interface INet {
      * @param player   the player
      * @param payloads the payloads
      */
-    default void send(@NotNull ServerPlayer player, @NotNull CustomPacketPayload... payloads) {
+    default void send(@NotNull ServerPlayer player, @NotNull Object... payloads) {
         player.connection.send(NetUtils.makeClientbound(payloads));
     }
 
@@ -160,7 +158,7 @@ public interface INet {
      * @param player   the player
      * @param payloads the payloads
      */
-    default void send(@NotNull ServerPlayer player, @NotNull Collection<? extends CustomPacketPayload> payloads) {
+    default void send(@NotNull ServerPlayer player, @NotNull Collection<? extends Object> payloads) {
         player.connection.send(NetUtils.makeClientbound(payloads));
     }
 
@@ -170,7 +168,7 @@ public interface INet {
      * @param payloads The payloads to send.
      */
     @SuppressWarnings("all")
-    default void broadcast(@NotNull CustomPacketPayload... payloads) {
+    default void broadcast(@NotNull Object... payloads) {
         var server = JavaLoader.INSTANCE.server();
         if (server != null)
             server.getPlayerList().broadcastAll(NetUtils.makeClientbound(payloads));
@@ -182,7 +180,7 @@ public interface INet {
      * @param payload The payload.
      * @return The packet.
      */
-    default Packet<ServerCommonPacketListener> createServerboundPacket(CustomPacketPayload payload) {
-        return new ServerboundCustomPayloadPacket(payload);
+    default Packet<ServerCommonPacketListener> createServerboundPacket(Object payload) {
+        return null /* TODO 1.20.1 packet */;
     }
 }

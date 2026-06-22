@@ -12,12 +12,13 @@ package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.gui.GuiGraphics;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import org.jspecify.annotations.NonNull;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A native Minecraft component styled to display an image for OreUI.
@@ -25,7 +26,7 @@ import org.jspecify.annotations.NonNull;
 @SuppressWarnings("unused")
 public class OreUIImage extends AbstractWidget {
 
-    private final Identifier image;
+    private final ResourceLocation image;
     private final int textureWidth;
     private final int textureHeight;
 
@@ -40,7 +41,7 @@ public class OreUIImage extends AbstractWidget {
      * @param textureWidth  The full texture width.
      * @param textureHeight The full texture height.
      */
-    public OreUIImage(int x, int y, int width, int height, Identifier image, int textureWidth, int textureHeight) {
+    public OreUIImage(int x, int y, int width, int height, ResourceLocation image, int textureWidth, int textureHeight) {
         super(x, y, width, height, Component.empty());
         this.image = image;
         this.textureWidth = textureWidth;
@@ -56,16 +57,16 @@ public class OreUIImage extends AbstractWidget {
      * @param height The image height.
      * @param image  The image identifier.
      */
-    public OreUIImage(int x, int y, int width, int height, Identifier image) {
+    public OreUIImage(int x, int y, int width, int height, ResourceLocation image) {
         this(x, y, width, height, image, width, height);
     }
 
     @Override
-    protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput output) {
     }
 
     @Override
-    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
-        extractor.blit(this.image, getX(), getY(), 0, 0, getWidth(), getHeight(), this.textureWidth, this.textureHeight);
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        guiGraphics.blit(this.image, getX(), getY(), 0, 0, getWidth(), getHeight(), this.textureWidth, this.textureHeight);
     }
 }

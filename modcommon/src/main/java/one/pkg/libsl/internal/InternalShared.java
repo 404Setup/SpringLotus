@@ -10,8 +10,7 @@
 
 package one.pkg.libsl.internal;
 
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import one.pkg.libsl.Static;
 
@@ -26,8 +25,8 @@ public class InternalShared {
      * @param id The path for the identifier.
      * @return The identifier.
      */
-    public static Identifier of(String id) {
-        return Identifier.fromNamespaceAndPath(Static.MOD_ID, id);
+    public static ResourceLocation of(String id) {
+        return ResourceLocation.fromNamespaceAndPath(Static.MOD_ID, id);
     }
 
     /**
@@ -37,8 +36,8 @@ public class InternalShared {
      * @param <T> The payload type.
      * @return The payload type instance.
      */
-    public static <T extends CustomPacketPayload> CustomPacketPayload.Type<T> type(String id) {
-        return new CustomPacketPayload.Type<>(of(id));
+    public static net.minecraft.resources.ResourceLocation type(String id) {
+        return new net.minecraft.resources.ResourceLocation("springlotus", id);
     }
 
     /**
@@ -47,8 +46,8 @@ public class InternalShared {
      * @param player The player.
      */
     public static void sendDialog(ServerPlayer player) {
-        /*for (Map.Entry<Identifier, ModConfig> entry : ConfigRegistry.getConfigEntries()) {
-            Identifier location = entry.getKey();
+        /*for (Map.Entry<ResourceLocation, ModConfig> entry : ConfigRegistry.getConfigEntries()) {
+            ResourceLocation location = entry.getKey();
             ModConfig config = entry.getValue();
 
             if (location.toString().contains("client")) continue;

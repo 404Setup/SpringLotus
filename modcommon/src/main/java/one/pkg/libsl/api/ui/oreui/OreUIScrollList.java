@@ -13,14 +13,12 @@ package one.pkg.libsl.api.ui.oreui;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A native Minecraft scrolling list component styled to look like an OreUI scroll view.
@@ -40,6 +38,9 @@ import org.jspecify.annotations.NonNull;
  */
 @SuppressWarnings("unused")
 public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUIScrollListEntry> {
+    @Override
+    public void updateNarration(net.minecraft.client.gui.narration.NarrationElementOutput output) {}
+
     private final int itemHeight;
 
     /**
@@ -53,9 +54,9 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
      * @param itemHeight The height of each item in the list.
      */
     protected OreUIScrollList(Minecraft minecraft, int x, int y, int width, int height, int itemHeight) {
-        super(minecraft, width, height, y, itemHeight);
+        super(minecraft, width, height, y, height, itemHeight);
         this.itemHeight = itemHeight;
-        this.setX(x);
+        
     }
 
     /**
@@ -69,12 +70,12 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean isDouble) {
-        double mouseX = event.x();
-        double mouseY = event.y();
+        double mouseX = mouseX;
+        double mouseY = mouseY;
 
-        if (this.scrollable() && mouseX >= this.scrollBarX() && mouseX <= this.scrollBarX() + 4 &&
-                mouseY >= this.getY() && mouseY <= this.getY() + this.getHeight()) {
-            return super.mouseClicked(event, isDouble);
+        if ((this.getMaxScroll() > 0) && mouseX >= this.getScrollbarPosition() && mouseX <= this.getScrollbarPosition() + 4 &&
+                mouseY >= this.top && mouseY <= this.top + this.height) {
+            return super.mouseClicked(mouseX, mouseY, button);
         }
 
         for (OreUIScrollListEntry entry : this.children()) {
@@ -87,29 +88,29 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
                 }
             }
         }
-        return super.mouseClicked(event, isDouble);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         for (OreUIScrollListEntry entry : this.children()) {
             if (entry.getChildWidget() instanceof OreUIDropdown dropdown) {
                 if (dropdown.isExpanded() && dropdown.isMouseOver(mouseX, mouseY)) {
-                    if (dropdown.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
+                    if (dropdown.mouseScrolled(mouseX, mouseY, scrollY)) {
                         return true;
                     }
                 }
             }
         }
 
-        double prevScroll = this.scrollAmount();
-        boolean handled = super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        double prevScroll = this.getScrollAmount();
+        boolean handled = super.mouseScrolled(mouseX, mouseY, scrollY);
 
         // Workaround for SmoothScrolling mod which reverts scrollAmount
         // Since we override extractScrollbar without calling super, their animation never happens,
         // resulting in the scrollbar getting stuck. We force the scroll update here.
-        if (handled && prevScroll == this.scrollAmount() && scrollY != 0) {
-            this.setScrollAmount(this.scrollAmount() - scrollY * ((double) this.itemHeight / 2.0));
+        if (handled && prevScroll == this.getScrollAmount() && scrollY != 0) {
+            this.setScrollAmount(this.getScrollAmount() - scrollY * ((double) this.itemHeight / 2.0));
         }
 
         return handled;
@@ -121,7 +122,7 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
      * @param entry The entry to add.
      */
     public void addScrollEntry(OreUIScrollListEntry entry) {
-        this.addEntry(entry, Math.max(this.itemHeight, entry.getChildWidget().getHeight()));
+        this.addEntry(entry);
     }
 
     /**
@@ -132,74 +133,70 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NotNull GuiGraphics guiGraphics,
                                          int mouseX, int mouseY, float partialTick) {
-        super.extractWidgetRenderState(extractor, mouseX, mouseY, partialTick);
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        extractor.nextStratum();
+        
         for (OreUIScrollListEntry entry : this.children()) {
             if (entry.getChildWidget() instanceof OreUIDropdown dropdown) {
                 if (dropdown.isExpanded()) {
-                    dropdown.extractExpandedList(extractor, mouseX, mouseY, partialTick);
+                    dropdown.extractExpandedList(guiGraphics, mouseX, mouseY, partialTick);
                 }
             }
         }
     }
 
-    @Override
-    protected void extractListBackground(@NonNull GuiGraphicsExtractor extractor) {
+    protected void extractListBackground(@NotNull GuiGraphics guiGraphics) {
         int bgColor = 0x80000000;
-        extractor.fill(this.getX(), this.getY(), this.getX() + this.getWidth(),
-                this.getY() + this.getHeight(), bgColor);
+        guiGraphics.fill(this.left, this.top, this.left + this.width,
+                this.top + this.height, bgColor);
     }
 
     @Override
     public int getRowWidth() {
-        return this.getWidth() - 16;
+        return this.width - 16;
     }
 
     @Override
     protected int scrollBarX() {
-        return this.getX() + this.getWidth() - 6;
+        return this.left + this.width - 6;
     }
 
-    @Override
-    protected void extractListSeparators(@NonNull GuiGraphicsExtractor extractor) {
+    protected void extractListSeparators(@NotNull GuiGraphics guiGraphics) {
         // No explicit separators
     }
 
-    @Override
-    protected void extractScrollbar(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY) {
-        if (!this.scrollable()) {
+    protected void extractScrollbar(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if (!(this.getMaxScroll() > 0)) {
             return;
         }
 
-        int scrollbarX = this.scrollBarX();
+        int scrollbarX = this.getScrollbarPosition();
         int scrollbarWidth = 4;
-        int scrollerHeight = this.scrollerHeight();
-        int scrollerY = this.scrollBarY();
+        int scrollerHeight = 0 /* scrollerHeight */;
+        int scrollerY = 0 /* scrollBarY */;
 
         boolean hovered = mouseX >= scrollbarX && mouseX <= scrollbarX + scrollbarWidth &&
-                mouseY >= this.getY() && mouseY <= this.getBottom();
+                mouseY >= this.top && mouseY <= this.bottom;
 
         int trackColor = 0xFF1E1E1F;
-        extractor.fill(scrollbarX, this.getY(), scrollbarX + scrollbarWidth, this.getBottom(), trackColor);
-        extractor.fill(scrollbarX + 1, this.getY(), scrollbarX + scrollbarWidth - 1, this.getBottom(), 0xFF48494A);
+        guiGraphics.fill(scrollbarX, this.top, scrollbarX + scrollbarWidth, this.bottom, trackColor);
+        guiGraphics.fill(scrollbarX + 1, this.top, scrollbarX + scrollbarWidth - 1, this.bottom, 0xFF48494A);
 
         int thumbColor = hovered ? 0xFFFFFFFF : 0xFFD0D1D4;
 
-        extractor.fill(scrollbarX + 1, scrollerY + 1, scrollbarX + scrollbarWidth - 1,
+        guiGraphics.fill(scrollbarX + 1, scrollerY + 1, scrollbarX + scrollbarWidth - 1,
                 scrollerY + scrollerHeight - 1, thumbColor);
     }
 
-    @Override
-    protected void extractSelection(@NonNull GuiGraphicsExtractor extractor,
-                                    @NonNull OreUIScrollListEntry entry, int i) {
+    protected void extractSelection(@NotNull GuiGraphics guiGraphics,
+                                    @NotNull OreUIScrollListEntry entry, int i) {
         // Do not render focus box
     }
 
     @Override
-    protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+    protected void updateWidgetNarration(@NotNull NarrationElementOutput output) {
     }
 
     /**
@@ -227,7 +224,7 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
         }
 
         @Override
-        public void extractContent(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY,
+        public void extractContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY,
                                    boolean hovered, float partialTick) {
             int width = this.getContentWidth();
             int x = this.getContentX();
@@ -237,36 +234,36 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
             this.childWidget.setY(y);
             this.childWidget.setWidth(width);
 
-            this.childWidget.extractRenderState(extractor, mouseX, mouseY, partialTick);
+            this.childWidget.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         @Override
-        public boolean mouseClicked(@NonNull MouseButtonEvent event, boolean isDouble) {
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
             return this.childWidget.mouseClicked(event, isDouble);
         }
 
         @Override
-        public boolean mouseReleased(@NonNull MouseButtonEvent event) {
+        public boolean mouseReleased(@NotNull MouseButtonEvent event) {
             return this.childWidget.mouseReleased(event);
         }
 
         @Override
-        public boolean mouseDragged(@NonNull MouseButtonEvent event, double dragX, double dragY) {
+        public boolean mouseDragged(@NotNull MouseButtonEvent event, double dragX, double dragY) {
             return this.childWidget.mouseDragged(event, dragX, dragY);
         }
 
         @Override
-        public boolean keyPressed(@NonNull KeyEvent event) {
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
             return this.childWidget.keyPressed(event);
         }
 
         @Override
-        public boolean keyReleased(@NonNull KeyEvent event) {
+        public boolean keyReleased(@NotNull KeyEvent event) {
             return this.childWidget.keyReleased(event);
         }
 
         @Override
-        public boolean charTyped(@NonNull CharacterEvent event) {
+        public boolean charTyped(char codePoint, int modifiers) {
             return this.childWidget.charTyped(event);
         }
 

@@ -971,7 +971,7 @@ public class Vec3d {
     public Vec3d clone() {
         try {
             return (Vec3d) super.clone();
-        } catch (CloneNotSupportedException _) {
+        } catch (CloneNotSupportedException ignored) {
             return null;
         }
     }

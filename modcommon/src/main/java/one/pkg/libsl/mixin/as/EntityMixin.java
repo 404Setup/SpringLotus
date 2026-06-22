@@ -11,18 +11,14 @@
 package one.pkg.libsl.mixin.as;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.SyncedDataHolder;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.util.debug.DebugValueSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.RelativeMovement;
+
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityAccess;
-import net.minecraft.world.level.storage.TagValueInput;
-import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.ScoreHolder;
 import one.pkg.libsl.api.Vec3d;
@@ -35,13 +31,7 @@ import java.util.Set;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements AsEntity,
         EntityAccess,
-        ScoreHolder,
-        SyncedDataHolder,
-        DataComponentGetter,
-        ItemOwner,
-        SlotProvider,
-        DebugValueSource,
-        TypedInstance<EntityType<?>> {
+        ScoreHolder {
     @Shadow
     public double xo;
 
@@ -60,10 +50,10 @@ public abstract class EntityMixin implements AsEntity,
     private Level level;
 
     @Shadow
-    public abstract void load(ValueInput input);
+    public abstract void load(CompoundTag input);
 
     @Shadow
-    public abstract boolean teleportTo(ServerLevel level, double x, double y, double z, Set<Relative> relatives, float newYRot, float newXRot, boolean resetCamera);
+    public abstract boolean teleportTo(ServerLevel level, double x, double y, double z, Set<RelativeMovement> relatives, float newYRot, float newXRot, boolean resetCamera);
 
     @Shadow
     public abstract void teleportTo(double x, double y, double z);
@@ -79,8 +69,8 @@ public abstract class EntityMixin implements AsEntity,
     }
 
     @Override
-    public void load(ProblemReporter problemReporter, RegistryAccess registryAccess, CompoundTag tag) {
-        load(TagValueInput.create(problemReporter, registryAccess, tag));
+    public void load(CompoundTag tag) {
+        load(TagCompoundTag.create(problemReporter, registryAccess, tag));
     }
 
     @Override

@@ -11,19 +11,17 @@
 package one.pkg.libsl.api.network;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 /**
  * A container for network packet information.
  *
  * @param <T> The type of the custom packet payload.
  */
-public class NetSrc<T extends CustomPacketPayload> {
+public class NetSrc<T extends Object> {
     /**
      * The type of the custom packet payload.
      */
-    public CustomPacketPayload.Type<T> TYPE;
+    public net.minecraft.resources.ResourceLocation TYPE;
 
     /**
      * The codec for the custom packet payload.
@@ -62,7 +60,7 @@ public class NetSrc<T extends CustomPacketPayload> {
      * @param codec   The packet codec.
      * @param handler The server-side handler.
      */
-    public NetSrc(CustomPacketPayload.Type<T> type,
+    public NetSrc(net.minecraft.resources.ResourceLocation type,
                   StreamCodec<FriendlyByteBuf, T> codec,
                   NetHandler handler) {
         TYPE = type;
@@ -77,7 +75,7 @@ public class NetSrc<T extends CustomPacketPayload> {
      * @param type  The packet type.
      * @param codec The packet codec.
      */
-    public NetSrc(CustomPacketPayload.Type<T> type,
+    public NetSrc(net.minecraft.resources.ResourceLocation type,
                   StreamCodec<FriendlyByteBuf, T> codec) {
         TYPE = type;
         CODEC = codec;
@@ -92,7 +90,7 @@ public class NetSrc<T extends CustomPacketPayload> {
      * @param codec   The packet codec.
      * @param handler The client-side handler.
      */
-    public NetSrc(CustomPacketPayload.Type<T> type,
+    public NetSrc(net.minecraft.resources.ResourceLocation type,
                   StreamCodec<FriendlyByteBuf, T> codec,
                   CNetHandler handler) {
         TYPE = type;

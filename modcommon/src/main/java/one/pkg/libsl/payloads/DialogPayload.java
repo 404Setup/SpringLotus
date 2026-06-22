@@ -12,13 +12,10 @@ package one.pkg.libsl.payloads;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import one.pkg.libsl.api.loader.JavaLoader;
 import one.pkg.libsl.api.ui.oreui.OreUIDialog;
 import one.pkg.libsl.internal.InternalShared;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A packet payload for showing a dialog on the client.
@@ -31,11 +28,11 @@ public record DialogPayload(
         String title,
         String desc,
         boolean showCanceled
-) implements CustomPacketPayload {
+)  {
     /**
      * The type of the dialog payload.
      */
-    public static final CustomPacketPayload.Type<DialogPayload> TYPE = InternalShared.type("dialog");
+    public static final net.minecraft.resources.ResourceLocation TYPE = new net.minecraft.resources.ResourceLocation("springlotus", "dialog");
 
     /**
      * The codec for the dialog payload.
@@ -49,7 +46,7 @@ public record DialogPayload(
                     DialogPayload::new);
 
     @Override
-    public @NonNull Type<? extends CustomPacketPayload> type() {
+    public @NotNull net.minecraft.resources.ResourceLocation type() {
         return TYPE;
     }
 

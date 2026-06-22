@@ -13,16 +13,15 @@ package one.pkg.libsl.api.ui.oreui;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -113,7 +112,7 @@ public class OreUISwitch extends AbstractWidget {
     }
 
     @Override
-    public void onClick(@NonNull MouseButtonEvent event, boolean isDouble) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDouble) {
         if (this.active) {
             this.setState(!this.state);
             this.playDownSound(Minecraft.getInstance().getSoundManager());
@@ -121,12 +120,12 @@ public class OreUISwitch extends AbstractWidget {
     }
 
     @Override
-    public void updateWidgetNarration(@NonNull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {
         this.defaultButtonNarrationText(narrationElementOutput);
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NotNull GuiGraphics guiGraphics,
                                          int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
@@ -136,10 +135,7 @@ public class OreUISwitch extends AbstractWidget {
         boolean disabled = !active;
         boolean hovered = isHoveredOrFocused() || isHovered();
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                .accept(TextAlignment.LEFT, x,
-                        y + (height - 8) / 2,
-                        disabled ? cachedMessageInactive : cachedMessageActive);
+        guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font, disabled ? cachedMessageInactive : cachedMessageActive, x, y + (height - 8) / 2, 0xFFFFFFFF, false);
 
         int switchWidth = 24;
         int switchX = x + width - switchWidth;
@@ -158,7 +154,7 @@ public class OreUISwitch extends AbstractWidget {
         int trackHeight = 12;
         int trackY = y + (height - trackHeight) / 2;
 
-        extractor.fill(switchX, trackY, switchX + switchWidth, trackY + trackHeight, borderColor);
+        guiGraphics.fill(switchX, trackY, switchX + switchWidth, trackY + trackHeight, borderColor);
 
         int thumbWidth = 10;
         int thumbHeight = 10;
@@ -170,28 +166,28 @@ public class OreUISwitch extends AbstractWidget {
         int splitX = thumbX + thumbWidth / 2;
 
         if (disabled) {
-            extractor.fill(switchX + 1, trackY + 1, switchX + switchWidth - 1,
+            guiGraphics.fill(switchX + 1, trackY + 1, switchX + switchWidth - 1,
                     trackY + trackHeight - 1, 0xFFD0D1D4);
         } else {
-            extractor.fill(switchX + 1, trackY + 1, splitX,
+            guiGraphics.fill(switchX + 1, trackY + 1, splitX,
                     trackY + trackHeight - 1, 0xFF3C8527);
-            extractor.fill(splitX, trackY + 1, switchX + switchWidth - 1,
+            guiGraphics.fill(splitX, trackY + 1, switchX + switchWidth - 1,
                     trackY + trackHeight - 1, 0xFF8C8D90);
         }
 
         int thumbBorderColor = disabled ? 0xFF8C8D90 : 0xFF1E1E1F;
         int thumbBgColor = disabled ? 0xFFD0D1D4 : (hovered ? 0xFFB1B2B5 : 0xFFD0D1D4);
 
-        extractor.fill(thumbX, thumbY, thumbX + thumbWidth,
+        guiGraphics.fill(thumbX, thumbY, thumbX + thumbWidth,
                 thumbY + thumbHeight, thumbBorderColor);
-        extractor.fill(thumbX + 1, thumbY + 1, thumbX + thumbWidth - 1,
+        guiGraphics.fill(thumbX + 1, thumbY + 1, thumbX + thumbWidth - 1,
                 thumbY + thumbHeight - 1, thumbBgColor);
 
         if (!disabled) {
-            extractor.fill(thumbX + 1, thumbY + thumbHeight - 2,
+            guiGraphics.fill(thumbX + 1, thumbY + thumbHeight - 2,
                     thumbX + thumbWidth - 1, thumbY + thumbHeight - 1, 0xFF58585A);
         } else {
-            extractor.fill(thumbX + 1, thumbY + thumbHeight - 2,
+            guiGraphics.fill(thumbX + 1, thumbY + thumbHeight - 2,
                     thumbX + thumbWidth - 1, thumbY + thumbHeight - 1, 0xFFB1B2B5);
         }
     }

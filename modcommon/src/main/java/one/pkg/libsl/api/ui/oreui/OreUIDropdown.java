@@ -13,15 +13,14 @@ package one.pkg.libsl.api.ui.oreui;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +143,7 @@ public class OreUIDropdown extends AbstractWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         if (expanded && maxVisibleOptions < options.size()) {
             if (scrollY > 0) {
                 scrollOffset = Math.max(0, scrollOffset - 1);
@@ -153,7 +152,7 @@ public class OreUIDropdown extends AbstractWidget {
             }
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     /**
@@ -209,11 +208,11 @@ public class OreUIDropdown extends AbstractWidget {
     }
 
     @Override
-    public void onClick(@NonNull MouseButtonEvent event, boolean isDouble) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDouble) {
         if (!this.active) return;
 
-        int mouseX = (int) event.x();
-        int mouseY = (int) event.y();
+        int mouseX = (int) mouseX;
+        int mouseY = (int) mouseY;
 
         this.playDownSound(Minecraft.getInstance().getSoundManager());
 
@@ -235,12 +234,12 @@ public class OreUIDropdown extends AbstractWidget {
     }
 
     @Override
-    public void updateWidgetNarration(@NonNull NarrationElementOutput narrationElementOutput) {
+    public void updateWidgetNarration(@NotNull NarrationElementOutput narrationElementOutput) {
         this.defaultButtonNarrationText(narrationElementOutput);
     }
 
     @Override
-    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    protected void renderWidget(@NotNull GuiGraphics guiGraphics,
                                             int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
@@ -254,8 +253,8 @@ public class OreUIDropdown extends AbstractWidget {
         int borderColor = disabled ? 0xFF8C8D90 : 0xFF1E1E1F;
         int textColor = disabled ? 0xFF48494A : 0xFFFFFFFF;
 
-        extractor.fill(x, y, x + width, y + collapsedHeight, borderColor);
-        extractor.fill(x + 2, y + 2, x + width - 2, y + collapsedHeight - 2, bgColor);
+        guiGraphics.fill(x, y, x + width, y + collapsedHeight, borderColor);
+        guiGraphics.fill(x + 2, y + 2, x + width - 2, y + collapsedHeight - 2, bgColor);
 
         Component displayText;
         if (selectedIndex >= 0) {
@@ -264,9 +263,7 @@ public class OreUIDropdown extends AbstractWidget {
             displayText = disabled ? cachedMessageInactive : cachedMessageActive;
         }
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                .accept(TextAlignment.CENTER, x + width / 2, y + (collapsedHeight - 8) / 2,
-                        displayText);
+        guiGraphics.drawCenteredString(net.minecraft.client.Minecraft.getInstance().font, displayText, x + width / 2, y + (collapsedHeight - 8) / 2, 0xFFFFFFFF);
 
         if (!expanded) {
             calculateExpansionDirection();
@@ -279,7 +276,7 @@ public class OreUIDropdown extends AbstractWidget {
             arrow = disabled ? ARROW_DOWN_INACTIVE : ARROW_DOWN_ACTIVE;
         }
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
+        guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE)
                 .accept(TextAlignment.RIGHT, x + width - 8, y + (collapsedHeight - 8) / 2,
                         arrow);
     }
@@ -287,12 +284,12 @@ public class OreUIDropdown extends AbstractWidget {
     /**
      * Renders the expanded list of options.
      *
-     * @param extractor   The graphics extractor.
+     * @param extractor   The graphics guiGraphics.
      * @param mouseX      The mouse x-position.
      * @param mouseY      The mouse y-position.
      * @param partialTick The partial tick time.
      */
-    public void extractExpandedList(@NonNull GuiGraphicsExtractor extractor,
+    public void extractExpandedList(@NotNull GuiGraphics guiGraphics,
                                     int mouseX, int mouseY, float partialTick) {
         if (!expanded) return;
 
@@ -305,9 +302,9 @@ public class OreUIDropdown extends AbstractWidget {
         int listY = expandUpwards ? getY() - maxVisibleOptions * collapsedHeight : getY() + collapsedHeight;
         int listHeight = maxVisibleOptions * collapsedHeight;
 
-        extractor.fill(x + 2, listY + 2, x + width + 2, listY + listHeight + 2, 0x40000000);
-        extractor.fill(x, listY, x + width, listY + listHeight, borderColor);
-        extractor.fill(x + 1, listY + 1, x + width - 1, listY + listHeight - 1, 0xFFD0D1D4);
+        guiGraphics.fill(x + 2, listY + 2, x + width + 2, listY + listHeight + 2, 0x40000000);
+        guiGraphics.fill(x, listY, x + width, listY + listHeight, borderColor);
+        guiGraphics.fill(x + 1, listY + 1, x + width - 1, listY + listHeight - 1, 0xFFD0D1D4);
 
         for (int i = 0; i < maxVisibleOptions; i++) {
             int optionIndex = scrollOffset + i;
@@ -322,16 +319,13 @@ public class OreUIDropdown extends AbstractWidget {
                 itemBgColor = 0xFFB1B2B5;
             }
 
-            extractor.fill(x + 1, optionY, x + width - 1, optionY + collapsedHeight, itemBgColor);
+            guiGraphics.fill(x + 1, optionY, x + width - 1, optionY + collapsedHeight, itemBgColor);
 
             if (i > 0) {
-                extractor.fill(x + 1, optionY, x + width - 1, optionY + 1, 0xFFB1B2B5);
+                guiGraphics.fill(x + 1, optionY, x + width - 1, optionY + 1, 0xFFB1B2B5);
             }
 
-            extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                    .accept(TextAlignment.CENTER, x + width / 2,
-                            optionY + (collapsedHeight - 8) / 2,
-                            disabled ? cachedOptionsInactive.get(optionIndex) : cachedOptionsActive.get(optionIndex));
+            guiGraphics.drawCenteredString(net.minecraft.client.Minecraft.getInstance().font, disabled ? cachedOptionsInactive.get(optionIndex) : cachedOptionsActive.get(optionIndex), x + width / 2, optionY + (collapsedHeight - 8) / 2, 0xFFFFFFFF);
         }
 
         if (maxVisibleOptions < options.size()) {
@@ -342,8 +336,8 @@ public class OreUIDropdown extends AbstractWidget {
             int trackInnerColor = 0xFF48494A;
 
             // Draw track
-            extractor.fill(scrollbarX, listY, scrollbarX + scrollbarWidth, listY + listHeight, trackColor);
-            extractor.fill(scrollbarX + 1, listY, scrollbarX + scrollbarWidth - 1, listY + listHeight, trackInnerColor);
+            guiGraphics.fill(scrollbarX, listY, scrollbarX + scrollbarWidth, listY + listHeight, trackColor);
+            guiGraphics.fill(scrollbarX + 1, listY, scrollbarX + scrollbarWidth - 1, listY + listHeight, trackInnerColor);
 
             // Draw thumb
             int thumbHeight = Math.max(8, (int) ((float) listHeight * maxVisibleOptions / options.size()));
@@ -354,7 +348,7 @@ public class OreUIDropdown extends AbstractWidget {
                     mouseY >= listY && mouseY <= listY + listHeight;
             int thumbColor = hovered ? 0xFFFFFFFF : 0xFFD0D1D4;
 
-            extractor.fill(scrollbarX + 1, thumbY + 1, scrollbarX + scrollbarWidth - 1,
+            guiGraphics.fill(scrollbarX + 1, thumbY + 1, scrollbarX + scrollbarWidth - 1,
                     thumbY + thumbHeight - 1, thumbColor);
         }
     }

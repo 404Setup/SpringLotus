@@ -12,13 +12,13 @@ package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.gui.GuiGraphics;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A native Minecraft tag component styled to look like an OreUI tag.
@@ -76,26 +76,21 @@ public class OreUITag extends AbstractWidget {
     }
 
     @Override
-    public void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+    public void updateWidgetNarration(@NotNull NarrationElementOutput output) {
         this.defaultButtonNarrationText(output);
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NotNull GuiGraphics guiGraphics,
                                          int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
         int width = getWidth();
         int height = getHeight();
 
-        extractor.fill(x, y, x + width, y + height, style.bgColor);
+        guiGraphics.fill(x, y, x + width, y + height, style.bgColor);
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                .accept(TextAlignment.CENTER,
-                        x + width / 2,
-                        y + (height - 8) / 2,
-                        this.cachedMessage
-                );
+        guiGraphics.drawCenteredString(net.minecraft.client.Minecraft.getInstance().font, this.cachedMessage, x + width / 2, y + (height - 8) / 2, 0xFFFFFFFF);
     }
 
     /**

@@ -16,23 +16,20 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import one.pkg.libsl.api.loader.JavaLoader;
 import one.pkg.libsl.api.ui.oreui.OreUIDialog;
 import one.pkg.libsl.internal.InternalShared;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class DialogsPayload implements CustomPacketPayload {
+public class DialogsPayload  {
     /**
      * The type of the dialogs payload.
      */
-    public static final CustomPacketPayload.Type<DialogsPayload> TYPE = InternalShared.type("dialogs");
+    public static final net.minecraft.resources.ResourceLocation TYPE = new net.minecraft.resources.ResourceLocation("springlotus", "dialogs");
     /**
      * The codec for the dialogs payload.
      */
@@ -76,7 +73,7 @@ public class DialogsPayload implements CustomPacketPayload {
     }
 
     @Override
-    public @NonNull Type<? extends CustomPacketPayload> type() {
+    public @NotNull net.minecraft.resources.ResourceLocation type() {
         return TYPE;
     }
 
@@ -110,13 +107,13 @@ public class DialogsPayload implements CustomPacketPayload {
                                 .cancelText(Component.literal(index == 0 ? "Close" : "Previous"))
                                 .onConfirm(() -> {
                                     if (index < payload.dialogPayloads.length - 1) {
-                                        Minecraft.getInstance().gui.setScreen(actualLastScreen);
+                                        Minecraft.getInstance().setScreen(actualLastScreen);
                                         showDialog(payload, index + 1, actualLastScreen);
                                     }
                                 })
                                 .onCancel(() -> {
                                     if (index > 0) {
-                                        Minecraft.getInstance().gui.setScreen(actualLastScreen);
+                                        Minecraft.getInstance().setScreen(actualLastScreen);
                                         showDialog(payload, index - 1, actualLastScreen);
                                     }
                                 });

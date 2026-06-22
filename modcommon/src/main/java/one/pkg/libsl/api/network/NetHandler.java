@@ -10,7 +10,6 @@
 
 package one.pkg.libsl.api.network;
 
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerConfigurationPacketListenerImpl;
@@ -29,5 +28,5 @@ public interface NetHandler {
      * @param payload  The packet payload.
      * @return A Runnable to be executed on the server thread, or null.
      */
-    Runnable handle(MinecraftServer server, @Nullable ServerPlayer player, @Nullable ServerConfigurationPacketListenerImpl listener, CustomPacketPayload payload);
+    Runnable handle(MinecraftServer server, @Nullable ServerPlayer player, @Nullable ServerConfigurationPacketListenerImpl listener, Object payload);
 }
