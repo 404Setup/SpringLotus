@@ -3,6 +3,7 @@ plugins {
     id("libsl-publish")
     alias(libs.plugins.fg.main)
     alias(libs.plugins.fg.rm)
+    alias(libs.plugins.fg.jar)
 }
 
 val modId = rootProject.property("mod_id")!! as String
@@ -13,11 +14,6 @@ renamer.enableMixinRefmaps {
     config("$modId.mixins.json")
 }
 
-renamer.classes(tasks.named<Jar>("jar")) {
-    archiveClassifier.set("srg")
-    mappings(renamer.mixin.generatedMappings)
-}
-
 minecraft {
     mappings("official", minecraftVersion)
     useDefaultAccessTransformer()
@@ -25,6 +21,22 @@ minecraft {
 
 repositories {
     minecraft.mavenizer(this)
+}
+
+jarJar.register() {
+    archiveClassifier = "dev"
+}
+
+tasks.named<Jar>("jarJar") {
+    from(configurations.getByName("jarJarClasspath")) {
+        into("META-INF/jarjar")
+    }
+}
+
+renamer.classes(tasks.named<Jar>("jarJar")) {
+    archiveClassifier.set("")
+    archiveExtension.set("jar")
+    mappings(renamer.mixin.generatedMappings)
 }
 
 dependencies {
@@ -38,14 +50,35 @@ dependencies {
     compileOnly("org.ow2.asm:asm-tree:9.9")
 
     implementation(rootProject.libs.snakeyaml)
+    "jarJar"(rootProject.libs.snakeyaml.get().toString()) {
+        jarJar.configure(this) {
+            setConstraint(true)
+            setVersion(rootProject.libs.snakeyaml.get().version)
+        }
+    }
+
     implementation(rootProject.libs.pkg.sewlia.config)
+    "jarJar"(rootProject.libs.pkg.sewlia.config.get().toString()) {
+        jarJar.configure(this) {
+            setConstraint(true)
+            setVersion(rootProject.libs.pkg.sewlia.config.get().version)
+        }
+    }
+
     implementation(libs.pkg.tinyutils)
+    "jarJar"(libs.pkg.tinyutils.get().toString()) {
+        jarJar.configure(this) {
+            setConstraint(true)
+            setVersion(libs.pkg.tinyutils.get().version)
+        }
+    }
 }
 
 renamer.mappings(minecraft.dependency.toSrg)
 
 tasks {
     named<Jar>("jar") {
+        archiveClassifier = "slim"
         manifest {
             attributes["Automatic-Module-Name"] = "one.pkg.libsl.neoforge"
         }

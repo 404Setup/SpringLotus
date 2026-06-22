@@ -20,12 +20,9 @@ import one.pkg.libsl.api.loader.JavaLoader;
 import one.pkg.libsl.internal.command.SLCommand;
 import one.pkg.libsl.internal.network.InternalNetworkInit;
 import one.pkg.libsl.neoforge.listener.BlockListener;
-import one.pkg.libsl.neoforge.listener.ChannelRegisterListener;
 import one.pkg.libsl.neoforge.listener.LifecycleListener;
 import one.pkg.libsl.neoforge.listener.ServerLivingEntityListener;
-import one.pkg.libsl.neoforge.listener.client.ClientChannelRegisterListener;
 import one.pkg.libsl.neoforge.listener.client.ClientCommandListener;
-import one.pkg.libsl.neoforge.listener.client.ClientLifecycleListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,13 +37,10 @@ public class SpringLotusMod {
         );
 
         MinecraftForge.EVENT_BUS.register(LifecycleListener.class);
-        bus.register(ChannelRegisterListener.class);
         MinecraftForge.EVENT_BUS.register(new BlockListener());
         MinecraftForge.EVENT_BUS.register(new ServerLivingEntityListener());
 
         if (JavaLoader.INSTANCE.isClient()) {
-            MinecraftForge.EVENT_BUS.register(ClientLifecycleListener.class);
-            bus.register(ClientChannelRegisterListener.class);
             MinecraftForge.EVENT_BUS.register(ClientCommandListener.class);
         }
 
