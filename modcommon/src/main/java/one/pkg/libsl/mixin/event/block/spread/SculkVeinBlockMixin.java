@@ -68,7 +68,7 @@ public abstract class SculkVeinBlockMixin extends MultifaceSpreadeableBlock impl
                 BlockState supportState = level.getBlockState(supportPos);
                 if (supportState.is(replaceTag)) {
                     BlockState defaultSculk = Blocks.SCULK.defaultBlockState();
-                    if (!BlockSpreadEvent.EVENT.canSkip() ||
+                    if (!BlockSpreadEvent.EVENT.canSkip() &&
                             !BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, defaultSculk, sourcePos, newPos)
                     ) {
                         return false;
