@@ -30,7 +30,7 @@ public class ItemStackMixin {
     private int count;
 
     @Inject(
-            method = "applyDamage(ILnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Consumer;)V",
+            method = "hurtAndBreak",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V",

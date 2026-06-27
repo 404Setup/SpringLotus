@@ -31,14 +31,14 @@ public class SculkBlockMixin {
     )
     private boolean springLotus$setBlock(
             LevelAccessor level,
-            BlockPos pos,
+            BlockPos pos1,
             BlockState state,
             int flags,
-            @Local(argsOnly = true) BlockPos originPos
+            @Local(argsOnly = true) BlockPos pos
     ) {
-        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, pos, originPos)) {
+        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, pos1, pos)) {
             return false;
         }
-        return level.setBlock(pos, state, flags);
+        return level.setBlock(pos1, state, flags);
     }
 }

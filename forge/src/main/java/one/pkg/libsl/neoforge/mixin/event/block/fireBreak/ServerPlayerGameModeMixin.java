@@ -47,10 +47,10 @@ public class ServerPlayerGameModeMixin {
     private void springlotus$onBlockBreak(
             BlockPos pos,
             CallbackInfoReturnable<Boolean> cir,
-            @Local(name = "state") BlockState state
+            @Local(name = "blockstate") BlockState blockstate
     ) {
-        if (!BlockBreakEvents.PLAYER_BREAK.invoker().onPlayerBreak(player, level, pos, state)) {
-            player.connection.send(new ClientboundBlockUpdatePacket(pos, state));
+        if (!BlockBreakEvents.PLAYER_BREAK.invoker().onPlayerBreak(player, level, pos, blockstate)) {
+            player.connection.send(new ClientboundBlockUpdatePacket(pos, blockstate));
             cir.setReturnValue(false);
         }
     }

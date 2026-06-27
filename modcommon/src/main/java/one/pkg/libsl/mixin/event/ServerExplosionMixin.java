@@ -2,7 +2,6 @@ package one.pkg.libsl.mixin.event;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
@@ -10,6 +9,7 @@ import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import one.pkg.libsl.api.event.block.BlockExplosionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public abstract class ServerExplosionMixin {
     private static final Logger clickFinder$log = LoggerFactory.getLogger(ServerExplosionMixin.class);
     @Shadow
     @Final
-    private net.minecraft.world.level.Level level;
+    private Level level;
     @Shadow
     @Final
     private Entity source;
@@ -61,6 +61,6 @@ public abstract class ServerExplosionMixin {
             }
         }
 
-        BlockExplosionEvent.EVENT.invoker().onBlockExplosion(actualSource, (ServerLevel)level, toBlow);
+        BlockExplosionEvent.EVENT.invoker().onBlockExplosion(actualSource, level, toBlow);
     }
 }

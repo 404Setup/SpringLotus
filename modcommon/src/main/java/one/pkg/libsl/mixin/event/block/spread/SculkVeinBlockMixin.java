@@ -17,7 +17,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
@@ -50,11 +50,11 @@ public abstract class SculkVeinBlockMixin extends MultifaceBlock implements Scul
             SculkVeinBlock instance,
             SculkSpreader spreader,
             LevelAccessor level,
-            BlockPos pos,
+            BlockPos pos1,
             RandomSource random,
-            @Local(argsOnly = true) BlockPos originPos
+            @Local(argsOnly = true) BlockPos pos
     ) {
-        return springLotus$attemptPlaceSculk(spreader, level, pos, originPos, random);
+        return springLotus$attemptPlaceSculk(spreader, level, pos1, pos, random);
     }
 
     @Unique
@@ -68,14 +68,14 @@ public abstract class SculkVeinBlockMixin extends MultifaceBlock implements Scul
                 BlockState supportState = level.getBlockState(supportPos);
                 if (supportState.is(replaceTag)) {
                     BlockState defaultSculk = Blocks.SCULK.defaultBlockState();
-                    if (!BlockSpreadEvent.EVENT.canSkip() ||
+                    if (!BlockSpreadEvent.EVENT.canSkip() &&
                             !BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, defaultSculk, sourcePos, newPos)
                     ) {
                         return false;
                     }
                     level.setBlock(supportPos, defaultSculk, 3);
                     Block.pushEntitiesUp(supportState, defaultSculk, level, supportPos);
-                    level.playSound((net.minecraft.world.entity.player.Player) null, supportPos, SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    level.playSound((Player) null, supportPos, SoundEvents.SCULK_BLOCK_SPREAD, SoundSource.BLOCKS, 1.0F, 1.0F);
                     this.veinSpreader.spreadAll(defaultSculk, level, supportPos, spreader.isWorldGeneration());
                     Direction skip = support.getOpposite();
 
@@ -83,7 +83,7 @@ public abstract class SculkVeinBlockMixin extends MultifaceBlock implements Scul
                         if (veinBlocks != skip) {
                             BlockPos veinPos = supportPos.relative(veinBlocks);
                             BlockState possibleVeinBlock = level.getBlockState(veinPos);
-                            if (possibleVeinBlock.is((Block)(Object)this)) {
+                            if (possibleVeinBlock.is((Block) (Object) this)) {
                                 this.onDischarged(level, possibleVeinBlock, veinPos, random);
                             }
                         }

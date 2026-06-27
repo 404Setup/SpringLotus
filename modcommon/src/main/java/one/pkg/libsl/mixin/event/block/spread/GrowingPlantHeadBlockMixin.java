@@ -43,11 +43,11 @@ public abstract class GrowingPlantHeadBlockMixin {
             BlockPos pos,
             RandomSource random,
             CallbackInfo ci,
-            @Local(name = "growthPos") BlockPos growthPos
+            @Local(name = "blockpos") BlockPos blockpos
     ) {
         if (!BlockSpreadEvent.EVENT.canSkip()) {
             if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level,
-                    getGrowIntoState(state, level.getRandom()), pos, growthPos))
+                    getGrowIntoState(state, level.getRandom()), pos, blockpos))
                 ci.cancel();
         }
     }
