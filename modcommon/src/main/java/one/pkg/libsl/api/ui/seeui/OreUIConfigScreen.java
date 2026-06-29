@@ -32,7 +32,11 @@ import one.pkg.libsl.api.ui.oreui.OreUITextField;
 import one.pkg.libsl.api.ui.seeui.annotations.DisplayMode;
 import org.jspecify.annotations.NonNull;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -50,6 +54,10 @@ public class OreUIConfigScreen extends OptionsSubScreen {
     private String activeCategory = null;
     private OreUIButton activeCategoryButton = null;
 
+    private String aboutTitle = null;
+    private String aboutCopyright = null;
+    private List<String> aboutTextLines = null;
+
     /**
      * Creates a new OreUI configuration screen.
      *
@@ -64,6 +72,7 @@ public class OreUIConfigScreen extends OptionsSubScreen {
         this.onSaved = onSaved;
         this.keyword = getKeyword(configClass);
         this.cachedTitle = this.title.copy().withStyle(Style.EMPTY.withColor(0xFFFFFFFF).withBold(true));
+        loadAboutText();
     }
 
     /**
@@ -114,6 +123,33 @@ public class OreUIConfigScreen extends OptionsSubScreen {
         return lines;
     }
 
+    private void loadAboutText() {
+        try (InputStream in = configClass.getResourceAsStream("/META-INF/ABOUT.txt")) {
+            if (in != null) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+                List<String> lines = new ArrayList<>();
+                String readLine;
+                while ((readLine = reader.readLine()) != null) {
+                    lines.add(readLine);
+                }
+                aboutTextLines = new ArrayList<>();
+                boolean parsedTitle = false;
+                for (int i = 0; i < lines.size(); i++) {
+                    String line = lines.get(i);
+                    if (i == 0 && line.startsWith("title:")) {
+                        aboutTitle = line.substring(6).trim();
+                        parsedTitle = true;
+                    } else if (i == 1 && parsedTitle && line.startsWith("copyright:")) {
+                        aboutCopyright = line.substring(10).trim();
+                    } else {
+                        aboutTextLines.add(line);
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
     @Override
     protected void repositionElements() {
         this.rebuildWidgets();
@@ -160,6 +196,8 @@ public class OreUIConfigScreen extends OptionsSubScreen {
 
         if (activeCategory == null && !categoriesMap.isEmpty()) {
             activeCategory = categoriesMap.keySet().iterator().next();
+        } else if (activeCategory == null && aboutTextLines != null) {
+            activeCategory = "ABOUT";
         }
 
         for (String catKey : categoriesMap.keySet()) {
@@ -197,9 +235,40 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             categoryList.addScrollEntry(new OreUIScrollList.OreUIScrollListEntry(catBtn));
         }
 
+        if (aboutTextLines != null) {
+            Component catName = Component.translatable("gui.about");
+
+            OreUIButton.Style btnStyle = "ABOUT".equals(activeCategory) ?
+                    OreUIButton.Style.CATEGORY_SELECTED : OreUIButton.Style.CATEGORY_UNSELECTED;
+            var btnBuilder = OreUIButton.oreUIBuilder(catName, (btn) -> {
+                activeCategory = "ABOUT";
+
+                if (activeCategoryButton != null) {
+                    activeCategoryButton.setStyle(OreUIButton.Style.CATEGORY_UNSELECTED);
+                }
+                if (btn instanceof OreUIButton oreBtn) {
+                    activeCategoryButton = oreBtn;
+                    oreBtn.setStyle(OreUIButton.Style.CATEGORY_SELECTED);
+                }
+
+                showAboutCategory(scrollList, rightWidth - 20);
+                scrollList.setScrollAmount(0);
+            }).pos(0, 0).size(leftWidth - 10, 20).style(btnStyle);
+
+            OreUIButton catBtn = btnBuilder.build();
+            if ("ABOUT".equals(activeCategory)) {
+                activeCategoryButton = catBtn;
+            }
+            categoryList.addScrollEntry(new OreUIScrollList.OreUIScrollListEntry(catBtn));
+        }
+
         if (activeCategory != null) {
-            showCategory(scrollList, activeCategory, categoriesMap.get(activeCategory),
-                    rightWidth - 20);
+            if ("ABOUT".equals(activeCategory)) {
+                showAboutCategory(scrollList, rightWidth - 20);
+            } else {
+                showCategory(scrollList, activeCategory, categoriesMap.get(activeCategory),
+                        rightWidth - 20);
+            }
         }
 
         OreUIButton doneBtn = OreUIButton.oreUIBuilder(CommonComponents.GUI_DONE, (_) -> {
@@ -231,6 +300,127 @@ public class OreUIConfigScreen extends OptionsSubScreen {
         }
     }
 
+
+    private void showAboutCategory(OreUIScrollList scrollList, int entryWidth) {
+        scrollList.clearScrollEntries();
+
+        Component headerText;
+        if (aboutTitle != null && !aboutTitle.isEmpty()) {
+            headerText = Component.literal(aboutTitle);
+        } else {
+            headerText = Component.translatable("gui.about");
+        }
+
+        Component catTooltip = null;
+        if (aboutCopyright != null && !aboutCopyright.isEmpty()) {
+            catTooltip = Component.literal(aboutCopyright);
+        }
+
+        Font font = Minecraft.getInstance().font;
+        int maxTextWidth = entryWidth - 20;
+
+        List<String> titleLines = splitStringByWidth(headerText.getString(), font, maxTextWidth, 0);
+        List<String> tooltipLines = catTooltip != null
+                ? splitStringByWidth(catTooltip.getString(), font, maxTextWidth, 0)
+                : List.of();
+
+        int _totalTextHeight = 8 + (titleLines.size() - 1) * 12;
+        if (!tooltipLines.isEmpty()) {
+            _totalTextHeight += 6 + tooltipLines.size() * 12;
+        }
+        final int totalTextHeight = _totalTextHeight;
+        int headerHeight = Math.max(30, totalTextHeight + 16);
+
+        List<Component> precalculatedTitleLines = new ArrayList<>(titleLines.size());
+        for (String tLine : titleLines) {
+            precalculatedTitleLines.add(Component.literal(tLine).withStyle(Style.EMPTY.withColor(0xFFD0D0D0)));
+        }
+
+        List<Component> precalculatedTooltipLines = new ArrayList<>(tooltipLines.size());
+        for (String line : tooltipLines) {
+            precalculatedTooltipLines.add(Component.literal(line).withStyle(Style.EMPTY.withColor(0xFFA0A0A0)));
+        }
+
+        AbstractWidget headerWidget = new AbstractWidget(0, 0, entryWidth, headerHeight, headerText) {
+            {
+                this.active = false;
+            }
+
+            @Override
+            public boolean isFocused() {
+                return false;
+            }
+
+            @Override
+            protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+            }
+
+            @Override
+            protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+                                                    int mouseX, int mouseY, float partialTick) {
+                int textY = this.getY() + (this.getHeight() - totalTextHeight) / 2;
+
+                for (Component tLine : precalculatedTitleLines) {
+                    extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
+                            .accept(TextAlignment.LEFT, this.getX() + 10, textY, tLine);
+                    textY += 12;
+                }
+
+                if (!precalculatedTooltipLines.isEmpty()) {
+                    textY += 2;
+                    for (Component line : precalculatedTooltipLines) {
+                        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
+                                .accept(TextAlignment.LEFT, this.getX() + 10, textY, line);
+                        textY += 12;
+                    }
+                }
+            }
+
+            @Override
+            public void setFocused(boolean focused) {
+            }
+        };
+        scrollList.addScrollEntry(new OreUIScrollList.OreUIScrollListEntry(headerWidget));
+
+        List<String> contentLines = new ArrayList<>();
+        for (String line : aboutTextLines) {
+            if (line.isEmpty()) {
+                contentLines.add("");
+            } else {
+                contentLines.addAll(splitStringByWidth(line, font, maxTextWidth, 0));
+            }
+        }
+
+        for (String line : contentLines) {
+            Component lineComp = Component.literal(line).withStyle(Style.EMPTY.withColor(0xFFFFFFFF));
+            AbstractWidget textWidget = new AbstractWidget(0, 0, entryWidth, 12, lineComp) {
+                {
+                    this.active = false;
+                }
+
+                @Override
+                public boolean isFocused() {
+                    return false;
+                }
+
+                @Override
+                protected void updateWidgetNarration(@NonNull NarrationElementOutput output) {
+                }
+
+                @Override
+                protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+                                                        int mouseX, int mouseY, float partialTick) {
+                    extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
+                            .accept(TextAlignment.LEFT, this.getX() + 10, this.getY() + 2, lineComp);
+                }
+
+                @Override
+                public void setFocused(boolean focused) {
+                }
+            };
+            scrollList.addScrollEntry(new OreUIScrollList.OreUIScrollListEntry(textWidget));
+        }
+    }
 
     /**
      * Shows the entries for a specific category in the scroll list.
