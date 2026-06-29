@@ -4,7 +4,7 @@
 > If you encounter situations where some functions do not work after installing this mod,
 > or if this mod breaks the behavior of other mods, please send me an issue.
 
-A Minecraft dependency library mod for my personal use.
+A streamlined library mod created by 404Setup.
 
 ## Usage
 
