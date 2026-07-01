@@ -126,6 +126,7 @@ allprojects {
         maven("https://maven.fabricmc.net/")
         maven("https://maven.neoforged.net/releases")
         maven("https://hub.spigotmc.org/nexus/content/groups/public/")
+        maven("https://mvnc.pkg.one/releases")
         maven("https://mvnc.pkg.one/snapshots")
     }
 
