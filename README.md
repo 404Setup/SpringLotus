@@ -4,7 +4,31 @@
 > If you encounter situations where some functions do not work after installing this mod,
 > or if this mod breaks the behavior of other mods, please send me an issue.
 
-A Minecraft dependency library mod for my personal use.
+A streamlined library mod created by 404Setup.
+
+Includes network libraries, configuration libraries, and some UI libraries.
+
+## Example
+
+<details>
+<summary><b>Automatically generated configuration page</b></summary>
+<img alt="image" src="https://media.forgecdn.net/attachments/1762/450/2-png.png"/>
+</details>
+
+<details>
+<summary><b>About page</b></summary>
+<img alt="image" src="https://media.forgecdn.net/attachments/1762/451/1-png.png"/>
+</details>
+
+<details>
+<summary><b>Dialog and example screen</b></summary>
+<img alt="image" src="https://media.forgecdn.net/attachments/1762/457/dialog-and-example-screen-png.png"/>
+</details>
+
+<details>
+<summary><b>Slide Component</b></summary>
+<img alt="image" src="https://media.forgecdn.net/attachments/1762/462/slider-webp.webp"/>
+</details>
 
 ## Usage
 
