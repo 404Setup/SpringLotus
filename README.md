@@ -6,6 +6,30 @@
 
 A streamlined library mod created by 404Setup.
 
+Includes network libraries, configuration libraries, and some UI libraries.
+
+## Example
+
+<details>
+<summary><b>Automatically generated configuration page</b></summary>
+<img alt="image" src="https://media.forgecdn.net/attachments/1762/450/2-png.png"/>
+</details>
+
+<details>
+<summary><b>About page</b></summary>
+<img alt="image" src="https://media.forgecdn.net/attachments/1762/451/1-png.png"/>
+</details>
+
+<details>
+<summary><b>Dialog and example screen</b></summary>
+<img alt="image" src="https://media.forgecdn.net/attachments/1762/457/dialog-and-example-screen-png.png"/>
+</details>
+
+<details>
+<summary><b>Slide Component</b></summary>
+<img alt="image" src="https://media.forgecdn.net/attachments/1762/462/slider-webp.webp"/>
+</details>
+
 ## Usage
 
 Spring Lotus supports Fabric, NeoForge, and Forge (Forge compatibility is not provided from version 26.1 onwards).
