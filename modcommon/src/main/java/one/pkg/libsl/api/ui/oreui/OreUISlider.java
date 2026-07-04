@@ -10,8 +10,7 @@
 
 package one.pkg.libsl.api.ui.oreui;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -88,7 +87,7 @@ public class OreUISlider extends AbstractSliderButton {
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NonNull GuiGraphics extractor,
                                          int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
@@ -106,9 +105,7 @@ public class OreUISlider extends AbstractSliderButton {
             this.displayedValue = this.value;
         }
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                .accept(TextAlignment.RIGHT, x + width, y,
-                        disabled ? cachedMessageInactive : cachedMessageActive);
+        extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, disabled ? cachedMessageInactive : cachedMessageActive, (x + width) - net.minecraft.client.Minecraft.getInstance().font.width(disabled ? cachedMessageInactive : cachedMessageActive), y, 0xFFFFFF);
 
         int trackHeight = 8;
         int trackY = y + 20 + (height - 20 - trackHeight) / 2;

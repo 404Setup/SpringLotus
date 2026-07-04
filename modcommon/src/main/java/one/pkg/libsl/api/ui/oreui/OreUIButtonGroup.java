@@ -11,8 +11,7 @@
 package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -66,7 +65,7 @@ public class OreUIButtonGroup extends AbstractWidget {
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY,
+    public void renderWidget(@NonNull GuiGraphics extractor, int mouseX, int mouseY,
                                          float partialTick) {
         int btnWidth = width / Math.max(1, options.size());
         for (int i = 0; i < options.size(); i++) {
@@ -81,13 +80,7 @@ public class OreUIButtonGroup extends AbstractWidget {
             extractor.fill(btnX, getY(), btnX + btnWidth, getY() + height, borderColor);
             extractor.fill(btnX + 1, getY() + 1, btnX + btnWidth - 1, getY() + height - 1, bgColor);
 
-            extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                    .accept(
-                            TextAlignment.CENTER,
-                            btnX + btnWidth / 2,
-                            getY() + (height - 8) / 2,
-                            cachedOptions.get(i)
-                    );
+            extractor.drawCenteredString(Minecraft.getInstance().font, cachedOptions.get(i), btnX + btnWidth / 2, getY() + (height - 8) / 2, 0xFFFFFF);
         }
     }
 

@@ -11,8 +11,7 @@
 package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -238,7 +237,7 @@ public class OreUIDropdown extends AbstractWidget {
     }
 
     @Override
-    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    protected void renderWidget(@NonNull GuiGraphics extractor,
                                             int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
@@ -262,9 +261,7 @@ public class OreUIDropdown extends AbstractWidget {
             displayText = disabled ? cachedMessageInactive : cachedMessageActive;
         }
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                .accept(TextAlignment.CENTER, x + width / 2, y + (collapsedHeight - 8) / 2,
-                        displayText);
+        extractor.drawCenteredString(net.minecraft.client.Minecraft.getInstance().font, displayText, x + width / 2, y + (collapsedHeight - 8) / 2, 0xFFFFFF);
 
         if (!expanded) {
             calculateExpansionDirection();
@@ -277,9 +274,7 @@ public class OreUIDropdown extends AbstractWidget {
             arrow = disabled ? ARROW_DOWN_INACTIVE : ARROW_DOWN_ACTIVE;
         }
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                .accept(TextAlignment.RIGHT, x + width - 8, y + (collapsedHeight - 8) / 2,
-                        arrow);
+        extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, arrow, (x + width - 8) - net.minecraft.client.Minecraft.getInstance().font.width(arrow), y + (collapsedHeight - 8) / 2, 0xFFFFFF);
     }
 
     /**
@@ -290,7 +285,7 @@ public class OreUIDropdown extends AbstractWidget {
      * @param mouseY      The mouse y-position.
      * @param partialTick The partial tick time.
      */
-    public void extractExpandedList(@NonNull GuiGraphicsExtractor extractor,
+    public void renderExpandedList(@NonNull GuiGraphics extractor,
                                     int mouseX, int mouseY, float partialTick) {
         if (!expanded) return;
 
@@ -326,10 +321,7 @@ public class OreUIDropdown extends AbstractWidget {
                 extractor.fill(x + 1, optionY, x + width - 1, optionY + 1, 0xFFB1B2B5);
             }
 
-            extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                    .accept(TextAlignment.CENTER, x + width / 2,
-                            optionY + (collapsedHeight - 8) / 2,
-                            disabled ? cachedOptionsInactive.get(optionIndex) : cachedOptionsActive.get(optionIndex));
+            extractor.drawCenteredString(net.minecraft.client.Minecraft.getInstance().font, disabled ? cachedOptionsInactive.get(optionIndex) : cachedOptionsActive.get(optionIndex), x + width / 2, optionY + (collapsedHeight - 8) / 2, 0xFFFFFF);
         }
 
         if (maxVisibleOptions < options.size()) {

@@ -12,8 +12,7 @@ package one.pkg.libsl.api.ui.seeui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -156,14 +155,10 @@ public class OreUIConfigScreen extends OptionsSubScreen {
     }
 
     @Override
-    public void extractRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void render(@NonNull GuiGraphics extractor,
                                    int mouseX, int mouseY, float partialTick) {
-        super.extractRenderState(extractor, mouseX, mouseY, partialTick);
-        extractor.textRenderer().accept(
-                net.minecraft.client.gui.TextAlignment.CENTER,
-                this.width / 2, 20,
-                this.cachedTitle
-        );
+        super.render(extractor, mouseX, mouseY, partialTick);
+        extractor.drawCenteredString(Minecraft.getInstance().font, this.cachedTitle, this.width / 2, 20, 0xFFFFFF);
     }
 
     @Override
@@ -356,21 +351,19 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             }
 
             @Override
-            protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+            protected void renderWidget(@NonNull GuiGraphics extractor,
                                                     int mouseX, int mouseY, float partialTick) {
                 int textY = this.getY() + (this.getHeight() - totalTextHeight) / 2;
 
                 for (Component tLine : precalculatedTitleLines) {
-                    extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                            .accept(TextAlignment.LEFT, this.getX() + 10, textY, tLine);
+                    extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, tLine, this.getX() + 10, textY, 0xFFFFFF);
                     textY += 12;
                 }
 
                 if (!precalculatedTooltipLines.isEmpty()) {
                     textY += 2;
                     for (Component line : precalculatedTooltipLines) {
-                        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                                .accept(TextAlignment.LEFT, this.getX() + 10, textY, line);
+                        extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, line, this.getX() + 10, textY, 0xFFFFFF);
                         textY += 12;
                     }
                 }
@@ -408,10 +401,9 @@ public class OreUIConfigScreen extends OptionsSubScreen {
                 }
 
                 @Override
-                protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+                protected void renderWidget(@NonNull GuiGraphics extractor,
                                                         int mouseX, int mouseY, float partialTick) {
-                    extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                            .accept(TextAlignment.LEFT, this.getX() + 10, this.getY() + 2, lineComp);
+                    extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, lineComp, this.getX() + 10, this.getY() + 2, 0xFFFFFF);
                 }
 
                 @Override
@@ -479,21 +471,19 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             }
 
             @Override
-            protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+            protected void renderWidget(@NonNull GuiGraphics extractor,
                                                     int mouseX, int mouseY, float partialTick) {
                 int textY = this.getY() + (this.getHeight() - totalTextHeight) / 2;
 
                 for (Component tLine : precalculatedTitleLines) {
-                    extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                            .accept(TextAlignment.LEFT, this.getX() + 10, textY, tLine);
+                    extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, tLine, this.getX() + 10, textY, 0xFFFFFF);
                     textY += 12;
                 }
 
                 if (!precalculatedTooltipLines.isEmpty()) {
                     textY += 2;
                     for (Component line : precalculatedTooltipLines) {
-                        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                                .accept(TextAlignment.LEFT, this.getX() + 10, textY, line);
+                        extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, line, this.getX() + 10, textY, 0xFFFFFF);
                         textY += 12;
                     }
                 }
@@ -575,7 +565,7 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             }
 
             @Override
-            protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+            protected void renderWidget(@NonNull GuiGraphics extractor,
                                                     int mouseX, int mouseY, float partialTick) {
                 extractor.fill(this.getX(), this.getY() + this.getHeight() - 1,
                         this.getX() + this.getWidth(),
@@ -584,16 +574,14 @@ public class OreUIConfigScreen extends OptionsSubScreen {
                 int textY = this.getY() + (this.getHeight() - totalTextHeight) / 2;
 
                 for (Component tLine : precalculatedTitleLines) {
-                    extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                            .accept(TextAlignment.LEFT, this.getX() + 10, textY, tLine);
+                    extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, tLine, this.getX() + 10, textY, 0xFFFFFF);
                     textY += 12;
                 }
 
                 if (!precalculatedTooltipLines.isEmpty()) {
                     textY += 2; // Extra space between title and tooltip
                     for (Component line : precalculatedTooltipLines) {
-                        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                                .accept(TextAlignment.LEFT, this.getX() + 10, textY, line);
+                        extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, line, this.getX() + 10, textY, 0xFFFFFF);
                         textY += 12;
                     }
                 }
@@ -603,7 +591,7 @@ public class OreUIConfigScreen extends OptionsSubScreen {
                 component.setWidth(compWidth);
                 component.setHeight(compHeight);
 
-                component.extractRenderState(extractor, mouseX, mouseY, partialTick);
+                component.render(extractor, mouseX, mouseY, partialTick);
             }
 
             @Override

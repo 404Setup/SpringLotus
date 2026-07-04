@@ -10,8 +10,8 @@
 
 package one.pkg.libsl.api.ui.oreui;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -277,12 +277,12 @@ public class OreUIDialog extends Screen {
     }
 
     @Override
-    public void extractBackground(@NonNull GuiGraphicsExtractor extractor,
+    public void renderBackground(@NonNull GuiGraphics extractor,
                                   int mouseX, int mouseY, float partialTick) {
         // Do nothing here to prevent double rendering.
     }
 
-    private void drawModalBackground(@NonNull GuiGraphicsExtractor extractor, float partialTick) {
+    private void drawModalBackground(@NonNull GuiGraphics extractor, float partialTick) {
         float animProgress = isClosing ?
                 1.0f - Math.min(1.0f, (System.currentTimeMillis() - closeTime) / 150.0f) :
                 Math.min(1.0f, (System.currentTimeMillis() - openTime) / 150.0f);
@@ -306,11 +306,7 @@ public class OreUIDialog extends Screen {
         int titleBgColor = 0xFF48494A;
         extractor.fill(startX, startY, startX + this.modalWidth, startY + titleHeight, titleBgColor);
 
-        extractor.textRenderer().accept(
-                TextAlignment.CENTER,
-                startX + this.modalWidth / 2,
-                startY + (titleHeight - 8) / 2, this.styledTitle
-        );
+        extractor.drawCenteredString(Minecraft.getInstance().font, this.styledTitle, startX + this.modalWidth / 2, startY + (titleHeight - 8) / 2, 0xFFFFFF);
 
 
         extractor.fill(startX, startY, startX + this.modalWidth,
@@ -324,11 +320,11 @@ public class OreUIDialog extends Screen {
     }
 
     @Override
-    public void extractRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void render(@NonNull GuiGraphics extractor,
                                    int mouseX, int mouseY, float partialTick) {
         if (this.lastScreen != null) {
-            this.lastScreen.extractBackground(extractor, mouseX, mouseY, partialTick);
-            this.lastScreen.extractRenderState(extractor, mouseX, mouseY, partialTick);
+            this.lastScreen.renderBackground(extractor, mouseX, mouseY, partialTick);
+            this.lastScreen.render(extractor, mouseX, mouseY, partialTick);
         }
 
         drawModalBackground(extractor, partialTick);
@@ -353,19 +349,19 @@ public class OreUIDialog extends Screen {
             if (this.content != null) {
                 List<net.minecraft.util.FormattedCharSequence> lines = this.minecraft.font.split(this.content, this.modalWidth - 40);
                 for (var line : lines) {
-                    extractor.textRenderer().accept(TextAlignment.LEFT, startX + 20, textY, line);
+                    extractor.drawString(Minecraft.getInstance().font, line, startX + 20, textY, 0xFFFFFF);
                     textY += 12;
                 }
             }
 
-            // Note: custom widgets are drawn by super.extractRenderState which might ignore our scroll offset 
+            // Note: custom widgets are drawn by super.render which might ignore our scroll offset 
             // since they were added to the screen with absolute positions. 
             // If they are to be scrolled, we would need to manually draw them or adjust their Y.
             // For now, only text and image scroll.
 
             extractor.disableScissor();
 
-            super.extractRenderState(extractor, mouseX, mouseY, partialTick);
+            super.render(extractor, mouseX, mouseY, partialTick);
 
             if (this.maxScroll > 0) {
                 int scrollbarWidth = 4;

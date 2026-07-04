@@ -11,8 +11,7 @@
 package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -136,7 +135,7 @@ public class OreUITextField extends EditBox {
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NonNull GuiGraphics extractor,
                                          int mouseX, int mouseY, float partialTick) {
         int x = this.fullX;
         int y = this.fullY;
@@ -150,8 +149,7 @@ public class OreUITextField extends EditBox {
         if (this.hasTitle) {
             Component renderedMessage = active ? this.renderedMessageActive : this.renderedMessageInactive;
 
-            extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                    .accept(TextAlignment.LEFT, x, y, renderedMessage);
+            extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, renderedMessage, x, y, 0xFFFFFF);
         }
 
         int boxX = this.fullX;
@@ -166,7 +164,7 @@ public class OreUITextField extends EditBox {
         }
 
         this.setTextColor(active ? 0xFFFFFFFF : 0xFF48494A);
-        super.extractWidgetRenderState(extractor, mouseX, mouseY, partialTick);
+        super.renderWidget(extractor, mouseX, mouseY, partialTick);
     }
 
     /**

@@ -10,8 +10,8 @@
 
 package one.pkg.libsl.api.ui.oreui;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -79,7 +79,7 @@ public class OreUITag extends AbstractWidget {
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NonNull GuiGraphics extractor,
                                          int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
@@ -88,12 +88,7 @@ public class OreUITag extends AbstractWidget {
 
         extractor.fill(x, y, x + width, y + height, style.bgColor);
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                .accept(TextAlignment.CENTER,
-                        x + width / 2,
-                        y + (height - 8) / 2,
-                        this.cachedMessage
-                );
+        extractor.drawCenteredString(Minecraft.getInstance().font, this.cachedMessage, x + width / 2, y + (height - 8) / 2, 0xFFFFFF);
     }
 
     /**

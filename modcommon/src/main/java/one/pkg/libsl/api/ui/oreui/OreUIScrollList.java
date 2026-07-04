@@ -11,7 +11,7 @@
 package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -70,7 +70,7 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
         double mouseX = event.x();
         double mouseY = event.y();
 
-        if (this.scrollable() && mouseX >= this.scrollBarX() && mouseX <= this.scrollBarX() + 4 &&
+        if (this.children().size() * this.itemHeight > this.height &&
                 mouseY >= this.getY() && mouseY <= this.getY() + this.getHeight()) {
             return super.mouseClicked(event, isDouble);
         }
@@ -104,7 +104,7 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
         boolean handled = super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
 
         // Workaround for SmoothScrolling mod which reverts scrollAmount
-        // Since we override extractScrollbar without calling super, their animation never happens,
+        // Since we override renderScrollbar without calling super, their animation never happens,
         // resulting in the scrollbar getting stuck. We force the scroll update here.
         if (handled && prevScroll == this.scrollAmount() && scrollY != 0) {
             this.setScrollAmount(this.scrollAmount() - scrollY * ((double) this.itemHeight / 2.0));
@@ -130,22 +130,22 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NonNull GuiGraphics extractor,
                                          int mouseX, int mouseY, float partialTick) {
-        super.extractWidgetRenderState(extractor, mouseX, mouseY, partialTick);
+        super.renderWidget(extractor, mouseX, mouseY, partialTick);
 
         extractor.nextStratum();
         for (OreUIScrollListEntry entry : this.children()) {
             if (entry.getChildWidget() instanceof OreUIDropdown dropdown) {
                 if (dropdown.isExpanded()) {
-                    dropdown.extractExpandedList(extractor, mouseX, mouseY, partialTick);
+                    dropdown.renderExpandedList(extractor, mouseX, mouseY, partialTick);
                 }
             }
         }
     }
 
     @Override
-    protected void extractListBackground(@NonNull GuiGraphicsExtractor extractor) {
+    protected void renderListBackground(@NonNull GuiGraphics extractor) {
         int bgColor = 0x80000000;
         extractor.fill(this.getX(), this.getY(), this.getX() + this.getWidth(),
                 this.getY() + this.getHeight(), bgColor);
@@ -162,13 +162,13 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
     }
 
     @Override
-    protected void extractListSeparators(@NonNull GuiGraphicsExtractor extractor) {
+    protected void renderListSeparators(@NonNull GuiGraphics extractor) {
         // No explicit separators
     }
 
     @Override
-    protected void extractScrollbar(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY) {
-        if (!this.scrollable()) {
+    protected void renderScrollbar(@NonNull GuiGraphics extractor, int mouseX, int mouseY) {
+        if (this.children().size() * this.itemHeight > this.height) {
             return;
         }
 
@@ -191,7 +191,7 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
     }
 
     @Override
-    protected void extractSelection(@NonNull GuiGraphicsExtractor extractor,
+    protected void renderSelection(@NonNull GuiGraphics extractor,
                                     @NonNull OreUIScrollListEntry entry, int i) {
         // Do not render focus box
     }
@@ -225,7 +225,7 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
         }
 
         @Override
-        public void extractContent(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY,
+        public void renderContent(@NonNull GuiGraphics extractor, int mouseX, int mouseY,
                                    boolean hovered, float partialTick) {
             int width = this.getContentWidth();
             int x = this.getContentX();
@@ -235,7 +235,7 @@ public class OreUIScrollList extends AbstractSelectionList<OreUIScrollList.OreUI
             this.childWidget.setY(y);
             this.childWidget.setWidth(width);
 
-            this.childWidget.extractRenderState(extractor, mouseX, mouseY, partialTick);
+            this.childWidget.render(extractor, mouseX, mouseY, partialTick);
         }
 
         @Override

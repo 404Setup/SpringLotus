@@ -11,9 +11,7 @@
 package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ActiveTextCollector;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -104,8 +102,8 @@ public class OreUIButton extends Button {
     }
 
     @Override
-    protected void extractContents(@NonNull GuiGraphicsExtractor extractor,
-                                   int mouseX, int mouseY, float partialTick) {
+    protected void renderContents(@NonNull GuiGraphics extractor,
+                                  int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
         int width = getWidth();
@@ -181,13 +179,11 @@ public class OreUIButton extends Button {
             }
         }
 
-        ActiveTextCollector textCollector = extractor.textRendererForWidget(this,
-                GuiGraphicsExtractor.HoveredTextEffects.NONE);
         if (style == Style.CATEGORY_SELECTED || style == Style.CATEGORY_UNSELECTED) {
-            textCollector.accept(TextAlignment.LEFT, x + 10, y + (height - 8) / 2, renderedMessage);
+            extractor.drawString(font, renderedMessage, x + 10, y + (height - 8) / 2, 0xFFFFFF);
         } else {
-            textCollector.accept(TextAlignment.CENTER, x + width / 2,
-                    y + (height - 8) / 2, renderedMessage);
+            extractor.drawCenteredString(font, renderedMessage, x + width / 2,
+                    y + (height - 8) / 2, 0xFFFFFF);
         }
     }
 

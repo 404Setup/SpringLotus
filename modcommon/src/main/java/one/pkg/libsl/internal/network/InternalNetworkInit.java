@@ -49,11 +49,11 @@ public class InternalNetworkInit {
             INet netImpl = JavaLoader.INSTANCE.net();
 
             netImpl.optional().clientHandler(DialogPayload.TYPE,
-                    (_, payload) -> () ->
+                    (context, payload) -> () ->
                             DialogPayload.ClientHandle.handle((DialogPayload) payload)
             );
             netImpl.optional().clientHandler(DialogsPayload.TYPE,
-                    (_, payload) -> () ->
+                    (context, payload) -> () ->
                             DialogsPayload.ClientHandle.handle((DialogsPayload) payload)
             );
         }

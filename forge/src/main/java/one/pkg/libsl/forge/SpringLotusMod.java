@@ -25,7 +25,7 @@ public class SpringLotusMod {
 
     public SpringLotusMod() {
         CommandRegistrationEvent.EVENT.register(
-                (dispatcher, _, selection) ->
+                (dispatcher, ignored, selection) ->
                         SLCommand.register(dispatcher, selection)
         );
         // Register all internal payloads first, then build the Forge channels

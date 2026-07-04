@@ -10,8 +10,8 @@
 
 package one.pkg.libsl.api.ui.oreui;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -125,7 +125,7 @@ public class OreUIExampleScreen extends Screen {
         ));
 
         // Back Button
-        this.addRenderableWidget(OreUIButton.oreUIBuilder(CommonComponents.GUI_BACK, _ -> this.minecraft.setScreen(this.lastScreen)).pos(this.width / 2 - 100, this.height - 40).size(200, 24).style(OreUIButton.Style.GREEN).build());
+        this.addRenderableWidget(OreUIButton.oreUIBuilder(CommonComponents.GUI_BACK, btn -> this.minecraft.setScreen(this.lastScreen)).pos(this.width / 2 - 100, this.height - 40).size(200, 24).style(OreUIButton.Style.GREEN).build());
     }
 
     @Override
@@ -142,15 +142,11 @@ public class OreUIExampleScreen extends Screen {
     }
 
     @Override
-    public void extractRenderState(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
+    public void render(@NonNull GuiGraphics extractor, int mouseX, int mouseY, float partialTick) {
         extractor.fill(0, 0, this.width, this.height, 0xFF2A2B2D); // background
 
-        extractor.textRenderer().accept(
-                TextAlignment.CENTER,
-                this.width / 2, 20,
-                this.cachedTitle
-        );
+        extractor.drawCenteredString(Minecraft.getInstance().font, this.cachedTitle, this.width / 2, 20, 0xFFFFFF);
 
-        super.extractRenderState(extractor, mouseX, mouseY, partialTick);
+        super.render(extractor, mouseX, mouseY, partialTick);
     }
 }

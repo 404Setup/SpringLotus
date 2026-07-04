@@ -11,8 +11,7 @@
 package one.pkg.libsl.api.ui.oreui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -124,7 +123,7 @@ public class OreUISwitch extends AbstractWidget {
     }
 
     @Override
-    public void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor,
+    public void renderWidget(@NonNull GuiGraphics extractor,
                                          int mouseX, int mouseY, float partialTick) {
         int x = getX();
         int y = getY();
@@ -134,10 +133,7 @@ public class OreUISwitch extends AbstractWidget {
         boolean disabled = !active;
         boolean hovered = isHoveredOrFocused() || isHovered();
 
-        extractor.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE)
-                .accept(TextAlignment.LEFT, x,
-                        y + (height - 8) / 2,
-                        disabled ? cachedMessageInactive : cachedMessageActive);
+        extractor.drawString(net.minecraft.client.Minecraft.getInstance().font, disabled ? cachedMessageInactive : cachedMessageActive, x, y + (height - 8) / 2, 0xFFFFFF);
 
         int switchWidth = 24;
         int switchX = x + width - switchWidth;

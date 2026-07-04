@@ -10,7 +10,7 @@
 
 package one.pkg.libsl.api.ui.oreui;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -63,7 +63,7 @@ public class OreUIImage extends AbstractWidget {
     }
 
     @Override
-    protected void extractWidgetRenderState(@NonNull GuiGraphicsExtractor extractor, int mouseX, int mouseY, float partialTick) {
+    protected void renderWidget(@NonNull GuiGraphics extractor, int mouseX, int mouseY, float partialTick) {
         extractor.blit(this.image, getX(), getY(), 0, 0, getWidth(), getHeight(), this.textureWidth, this.textureHeight);
     }
 }
