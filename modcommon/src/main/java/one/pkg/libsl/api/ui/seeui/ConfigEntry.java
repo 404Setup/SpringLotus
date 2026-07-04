@@ -129,7 +129,7 @@ public abstract class ConfigEntry {
         @Override
         public AbstractWidget createWidget(int x, int y, int width, int height) {
             return CycleButton.onOffBuilder(value)
-                    .create(x, y, width, height, getLabel(), (_, newValue) -> {
+                    .create(x, y, width, height, getLabel(), (ignored, newValue) -> {
                         this.value = newValue;
                         this.save();
                     });
@@ -454,7 +454,7 @@ public abstract class ConfigEntry {
                         return idx >= 0 ? optionComponents.get(idx) : Component.literal(val);
                     }, () -> value)
                     .withValues(optionKeys)
-                    .create(x, y, width, height, getLabel(), (_, newValue) -> {
+                    .create(x, y, width, height, getLabel(), (ignored, newValue) -> {
                         this.value = newValue;
                         this.save();
                     });

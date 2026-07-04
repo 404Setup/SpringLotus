@@ -11,20 +11,17 @@
 package one.pkg.libsl.mixin.as;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.TypedInstance;
-import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.SyncedDataHolder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
-import net.minecraft.util.debug.DebugValueSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.PortalProcessor;
+import net.minecraft.world.entity.Relative;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityAccess;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.scores.ScoreHolder;
 import one.pkg.libsl.api.Vec3d;
 import one.pkg.libsl.api.instance.AsEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,14 +31,7 @@ import java.util.Set;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements AsEntity,
-        EntityAccess,
-        ScoreHolder,
-        SyncedDataHolder,
-        DataComponentGetter,
-        ItemOwner,
-        SlotProvider,
-        DebugValueSource,
-        TypedInstance<EntityType<?>> {
+        EntityAccess {
     @Shadow
     public double xo;
 

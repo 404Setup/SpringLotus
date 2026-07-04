@@ -39,9 +39,9 @@ public class MushroomBlockMixin {
             BlockPos pos,
             RandomSource random,
             CallbackInfo ci,
-            @Local(name = "offset") BlockPos offset
+            @Local(name = "blockpos1") BlockPos blockpos1
     ) {
-        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, pos, offset))
+        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, pos, blockpos1))
             ci.cancel();
     }
 }

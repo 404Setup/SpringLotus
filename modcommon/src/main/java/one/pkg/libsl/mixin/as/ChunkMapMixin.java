@@ -32,6 +32,7 @@ public class ChunkMapMixin implements AsChunkMap {
 
     @Override
     public ChunkHolder getVisibleChunk(ChunkPos pos) {
-        return getVisibleChunkIfPresent(pos.pack());
+
+        return getVisibleChunkIfPresent(pos.toLong());
     }
 }

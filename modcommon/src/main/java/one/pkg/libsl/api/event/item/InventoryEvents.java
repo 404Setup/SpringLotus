@@ -12,7 +12,7 @@ package one.pkg.libsl.api.event.item;
 
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import one.pkg.libsl.api.event.Event;
 
 /**
@@ -43,9 +43,9 @@ public interface InventoryEvents {
      * Listeners are registered to this event via the {@link Event#register} method.
      */
     Event<Clicked> CLICKED = Event.create(Clicked.class, callbacks -> (
-            (menu, slotIndex, buttonNum, containerInput, player) -> {
+            (menu, slotIndex, buttonNum, clickType, player) -> {
                 for (Clicked callback : callbacks) {
-                    if (!callback.onClicked(menu, slotIndex, buttonNum, containerInput, player)) {
+                    if (!callback.onClicked(menu, slotIndex, buttonNum, clickType, player)) {
                         return false;
                     }
                 }
@@ -77,18 +77,18 @@ public interface InventoryEvents {
          * Returning {@code false} cancels further processing of the click event. If a listener cancels the
          * event, no other listeners are invoked.
          *
-         * @param menu           The inventory menu being interacted with. Represents the current container context.
-         * @param slotIndex      The index of the slot that was clicked within the menu.
-         * @param buttonNum      The button number used during the click interaction. Typically represents which mouse
-         *                       button was pressed or other interaction methods.
-         * @param containerInput The input data associated with the click action. Provides additional details
-         *                       about the interaction.
-         * @param player         The player who performed the click interaction.
+         * @param menu      The inventory menu being interacted with. Represents the current container context.
+         * @param slotIndex The index of the slot that was clicked within the menu.
+         * @param buttonNum The button number used during the click interaction. Typically represents which mouse
+         *                  button was pressed or other interaction methods.
+         * @param clickType The input data associated with the click action. Provides additional details
+         *                  about the interaction.
+         * @param player    The player who performed the click interaction.
          * @return {@code true} if the event should proceed with its default behavior and allow further
          * event listeners to be notified. {@code false} cancels the click event and prevents
          * further listeners from being invoked.
          */
         boolean onClicked(AbstractContainerMenu menu, int slotIndex,
-                          int buttonNum, ContainerInput containerInput, Player player);
+                          int buttonNum, ClickType clickType, Player player);
     }
 }

@@ -271,7 +271,7 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             }
         }
 
-        OreUIButton doneBtn = OreUIButton.oreUIBuilder(CommonComponents.GUI_DONE, (_) -> {
+        OreUIButton doneBtn = OreUIButton.oreUIBuilder(CommonComponents.GUI_DONE, (ignored) -> {
                     if (onSaved != null) onSaved.run();
                     this.minecraft.setScreen(this.lastScreen);
                 }).pos(this.width / 2 - 100, this.height - 40).size(200, 24)
@@ -296,7 +296,7 @@ public class OreUIConfigScreen extends OptionsSubScreen {
             OreUIConfigEntry entry = createEntry(pf.field(), pf.group(), pf.key(), pf.comment(),
                     pf.min(), pf.max(), pf.mode(), pf.displayMode());
             if (entry != null) categoriesMap.computeIfAbsent(pf.group(),
-                    (_) -> new ArrayList<>()).add(entry);
+                    (ignored) -> new ArrayList<>()).add(entry);
         }
     }
 

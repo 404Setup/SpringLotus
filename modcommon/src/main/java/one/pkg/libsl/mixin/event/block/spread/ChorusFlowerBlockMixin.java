@@ -47,13 +47,13 @@ public class ChorusFlowerBlockMixin {
             BlockPos pos,
             RandomSource random,
             CallbackInfo ci,
-            @Local(name = "currentAge") int currentAge,
-            @Local(name = "above") BlockPos above
+            @Local(name = "i") int i,
+            @Local(name = "p_220982_") BlockPos p_220982_
     ) {
         if (!BlockSpreadEvent.EVENT.canSkip()) {
             BlockState newState = ((ChorusFlowerBlock) (Object) this)
-                    .defaultBlockState().setValue(AGE, currentAge);
-            if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, newState, pos, above))
+                    .defaultBlockState().setValue(AGE, i);
+            if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, newState, pos, p_220982_))
                 ci.cancel();
         }
     }
@@ -74,14 +74,14 @@ public class ChorusFlowerBlockMixin {
             BlockPos pos,
             RandomSource random,
             CallbackInfo ci,
-            @Local(name = "currentAge") int currentAge,
-            @Local(name = "target") BlockPos target
+            @Local(name = "i") int i,
+            @Local(name = "blockpos1") BlockPos blockpos1
     ) {
         if (!BlockSpreadEvent.EVENT.canSkip()) {
             BlockState newState = ((ChorusFlowerBlock) (Object) this)
-                    .defaultBlockState().setValue(AGE, currentAge + 1);
+                    .defaultBlockState().setValue(AGE, i + 1);
 
-            if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, newState, pos, target))
+            if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, newState, pos, blockpos1))
                 ci.cancel();
         }
     }

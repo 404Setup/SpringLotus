@@ -4,8 +4,15 @@ plugins {
     alias(libs.plugins.moddev)
 }
 
+val mcVersion = rootProject.property("minecraft_version")!! as String
+var parchmentVersion = rootProject.property("parchment_version")!! as String
+
 neoForge {
     neoFormVersion = "${rootProject.property("neoform_version")!!}"
+    parchment {
+        minecraftVersion = mcVersion
+        mappingsVersion = parchmentVersion
+    }
     val at = file("src/main/resources/META-INF/accesstransformer.cfg")
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
@@ -16,7 +23,7 @@ tasks {
     withType<Javadoc> {
         val o = options as StandardJavadocDocletOptions
         o.encoding = "UTF-8"
-        o.source = "25"
+        o.source = "21"
 
         o.use()
     }

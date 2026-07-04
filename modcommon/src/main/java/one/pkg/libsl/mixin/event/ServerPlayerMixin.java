@@ -60,7 +60,7 @@ public abstract class ServerPlayerMixin implements Entity {
     )
     private void libsl$teleport(
             TeleportTransition transition, CallbackInfoReturnable<ServerPlayer> cir,
-            @Local(name = "newLevel") ServerLevel newLevel
+            @Local(name = "serverlevel") ServerLevel serverlevel
     ) {
         ServerPlayer player = (ServerPlayer) (Object) this;
         AsEntity asPlayerEntity = (AsEntity) player;
@@ -68,7 +68,7 @@ public abstract class ServerPlayerMixin implements Entity {
 
         PositionMoveRotation absolutePosition = PositionMoveRotation.calculateAbsolute(
                 PositionMoveRotation.of(player), PositionMoveRotation.of(transition), transition.relatives());
-        Vec3d newPos = new Vec3d(absolutePosition.position(), newLevel,
+        Vec3d newPos = new Vec3d(absolutePosition.position(), serverlevel,
                 absolutePosition.yRot(), absolutePosition.xRot());
 
         boolean result = (asPlayerEntity.getPortalProcessor() != null &&

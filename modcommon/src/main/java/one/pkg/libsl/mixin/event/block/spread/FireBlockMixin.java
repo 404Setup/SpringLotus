@@ -45,12 +45,12 @@ public abstract class FireBlockMixin {
             BlockPos pos,
             RandomSource random,
             CallbackInfo ci,
-            @Local(name = "testPos") BlockPos.MutableBlockPos testPos,
-            @Local(name = "spreadAge") int spreadAge
+            @Local(name = "blockpos$mutableblockpos") BlockPos.MutableBlockPos blockpos$mutableblockpos,
+            @Local(name = "j2") int j2
     ) {
         if (!BlockSpreadEvent.EVENT.canSkip()) {
-            BlockState newState = getStateWithAge(level, testPos, spreadAge);
-            if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, newState, pos, testPos))
+            BlockState newState = getStateWithAge(level, blockpos$mutableblockpos, j2);
+            if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, newState, pos, blockpos$mutableblockpos))
                 ci.cancel();
         }
     }

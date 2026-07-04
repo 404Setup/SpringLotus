@@ -67,7 +67,7 @@ public class SeeUIConfigScreen extends OptionsSubScreen {
 
     @Override
     protected void addFooter() {
-        this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, (_) -> {
+        this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, (ignored) -> {
             if (onSaved != null) onSaved.run();
             this.minecraft.setScreen(this.lastScreen);
         }).width(200).build());
@@ -81,7 +81,7 @@ public class SeeUIConfigScreen extends OptionsSubScreen {
         List<ConfigParserCache.ParsedField> parsedFields = ConfigParserCache.getParsedFields(configClass);
         for (ConfigParserCache.ParsedField pf : parsedFields) {
             ConfigEntry entry = createEntry(pf.field(), pf.group(), pf.key(), pf.comment(), pf.min(), pf.max(), pf.mode(), pf.displayMode());
-            if (entry != null) categories.computeIfAbsent(pf.group(), _ -> new ArrayList<>()).add(entry);
+            if (entry != null) categories.computeIfAbsent(pf.group(), ignored -> new ArrayList<>()).add(entry);
         }
 
         for (Map.Entry<String, List<ConfigEntry>> category : categories.entrySet()) {

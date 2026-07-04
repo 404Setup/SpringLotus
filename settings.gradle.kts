@@ -18,3 +18,4 @@ rootProject.name = "SpringLotus"
 include("modcommon")
 include("fabric")
 include("neoforge")
+include("forge")

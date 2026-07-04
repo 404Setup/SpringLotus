@@ -59,10 +59,10 @@ public class BambooStalkBlockMixin {
             RandomSource random,
             int height,
             CallbackInfo ci,
-            @Local(name = "twoBelowState") BlockState twoBelowState
+            @Local(name = "blockstate1") BlockState blockstate1
     ) {
         if (!BlockSpreadEvent.EVENT.canSkip()) {
-            int age = state.getValue(AGE) != 1 && !twoBelowState.is(Blocks.BAMBOO) ? 0 : 1;
+            int age = state.getValue(AGE) != 1 && !blockstate1.is(Blocks.BAMBOO) ? 0 : 1;
             int stage = (height < 11 || !(random.nextFloat() < 0.25F)) && height != 15 ? 0 : 1;
 
             BlockState newState = ((BambooStalkBlock) (Object) this).defaultBlockState()

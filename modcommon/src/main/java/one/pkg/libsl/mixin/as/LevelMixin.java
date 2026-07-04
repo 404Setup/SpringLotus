@@ -85,12 +85,12 @@ public abstract class LevelMixin implements AsLevel, LevelAccessor {
 
     @Override
     public boolean updateChunkForced(long pos, boolean forced) {
-        return this.getChunkSource().updateChunkForced(ChunkPos.unpack(pos), forced);
+        return this.getChunkSource().updateChunkForced(new ChunkPos(pos), forced);
     }
 
     @Override
     public CompletableFuture<Boolean> isChunkLoaded(long pos) {
-        ChunkPos chunkPos = ChunkPos.unpack(pos);
+        ChunkPos chunkPos = new ChunkPos(pos);
         ServerChunkCache serverChunkCache = (ServerChunkCache) this.getChunkSource();
         AsChunkMap map = (AsChunkMap) serverChunkCache.chunkMap;
         ChunkHolder holder = map.getVisibleChunk(chunkPos);
@@ -111,7 +111,7 @@ public abstract class LevelMixin implements AsLevel, LevelAccessor {
 
     @Override
     public CompletableFuture<Boolean> isChunkLoaded(ChunkPos pos) {
-        return isChunkLoaded(pos.pack());
+        return isChunkLoaded(pos.toLong());
     }
 
     @Override

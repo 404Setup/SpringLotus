@@ -41,12 +41,12 @@ public class BuddingAmethystBlockMixin {
             BlockPos pos,
             RandomSource random,
             CallbackInfo ci,
-            @Local(name = "targetState") BlockState targetState,
-            @Local(name = "nextStage") Block nextStage,
-            @Local(name = "growPos") BlockPos growPos
+            @Local(name = "blockstate1") BlockState blockstate1,
+            @Local(name = "block") Block block,
+            @Local(name = "blockpos") BlockPos blockpos
     ) {
-        if (nextStage == Blocks.SMALL_AMETHYST_BUD &&
-                !BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, targetState, pos, growPos))
+        if (block == Blocks.SMALL_AMETHYST_BUD &&
+                !BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, blockstate1, pos, blockpos))
             ci.cancel();
     }
 }
