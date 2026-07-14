@@ -30,6 +30,7 @@ import java.nio.file.Path;
 public class NFLoader extends one.pkg.libsl.api.loader.CLoader implements ILoader {
     private final Logger logger = LoggerFactory.getLogger(NFLoader.class);
     private final INet networking = new NFNet();
+    private final boolean client = FMLLoader.getCurrent().getDist().isClient();
     private final CLoader clientLoader = isClient() ? new NFCLoader(this) : null;
 
     @Override
@@ -59,7 +60,7 @@ public class NFLoader extends one.pkg.libsl.api.loader.CLoader implements ILoade
 
     @Override
     public boolean isClient() {
-        return FMLLoader.getCurrent().getDist().isClient();
+        return client;
     }
 
     @Override

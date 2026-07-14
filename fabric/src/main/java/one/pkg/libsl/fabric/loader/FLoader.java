@@ -32,6 +32,7 @@ import java.util.Optional;
 public class FLoader extends one.pkg.libsl.api.loader.CLoader implements ILoader {
     private final Logger logger = LoggerFactory.getLogger(FLoader.class);
     private final INet networking = new FNet();
+    private final boolean client = FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
     private final CLoader clientLoader = isClient() ? new FCLoader(this) : null;
     private MinecraftServer server;
 
@@ -71,7 +72,7 @@ public class FLoader extends one.pkg.libsl.api.loader.CLoader implements ILoader
 
     @Override
     public boolean isClient() {
-        return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+        return client;
     }
 
     @Override
