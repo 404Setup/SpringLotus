@@ -72,19 +72,4 @@ public class BambooStalkBlockMixin {
                 ci.cancel();
         }
     }
-
-    @Inject(
-            method = "growBamboo",
-            at = @At(
-                    value = "INVOKE",
-                    shift = At.Shift.BEFORE,
-                    target = "Lnet/minecraft/world/level/block/state/BlockState;getValue(Lnet/minecraft/world/level/block/state/properties/Property;)Ljava/lang/Comparable;",
-                    ordinal = 2
-            ),
-            cancellable = true
-    )
-    private void springLotus$growBamboo(
-            CallbackInfo ci) {
-        ci.cancel();
-    }
 }
