@@ -36,7 +36,7 @@ public class SculkBlockMixin {
             int flags,
             @Local(argsOnly = true) BlockPos originPos
     ) {
-        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, pos, originPos)) {
+        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, originPos, pos)) {
             return false;
         }
         return level.setBlock(pos, state, flags);

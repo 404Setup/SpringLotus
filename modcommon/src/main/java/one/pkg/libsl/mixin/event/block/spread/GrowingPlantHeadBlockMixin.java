@@ -13,42 +13,26 @@ package one.pkg.libsl.mixin.event.block.spread;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.GrowingPlantHeadBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import one.pkg.libsl.api.event.block.BlockSpreadEvent;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(GrowingPlantHeadBlock.class)
 public abstract class GrowingPlantHeadBlockMixin {
-    @Shadow
-    protected abstract BlockState getGrowIntoState(BlockState growFromState, RandomSource random);
-
-    @Inject(
+    @Redirect(
             method = "randomTick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z",
-                    shift = At.Shift.BEFORE
-            ),
-            cancellable = true
+                    target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"
+            )
     )
-    private void springLotus$randomTick(
-            BlockState state,
-            ServerLevel level,
-            BlockPos pos,
-            RandomSource random,
-            CallbackInfo ci,
-            @Local(name = "growthPos") BlockPos growthPos
-    ) {
-        if (!BlockSpreadEvent.EVENT.canSkip()) {
-            if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level,
-                    getGrowIntoState(state, level.getRandom()), pos, growthPos))
-                ci.cancel();
-        }
+    private boolean springLotus$randomTick(ServerLevel level, BlockPos growthPos, BlockState state,
+                                          @Local(argsOnly = true) BlockPos pos) {
+        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, pos, growthPos))
+            return false;
+        return level.setBlockAndUpdate(growthPos, state);
     }
 }

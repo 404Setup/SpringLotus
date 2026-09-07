@@ -16,29 +16,13 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import one.pkg.libsl.api.event.entity.ServerLivingEntityEvents;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
-    @Shadow
-    public boolean isDeadOrDying() {
-        return false;
-    }
-
     @ModifyExpressionValue(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isDeadOrDying()Z", ordinal = 1))
     private boolean beforeEntityKilled(boolean isDeadOrDying, ServerLevel level, DamageSource source, float damage) {
-        if (isDeadOrDying) return true;
-        return ServerLivingEntityEvents.ALLOW_DEATH.invoker()
+        return isDeadOrDying && ServerLivingEntityEvents.ALLOW_DEATH.invoker()
                 .allowDeath((LivingEntity) (Object) this, source, damage);
-    }
-
-    @Inject(method = "hurtServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isSleeping()Z"), cancellable = true)
-    private void beforeDamage(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
-        if (!ServerLivingEntityEvents.ALLOW_DAMAGE.invoker()
-                .allowDamage((LivingEntity) (Object) this, source, damage))
-            cir.setReturnValue(false);
     }
 }
