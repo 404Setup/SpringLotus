@@ -12,64 +12,28 @@ package one.pkg.libsl.mixin.event.block.spread;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BambooStalkBlock;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BambooLeaves;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import one.pkg.libsl.api.event.block.BlockSpreadEvent;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(BambooStalkBlock.class)
 public class BambooStalkBlockMixin {
-    @Shadow
-    @Final
-    public static IntegerProperty AGE;
-
-    @Shadow
-    @Final
-    public static EnumProperty<BambooLeaves> LEAVES;
-
-    @Shadow
-    @Final
-    public static IntegerProperty STAGE;
-
-    @Inject(
+    @Redirect(
             method = "growBamboo",
             at = @At(
                     value = "INVOKE",
-                    shift = At.Shift.BEFORE,
                     target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z",
-                    ordinal = 0
-            ),
-            cancellable = true
+                    ordinal = 2
+            )
     )
-    private void springLotus$growBamboo(
-            BlockState state,
-            Level level,
-            BlockPos pos,
-            RandomSource random,
-            int height,
-            CallbackInfo ci,
-            @Local(name = "twoBelowState") BlockState twoBelowState
-    ) {
-        if (!BlockSpreadEvent.EVENT.canSkip()) {
-            int age = state.getValue(AGE) != 1 && !twoBelowState.is(Blocks.BAMBOO) ? 0 : 1;
-            int stage = (height < 11 || !(random.nextFloat() < 0.25F)) && height != 15 ? 0 : 1;
-
-            BlockState newState = ((BambooStalkBlock) (Object) this).defaultBlockState()
-                    .setValue(AGE, age).setValue(LEAVES, BambooLeaves.NONE).setValue(STAGE, stage);
-
-            if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, newState, pos, pos.above()))
-                ci.cancel();
-        }
+    private boolean springLotus$growBamboo(Level level, BlockPos targetPos, BlockState state, int flags,
+                                         @Local(argsOnly = true) BlockPos pos) {
+        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, pos, targetPos))
+            return false;
+        return level.setBlock(targetPos, state, flags);
     }
 }

@@ -29,7 +29,7 @@ public class BambooSaplingBlockMixin {
             )
     )
     private static boolean springLotus$growBamboo(Level level, BlockPos pos, BlockState blockState, int updateFlags) {
-        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, blockState, pos, pos.above())) {
+        if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, blockState, pos.below(), pos)) {
             return false;
         }
         return level.setBlock(pos, blockState, updateFlags);

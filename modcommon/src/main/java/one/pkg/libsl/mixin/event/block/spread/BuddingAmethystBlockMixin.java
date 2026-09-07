@@ -31,7 +31,7 @@ public class BuddingAmethystBlockMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z",
-                    shift = At.Shift.AFTER
+                    shift = At.Shift.BEFORE
             ),
             cancellable = true
     )

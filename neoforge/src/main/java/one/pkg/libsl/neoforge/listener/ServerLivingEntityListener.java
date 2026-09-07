@@ -13,9 +13,17 @@ package one.pkg.libsl.neoforge.listener;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import one.pkg.libsl.api.event.entity.ServerLivingEntityEvents;
 
 public class ServerLivingEntityListener {
+    @SubscribeEvent
+    public void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
+        if (!ServerLivingEntityEvents.ALLOW_DAMAGE.invoker()
+                .allowDamage(event.getEntity(), event.getSource(), event.getAmount()))
+            event.setCanceled(true);
+    }
+
     @SubscribeEvent
     public void onLivingEntityDeath(LivingDeathEvent event) {
         ServerLivingEntityEvents.AFTER_DEATH.invoker().afterDeath(event.getEntity(), event.getSource());
@@ -23,6 +31,7 @@ public class ServerLivingEntityListener {
 
     @SubscribeEvent
     public void onLivingDamage(LivingDamageEvent.Post event) {
+        if (event.getEntity().isDeadOrDying()) return;
         ServerLivingEntityEvents.AFTER_DAMAGE.invoker().afterDamage(
                 event.getEntity(),
                 event.getSource(),
