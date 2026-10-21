@@ -32,7 +32,7 @@ public class TryLaySpawnOnFluidNearLandMixin {
             method = "lambda$create$2",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z",
+                    target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z",
                     shift = At.Shift.BEFORE
             ),
             cancellable = true

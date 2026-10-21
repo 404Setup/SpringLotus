@@ -42,10 +42,10 @@ public class ItemStackMixin {
             @Nullable ServerPlayer player,
             Consumer<Item> onBreak,
             CallbackInfo ci,
-            @Local(name = "item") Item item
+            @Local(name = "broken") ItemStack broken
     ) {
         if (this.count == 1 && !ItemBrokeEvent.EVENT.canSkip()) {
-            ItemBrokeEvent.EVENT.invoker().onItemBroken(player, item);
+            ItemBrokeEvent.EVENT.invoker().onItemBroken(player, broken);
         }
     }
 }

@@ -25,13 +25,13 @@ public class BambooSaplingBlockMixin {
             method = "growBamboo",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"
+                    target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"
             )
     )
-    private static boolean springLotus$growBamboo(Level level, BlockPos pos, BlockState blockState, int updateFlags) {
+    private static boolean springLotus$growBamboo(Level level, BlockPos pos, BlockState blockState) {
         if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, blockState, pos.below(), pos)) {
             return false;
         }
-        return level.setBlock(pos, blockState, updateFlags);
+        return level.setBlockAndUpdate(pos, blockState);
     }
 }

@@ -26,19 +26,16 @@ public class SculkBlockMixin {
             method = "attemptUseCharge",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/LevelAccessor;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"
+                    target = "Lnet/minecraft/world/level/LevelAccessor;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"
             )
     )
     private boolean springLotus$setBlock(
-            LevelAccessor level,
-            BlockPos pos,
-            BlockState state,
-            int flags,
+            LevelAccessor level, BlockPos pos, BlockState state,
             @Local(argsOnly = true) BlockPos originPos
     ) {
         if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, originPos, pos)) {
             return false;
         }
-        return level.setBlock(pos, state, flags);
+        return level.setBlockAndUpdate(pos, state);
     }
 }

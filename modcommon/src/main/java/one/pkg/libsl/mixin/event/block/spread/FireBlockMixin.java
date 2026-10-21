@@ -33,9 +33,8 @@ public abstract class FireBlockMixin {
             method = "tick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z",
-                    shift = At.Shift.BEFORE,
-                    ordinal = 1
+                    target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z",
+                    shift = At.Shift.BEFORE
             ),
             cancellable = true
     )

@@ -26,14 +26,13 @@ public class BambooStalkBlockMixin {
             method = "growBamboo",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/level/Level;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z",
+                    target = "Lnet/minecraft/world/level/Level;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z",
                     ordinal = 2
             )
     )
-    private boolean springLotus$growBamboo(Level level, BlockPos targetPos, BlockState state, int flags,
-                                         @Local(argsOnly = true) BlockPos pos) {
+    private boolean springLotus$growBamboo(Level level, BlockPos targetPos, BlockState state, @Local(argsOnly = true) BlockPos pos) {
         if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(level, state, pos, targetPos))
             return false;
-        return level.setBlock(targetPos, state, flags);
+        return level.setBlockAndUpdate(targetPos, state);
     }
 }

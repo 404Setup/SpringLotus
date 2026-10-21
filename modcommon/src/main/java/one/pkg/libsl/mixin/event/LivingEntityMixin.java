@@ -11,6 +11,7 @@
 package one.pkg.libsl.mixin.event;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Prediction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -31,8 +32,7 @@ public class LivingEntityMixin {
                     shift = At.Shift.BEFORE),
             cancellable = true
     )
-    private void libsl$drop(ItemStack itemStack, boolean randomly,
-                            boolean thrownFromHand, CallbackInfoReturnable<ItemEntity> cir) {
+    private void libsl$drop(ItemStack itemStack, boolean thrownFromHand, Prediction prediction, CallbackInfoReturnable<ItemEntity> cir) {
         Entity entity = (Entity) (Object) this;
         if ((entity instanceof ServerPlayer player) &&
                 !ServerPlayerEvents.DROP_ITEM.invoker().onDropItem(player, itemStack))

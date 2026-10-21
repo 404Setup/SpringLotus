@@ -12,7 +12,7 @@ package one.pkg.libsl.mixin.event.entity;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.entity.monster.EnderMan;
+import net.minecraft.world.entity.monster.Enderman;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import one.pkg.libsl.api.event.block.BlockBreakEvents;
@@ -23,11 +23,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EnderMan.EndermanTakeBlockGoal.class)
+@Mixin(Enderman.EndermanTakeBlockGoal.class)
 public class EnderManTakeBlockGoalMixin {
     @Shadow
     @Final
-    private EnderMan enderman;
+    private Enderman enderman;
 
     @Inject(
             method = "tick",

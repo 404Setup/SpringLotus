@@ -61,9 +61,8 @@ public class ServerGamePacketListenerImplMixin implements AsServerGamePacketList
             method = "handleMovePlayer",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerPlayer;absSnapTo(DDDFF)V",
-                    shift = At.Shift.BEFORE,
-                    ordinal = 1
+                    target = "Lnet/minecraft/server/level/ServerPlayer;absSnapRotationTo(FF)V",
+                    shift = At.Shift.BEFORE
             ),
             cancellable = true
     )
@@ -131,11 +130,12 @@ public class ServerGamePacketListenerImplMixin implements AsServerGamePacketList
             CallbackInfo ci,
             @Local(argsOnly = true) ServerboundMoveVehiclePacket packet
     ) {
-        double toX = packet.position().x();
-        double toY = packet.position().y();
-        double toZ = packet.position().z();
-        float toYaw = packet.yRot();
-        float toPitch = packet.xRot();
+        var position = packet.movingTo().position();
+        double toX = position.x();
+        double toY = position.y();
+        double toZ = position.z();
+        float toYaw = packet.movingTo().yRot();
+        float toPitch = packet.movingTo().xRot();
 
         double delta = Mth.square(this.springLotus$lastPosX - toX) +
                 Mth.square(this.springLotus$lastPosY - toY) + Mth.square(this.springLotus$lastPosZ - toZ);

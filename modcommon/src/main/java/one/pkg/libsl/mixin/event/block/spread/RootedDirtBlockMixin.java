@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealSource;
 import net.minecraft.world.level.block.RootedDirtBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import one.pkg.libsl.api.event.block.BlockSpreadEvent;
@@ -30,11 +31,8 @@ public class RootedDirtBlockMixin {
             cancellable = true
     )
     private void springLotus$performBonemeal(
-            ServerLevel level,
-            RandomSource random,
-            BlockPos pos,
-            BlockState state,
-            CallbackInfo ci
+            ServerLevel level, RandomSource random, BlockPos pos, BlockState state,
+            BonemealSource source, CallbackInfo ci
     ) {
         if (!BlockSpreadEvent.EVENT.invoker().onBlockSpread(
                         level, Blocks.HANGING_ROOTS.defaultBlockState(),

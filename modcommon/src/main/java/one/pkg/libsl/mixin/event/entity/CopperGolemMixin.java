@@ -26,16 +26,16 @@ public class CopperGolemMixin {
             method = "turnToStatue",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/server/level/ServerLevel;setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;I)Z"
+                    target = "Lnet/minecraft/server/level/ServerLevel;setBlockAndUpdate(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;)Z"
             )
     )
     private boolean springlotus$wrapSetBlock(
-            ServerLevel instance, BlockPos pos, BlockState state, int i, Operation<Boolean> original
+            ServerLevel instance, BlockPos pos, BlockState state, Operation<Boolean> original
     ) {
         if (!BlockBreakEvents.ENTITY_UPDATE.invoker().onEntityUpdate((CopperGolem) (Object) this, instance, pos, state)) {
             return false;
         }
 
-        return original.call(instance, pos, state, i);
+        return original.call(instance, pos, state);
     }
 }

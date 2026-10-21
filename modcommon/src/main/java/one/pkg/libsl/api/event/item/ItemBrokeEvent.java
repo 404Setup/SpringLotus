@@ -12,6 +12,7 @@ package one.pkg.libsl.api.event.item;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import one.pkg.libsl.api.event.Event;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,5 +57,5 @@ public interface ItemBrokeEvent {
      *                   Can be null, indicating a non-player context such as an automated process.
      * @param brokenItem The item that has broken. Must not be null.
      */
-    void onItemBroken(@Nullable ServerPlayer usedPlayer, @NotNull Item brokenItem);
+    void onItemBroken(@Nullable ServerPlayer usedPlayer, @NotNull ItemStack brokenItem);
 }

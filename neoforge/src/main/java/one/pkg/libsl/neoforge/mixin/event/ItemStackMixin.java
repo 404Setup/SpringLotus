@@ -38,10 +38,10 @@ public class ItemStackMixin {
             )
     )
     private void onItemBroke(
-            int newDamage, LivingEntity player, Consumer<Item> onBreak, CallbackInfo ci, @Local(name = "item") Item item
+            int newDamage, LivingEntity player, Consumer<Item> onBreak, CallbackInfo ci, @Local(name = "broken") ItemStack broken
     ) {
         if (this.count == 1 && !ItemBrokeEvent.EVENT.canSkip() && player instanceof ServerPlayer serverPlayer) {
-            ItemBrokeEvent.EVENT.invoker().onItemBroken(serverPlayer, item);
+            ItemBrokeEvent.EVENT.invoker().onItemBroken(serverPlayer, broken);
         }
     }
 }

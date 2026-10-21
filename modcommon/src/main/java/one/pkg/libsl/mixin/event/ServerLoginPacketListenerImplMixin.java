@@ -13,7 +13,6 @@ package one.pkg.libsl.mixin.event;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
-import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.minecraft.DefaultUncaughtExceptionHandler;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.Connection;
@@ -94,10 +93,10 @@ public class ServerLoginPacketListenerImplMixin {
             String name = Objects.requireNonNull(requestedUsername, "Player name not initialized");
 
             try {
-                ProfileResult result = server.services().sessionService().hasJoinedServer(
+                var result = server.services().sessionService().hasJoinedServer(
                         name, digest, springLotus$getAddress());
                 if (result != null) {
-                    GameProfile profile = result.profile();
+                    var profile = result.profile();
                     if (!connection.isConnected()) {
                         return;
                     }
