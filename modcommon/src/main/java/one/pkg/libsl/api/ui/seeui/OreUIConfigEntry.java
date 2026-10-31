@@ -118,7 +118,7 @@ public abstract class OreUIConfigEntry {
             super(field, category, key, comment, keyword);
             try {
                 Object val = field.get(null);
-                this.value = val instanceof Boolean ? (Boolean) val : false;
+                this.value = val instanceof Boolean && (Boolean) val;
             } catch (IllegalAccessException e) {
                 this.value = false;
             }
